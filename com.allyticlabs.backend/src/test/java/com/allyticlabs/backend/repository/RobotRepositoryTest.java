@@ -16,7 +16,7 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
-
+import java.net.URI;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

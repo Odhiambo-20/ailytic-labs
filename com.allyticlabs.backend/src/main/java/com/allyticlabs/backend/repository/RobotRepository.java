@@ -6,6 +6,8 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.Expression;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +27,11 @@ public class RobotRepository {
 
     public List<Robot> findByType(String type) {
         return robotTable.scan(ScanEnhancedRequest.builder()
-                .filterExpression(b -> b.eq("type", type))
+                .filterExpression(Expression.builder()
+                    .expression("#type = :type")
+                    .putExpressionName("#type", "type")
+                    .putExpressionValue(":type", AttributeValue.builder().s(type).build())
+                    .build())
                 .build())
                 .items()
                 .stream()
@@ -45,7 +51,7 @@ public class RobotRepository {
     }
 
     public Robot update(Robot robot) {
-        robotTable.updateItem(robot);
+        robotTable.putItem(robot);
         return robot;
     }
 
