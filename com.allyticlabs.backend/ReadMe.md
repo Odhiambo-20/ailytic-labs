@@ -466,7 +466,41 @@ curl -u admin:admin123 http://localhost:8080/api/robots
 
 # NOT just:
 curl http://localhost:8080/api/robots
+
 ```
+
+
+
+
+
+
+# Test Robots endpoint (GET)
+curl -u admin:admin123 http://localhost:8080/api/robots
+
+# Test Drones endpoint (GET)
+curl -u admin:admin123 http://localhost:8080/api/drones
+
+# Test Solar Panels endpoint (GET)
+curl -u admin:admin123 http://localhost:8080/api/solar-panels
+
+# Test Contact endpoint (POST) - SINGULAR, not plural!
+curl -X POST -u admin:admin123 \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"John","lastName":"Doe","email":"john@example.com","message":"Test message"}' \
+  http://localhost:8080/api/contact
+
+# Test Newsletter endpoint (POST) - SINGULAR, not plural!
+curl -X POST -u admin:admin123 \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com"}' \
+  http://localhost:8080/api/newsletter
+
+
+
+
+
+
+
 
 ### Issue 4: Port 8080 Already in Use
 
