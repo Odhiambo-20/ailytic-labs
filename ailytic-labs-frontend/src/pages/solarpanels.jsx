@@ -1,107 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Zap, TrendingUp, Shield, Leaf, Globe, ArrowRight, Play, CheckCircle, Star, MapPin, Phone, Mail, Calendar, Users, Award, BarChart3 } from 'lucide-react';
 import solarVideo from '../assets/solar.mp4';
+import solar from '../assets/solar.webm';
+// Import all local images at the top
+import solarFarmImage from '../assets/solar panels.jpg';
+import cuttingEdgeImage from '../assets/cutting-edge solar panels.jpg';
+import solarPanels1Image from '../assets/solar panels 1.jpg';
+import RoofTopSolar from '../assets/roof-top solar.jpg';
+
 
 const SolarPanels = () => {
-  const [activeTab, setActiveTab] = useState('residential');
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [energyData, setEnergyData] = useState({ current: 0, target: 4200 });
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Animate energy counter
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setEnergyData(prev => ({
-        ...prev,
-        current: prev.current < prev.target ? prev.current + 50 : prev.target
-      }));
-    }, 50);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Auto-slide for testimonials
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const solarProducts = {
-    residential: [
-      {
-        id: 1,
-        name: 'SolarMax Home Pro',
-        power: '400W',
-        efficiency: '22.1%',
-        warranty: '25 years',
-        price: '$299',
-        image: '🏠',
-        features: ['Monocrystalline silicon', 'Weather resistant', 'Easy installation', 'Smart monitoring'],
-        description: 'Perfect for residential rooftops with high efficiency and reliable performance.'
-      },
-      {
-        id: 2,
-        name: 'EcoSolar Residential',
-        power: '350W',
-        efficiency: '20.5%',
-        warranty: '20 years',
-        price: '$249',
-        image: '🏡',
-        features: ['Polycrystalline silicon', 'Cost-effective', 'Durable frame', 'Grid-tie compatible'],
-        description: 'Budget-friendly option without compromising on quality and durability.'
-      },
-      {
-        id: 3,
-        name: 'FlexSolar Compact',
-        power: '300W',
-        efficiency: '19.8%',
-        warranty: '20 years',
-        price: '$199',
-        image: '🏘️',
-        features: ['Flexible design', 'Lightweight', 'Space-saving', 'Urban optimized'],
-        description: 'Ideal for small spaces and urban environments with limited roof area.'
-      }
-    ],
-    commercial: [
-      {
-        id: 4,
-        name: 'PowerGrid Commercial',
-        power: '500W',
-        efficiency: '23.5%',
-        warranty: '25 years',
-        price: '$399',
-        image: '🏢',
-        features: ['High-power output', 'Commercial grade', 'Scalable systems', 'Remote monitoring'],
-        description: 'Industrial-grade solar panels designed for large-scale commercial installations.'
-      },
-      {
-        id: 5,
-        name: 'MegaSolar Enterprise',
-        power: '600W',
-        efficiency: '24.2%',
-        warranty: '30 years',
-        price: '$499',
-        image: '🏭',
-        features: ['Maximum efficiency', 'Enterprise reliability', 'Weather tracking', 'Performance analytics'],
-        description: 'Premium enterprise solution for maximum energy generation and ROI.'
-      }
-    ],
-    industrial: [
-      {
-        id: 6,
-        name: 'IndustrialMax Pro',
-        power: '800W',
-        efficiency: '25.1%',
-        warranty: '30 years',
-        price: '$699',
-        image: '⚡',
-        features: ['Ultra-high power', 'Extreme durability', 'Industrial IoT', 'Predictive maintenance'],
-        description: 'Heavy-duty industrial panels for utility-scale solar farms and large installations.'
-      }
-    ]
-  };
 
   const testimonials = [
     {
@@ -155,141 +71,245 @@ const SolarPanels = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-orange-900 to-slate-900">
-      {/* Hero Section with Video Background - Added padding-top to account for fixed header */}
-      <div className="relative overflow-hidden min-h-screen flex items-center pt-20">
-        {/* Video Background */}
+    <div className="min-h-screen bg-white">
+      {/* Hero Section with Fullscreen Video */}
+      <div className="relative overflow-hidden h-screen flex items-center pt-20">
+        {/* Fullscreen Video Background */}
         <div className="absolute inset-0 z-0">
           <video
-            width="1420"
-            height="100"
             autoPlay
             muted
             loop
             playsInline
             className="w-full h-full object-cover"
-            style={{
-              minWidth: '100%',
-              minHeight: '100%',
-              width: 'auto',
-              height: 'auto',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
           >
             <source src={solarVideo} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {/* Subtle dark overlay to ensure text readability */}
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+          <div className="max-w-2xl">
+            <h1 className="text-6xl md:text-7xl font-bold text-white mb-6">
+              Advanced Solar Panel Technology
+            </h1>
+            <p className="text-2xl text-gray-100 mb-8">
+              Transforming energy consumption with intelligent solar solutions that deliver exceptional performance and sustainability.
+            </p>
+            <button className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 rounded-lg text-white font-bold text-lg transition-all">
+              <Calendar className="w-5 h-5" />
+              Get Started Today
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Rooftop Solar Section */}
+      <div className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-5xl font-bold text-white mb-6">
-                Advanced Solar Panel Technology
-              </h1>
-              <p className="text-xl text-gray-200 mb-8">
-                Transforming energy consumption with intelligent solar solutions that deliver exceptional performance and sustainability.
+            <div className="order-2 lg:order-1">
+              <img
+                src={RoofTopSolar}
+                alt="Solar Farm"
+                className="w-full h-96 md:h-[500px] object-cover rounded-3xl shadow-2xl"
+              />
+            </div>
+            <div className="order-1 lg:order-2">
+              <h2 className="text-5xl font-bold text-slate-900 mb-6">
+                Transform Your Home with Rooftop Solar
+              </h2>
+              <p className="text-xl text-slate-700 mb-6">
+                Our advanced rooftop solar solutions bring clean, renewable energy directly to your home. Experience unmatched efficiency with premium monocrystalline panels that maximize every ray of sunlight.
               </p>
-              
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
+                  <span className="text-lg text-slate-700">Up to 22% energy efficiency</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
+                  <span className="text-lg text-slate-700">Weather-resistant installation</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
+                  <span className="text-lg text-slate-700">Smart monitoring system included</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
+                  <span className="text-lg text-slate-700">25-year performance warranty</span>
+                </li>
+              </ul>
+              <button className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 rounded-lg text-white font-bold transition-all">
+                Learn More
+                <ArrowRight className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Product Categories */}
-      <div className="max-w-7xl mx-auto px-6 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">Our Solar Panel Solutions</h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Choose from our comprehensive range of solar panels designed for different applications and energy needs.
-          </p>
-        </div>
-
-        {/* Category Tabs */}
-        <div className="flex justify-center mb-12">
-          <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-2 border border-white/10">
-            {Object.keys(solarProducts).map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveTab(category)}
-                className={`px-6 py-3 rounded-xl font-medium transition-all capitalize ${
-                  activeTab === category
-                    ? 'bg-orange-600 text-white'
-                    : 'text-gray-300 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                {category}
+      {/* Solar Farm Section */}
+      <div className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-5xl font-bold text-slate-900 mb-6">
+                Large-Scale Solar Farm Solutions
+              </h2>
+              <p className="text-xl text-slate-700 mb-6">
+                Our solar farm technology harnesses the power of thousands of panels to generate massive amounts of clean energy. Perfect for agricultural applications and utility-scale projects across Africa.
+              </p>
+              <div className="space-y-4 mb-8">
+                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 rounded-lg border border-orange-200">
+                  <h3 className="font-bold text-slate-900 mb-2">Energy Generation</h3>
+                  <p className="text-slate-700">Generate 500+ kWh annually per installed system</p>
+                </div>
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-lg border border-blue-200">
+                  <h3 className="font-bold text-slate-900 mb-2">Cost Efficiency</h3>
+                  <p className="text-slate-700">Reduce operational costs by up to 70%</p>
+                </div>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">
+                  <h3 className="font-bold text-slate-900 mb-2">Environmental Impact</h3>
+                  <p className="text-slate-700">Offset 2000+ tons of carbon annually</p>
+                </div>
+              </div>
+              <button className="flex items-center gap-2 px-8 py-4 border-2 border-orange-600 text-orange-600 hover:bg-orange-50 font-bold rounded-lg transition-all">
+                Explore Farm Solutions
+                <ArrowRight className="w-5 h-5" />
               </button>
-            ))}
+            </div>
+            <div>
+              <img
+                src={solarFarmImage}
+                alt="Solar Farm"
+                className="w-full h-96 md:h-[500px] object-cover rounded-3xl shadow-2xl"
+              />
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {solarProducts[activeTab].map((product) => (
-            <div
-              key={product.id}
-              className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-orange-400/50 transition-all cursor-pointer group"
-              onClick={() => setSelectedProduct(product)}
-            >
-              <div className="text-center mb-6">
-                <div className="text-6xl mb-4">{product.image}</div>
-                <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
-                <p className="text-gray-400 text-sm">{product.description}</p>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Power Output</span>
-                  <span className="text-orange-400 font-bold">{product.power}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Efficiency</span>
-                  <span className="text-green-400 font-bold">{product.efficiency}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Warranty</span>
-                  <span className="text-blue-400 font-bold">{product.warranty}</span>
-                </div>
-              </div>
-
-              <div className="border-t border-white/10 pt-4">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-2xl font-bold text-white">{product.price}</span>
-                  <span className="text-gray-400 text-sm">per panel</span>
-                </div>
-                
-                <div className="space-y-2 mb-4">
-                  {product.features.slice(0, 2).map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm text-gray-300">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg text-white font-medium transition-colors group-hover:bg-orange-700">
-                  Get Quote
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+      {/* Commercial Solutions Section */}
+      <div className="py-20 bg-gradient-to-br from-slate-50 to-orange-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <img
+                src={cuttingEdgeImage}
+                alt="Commercial Solar"
+                className="w-full h-96 md:h-[500px] object-cover rounded-3xl shadow-2xl"
+              />
             </div>
-          ))}
+            <div className="order-1 lg:order-2">
+              <h2 className="text-5xl font-bold text-slate-900 mb-6">
+                Enterprise-Grade Commercial Solar
+              </h2>
+              <p className="text-xl text-slate-700 mb-6">
+                Designed for businesses that demand maximum performance and reliability. Our commercial systems integrate seamlessly with your existing infrastructure while delivering impressive ROI.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-1">500+ kW Capacity</h4>
+                    <p className="text-slate-700">Scale to meet any business energy demands</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Award className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-1">Industry Leading</h4>
+                    <p className="text-slate-700">Certified and trusted by Fortune 500 companies</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-1">24/7 Monitoring</h4>
+                    <p className="text-slate-700">Real-time analytics and performance tracking</p>
+                  </div>
+                </div>
+              </div>
+              <button className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 rounded-lg text-white font-bold transition-all">
+                Request Commercial Quote
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+      {/* Innovation Section */}
+      <div className="relative overflow-hidden min-h-screen flex items-center">
+        {/* Fullscreen Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src={solar} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
+        </div>
+
+        {/* Content Over Video */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 w-full">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
+              Cutting-Edge Solar Innovation
+            </h2>
+            <p className="text-2xl text-gray-100 mb-8">
+              Stay ahead with our latest solar panel technology featuring AI-powered optimization, predictive maintenance, and real-time energy management systems.
+            </p>
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 mb-8">
+              <h3 className="text-3xl font-bold text-white mb-6">Next-Generation Features</h3>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-4">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-xl text-gray-100">AI-powered energy optimization</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-xl text-gray-100">Predictive maintenance alerts</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-xl text-gray-100">Mobile app control & monitoring</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-xl text-gray-100">Weather-adaptive performance</span>
+                </li>
+              </ul>
+            </div>
+            <button className="flex items-center justify-center gap-2 px-10 py-5 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 text-white font-bold text-lg rounded-lg transition-all mx-auto">
+              Explore Technology
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Benefits Section */}
-      <div className="bg-black/20 backdrop-blur-sm py-20">
+      <div className="bg-black/5 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Why Choose Allytic Solar?</h2>
-            <p className="text-xl text-gray-300">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Why Choose Allytic Solar?</h2>
+            <p className="text-xl text-slate-700">
               Experience the advantages of our advanced solar technology and comprehensive service.
             </p>
           </div>
@@ -299,9 +319,9 @@ const SolarPanels = () => {
               const Icon = benefit.icon;
               return (
                 <div key={index} className={`${benefit.color} border rounded-2xl p-6 hover:scale-105 transition-transform`}>
-                  <Icon className="w-12 h-12 text-white mb-4" />
-                  <h3 className="text-xl font-bold text-white mb-3">{benefit.title}</h3>
-                  <p className="text-gray-300">{benefit.description}</p>
+                  <Icon className="w-12 h-12 text-slate-900 mb-4" />
+                  <h3 className="text-xl font-bold text-slate-900 mb-3">{benefit.title}</h3>
+                  <p className="text-slate-700">{benefit.description}</p>
                 </div>
               );
             })}
@@ -312,22 +332,22 @@ const SolarPanels = () => {
       {/* Testimonials */}
       <div className="max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">What Our Customers Say</h2>
-          <p className="text-xl text-gray-300">
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">What Our Customers Say</h2>
+          <p className="text-xl text-slate-700">
             Real feedback from satisfied customers across Africa and beyond.
           </p>
         </div>
 
         <div className="relative">
-          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+          <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-8 border border-orange-200 shadow-lg">
             <div className="text-center">
               <div className="flex justify-center mb-4">
                 {[...Array(testimonials[currentSlide].rating)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
+                  <Star key={i} className="w-6 h-6 text-yellow-500 fill-current" />
                 ))}
               </div>
               
-              <blockquote className="text-xl text-white mb-6 italic">
+              <blockquote className="text-2xl text-slate-900 mb-6 italic font-medium">
                 "{testimonials[currentSlide].text}"
               </blockquote>
               
@@ -336,9 +356,9 @@ const SolarPanels = () => {
                   {testimonials[currentSlide].name.charAt(0)}
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-medium">{testimonials[currentSlide].name}</div>
-                  <div className="text-gray-400 text-sm">{testimonials[currentSlide].company}</div>
-                  <div className="flex items-center gap-1 text-orange-400 text-sm">
+                  <div className="text-slate-900 font-medium text-lg">{testimonials[currentSlide].name}</div>
+                  <div className="text-slate-700">{testimonials[currentSlide].company}</div>
+                  <div className="flex items-center gap-1 text-orange-600 text-sm">
                     <MapPin className="w-3 h-3" />
                     {testimonials[currentSlide].location}
                   </div>
@@ -354,7 +374,7 @@ const SolarPanels = () => {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`w-3 h-3 rounded-full transition-colors ${
-                  currentSlide === index ? 'bg-orange-500' : 'bg-gray-600'
+                  currentSlide === index ? 'bg-orange-600' : 'bg-gray-400'
                 }`}
               />
             ))}
@@ -363,29 +383,29 @@ const SolarPanels = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-orange-600/20 to-yellow-600/20 border-y border-orange-400/30 py-20">
+      <div className="bg-gradient-to-r from-orange-600/95 to-yellow-600/95 py-20">
         <div className="max-w-4xl mx-auto text-center px-6">
           <h2 className="text-4xl font-bold text-white mb-4">Ready to Go Solar?</h2>
-          <p className="text-xl text-gray-300 mb-8">
+          <p className="text-xl text-white/90 mb-8">
             Join thousands of satisfied customers who have made the switch to clean, renewable energy.
             Get a free consultation and custom quote today.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 rounded-lg text-white font-bold text-lg transition-all">
+            <button className="flex items-center justify-center gap-2 px-8 py-4 bg-white text-orange-600 hover:bg-gray-100 rounded-lg font-bold text-lg transition-all">
               <Calendar className="w-5 h-5" />
               Schedule Consultation
             </button>
-            <button className="flex items-center gap-2 px-8 py-4 border border-orange-400/50 hover:bg-orange-500/20 rounded-lg text-white font-bold text-lg transition-all">
+            <button className="flex items-center justify-center gap-2 px-8 py-4 border-2 border-white text-white hover:bg-white/10 rounded-lg font-bold text-lg transition-all">
               <Phone className="w-5 h-5" />
-              Call Now: +254-700-000-000
+              Call: +254-700-000-000
             </button>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="bg-black/40 backdrop-blur-sm py-12">
+      <div className="bg-slate-900 py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
@@ -429,76 +449,11 @@ const SolarPanels = () => {
             </div>
           </div>
           
-          <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
             <p>&copy; 2025 Allytic Labs. All rights reserved.</p>
           </div>
         </div>
       </div>
-
-      {/* Product Detail Modal */}
-      {selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50" onClick={() => setSelectedProduct(null)}>
-          <div className="bg-slate-900 rounded-2xl p-8 max-w-2xl w-full border border-white/10" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">{selectedProduct.name}</h3>
-                <p className="text-gray-400">{selectedProduct.description}</p>
-              </div>
-              <button
-                onClick={() => setSelectedProduct(null)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-8 mb-6">
-              <div>
-                <h4 className="text-white font-semibold mb-4">Specifications</h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Power Output</span>
-                    <span className="text-orange-400 font-bold">{selectedProduct.power}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Efficiency</span>
-                    <span className="text-green-400 font-bold">{selectedProduct.efficiency}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Warranty</span>
-                    <span className="text-blue-400 font-bold">{selectedProduct.warranty}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Price</span>
-                    <span className="text-white font-bold text-xl">{selectedProduct.price}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-white font-semibold mb-4">Features</h4>
-                <div className="space-y-2">
-                  {selectedProduct.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2 text-gray-300">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <button className="flex-1 px-6 py-3 bg-orange-600 hover:bg-orange-700 rounded-lg text-white font-medium transition-colors">
-                Request Quote
-              </button>
-              <button className="flex-1 px-6 py-3 border border-orange-400/50 hover:bg-orange-500/20 rounded-lg text-white font-medium transition-colors">
-                Schedule Demo
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
