@@ -1,0 +1,3 @@
+com/allyticlabs/backend/controller/RobotControllerTest.class
+com/allyticlabs/backend/repository/RobotRepositoryTest.class
+com/allyticlabs/backend/service/RobotServiceTest.class
