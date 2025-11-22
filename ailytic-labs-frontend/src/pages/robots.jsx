@@ -1,98 +1,15 @@
-import React, { useState } from 'react';
-import { Bot, Cpu, Zap, Shield, Brain, Cog, ChevronRight, Star, Users, Award, Instagram, Github, Youtube, Linkedin } from 'lucide-react';
+import React from 'react';
+import { ChevronRight, Instagram, Github, Youtube, Linkedin } from 'lucide-react';
 import AllyticVideo from '../assets/Allytic.mp4';
-
-const robots = [
-  {
-    id: 1,
-    name: "NeuroBot X1",
-    type: "AI Assistant",
-    description: "Advanced neural network processing with human-like conversation abilities and emotional intelligence.",
-    capabilities: ["Natural Language Processing", "Emotional Recognition", "Learning Adaptation", "Multi-task Execution"],
-    image: "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=400",
-    price: "$12,999",
-    rating: 4.9,
-    reviews: 1247
-  },
-  {
-    id: 2,
-    name: "IndustroMax Pro",
-    type: "Industrial Robot",
-    description: "Heavy-duty manufacturing robot with precision control and 24/7 operational capability.",
-    capabilities: ["Precision Assembly", "Quality Control", "Heavy Lifting", "Continuous Operation"],
-    image: "https://images.pexels.com/photos/2085831/pexels-photo-2085831.jpeg?auto=compress&cs=tinysrgb&w=400",
-    price: "$45,000",
-    rating: 4.8,
-    reviews: 892
-  },
-  {
-    id: 3,
-    name: "CompanionBot Mini",
-    type: "Personal Assistant",
-    description: "Compact home companion with smart home integration and personalized care features.",
-    capabilities: ["Smart Home Control", "Health Monitoring", "Entertainment", "Security Alerts"],
-    image: "https://images.pexels.com/photos/8439093/pexels-photo-8439093.jpeg?auto=compress&cs=tinysrgb&w=400",
-    price: "$2,499",
-    rating: 4.7,
-    reviews: 2156
-  },
-  {
-    id: 4,
-    name: "MedBot Advanced",
-    type: "Medical Robot",
-    description: "Specialized medical assistant for patient care, surgery assistance, and health monitoring.",
-    capabilities: ["Patient Monitoring", "Surgery Assistance", "Medication Management", "Emergency Response"],
-    image: "https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=400",
-    price: "$89,999",
-    rating: 4.9,
-    reviews: 543
-  },
-  {
-    id: 5,
-    name: "ExploreTech Rover",
-    type: "Exploration Robot",
-    description: "Rugged exploration robot designed for extreme environments and autonomous navigation.",
-    capabilities: ["Terrain Navigation", "Environmental Analysis", "Data Collection", "Remote Control"],
-    image: "https://images.pexels.com/photos/8439086/pexels-photo-8439086.jpeg?auto=compress&cs=tinysrgb&w=400",
-    price: "$67,500",
-    rating: 4.6,
-    reviews: 324
-  },
-  {
-    id: 6,
-    name: "EduBot Interactive",
-    type: "Educational Robot",
-    description: "Interactive learning companion designed for educational institutions and personal development.",
-    capabilities: ["Interactive Learning", "Curriculum Adaptation", "Progress Tracking", "Multi-language Support"],
-    image: "https://images.pexels.com/photos/8386422/pexels-photo-8386422.jpeg?auto=compress&cs=tinysrgb&w=400",
-    price: "$8,750",
-    rating: 4.8,
-    reviews: 1689
-  }
-];
-
-const categories = [
-  { name: "AI Assistant", icon: Brain, color: "bg-blue-500", count: 1 },
-  { name: "Industrial Robot", icon: Cog, color: "bg-orange-500", count: 1 },
-  { name: "Personal Assistant", icon: Bot, color: "bg-green-500", count: 1 },
-  { name: "Medical Robot", icon: Shield, color: "bg-red-500", count: 1 },
-  { name: "Exploration Robot", icon: Zap, color: "bg-purple-500", count: 1 },
-  { name: "Educational Robot", icon: Cpu, color: "bg-teal-500", count: 1 }
-];
+import FoodTestingRobot from '../assets/Food Testing Robot.webm';
+import AgriculturalRobotVideo from '../assets/Agricultural Robot.webm';
+import RoboticDog from '../assets/Robotic Dog.mp4';
+import IndustrialRobotVideo from '../assets/Industrial Robot.webm';
 
 function Robots() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [hoveredRobot, setHoveredRobot] = useState(null);
-
-  const filteredRobots = selectedCategory 
-    ? robots.filter(robot => robot.type === selectedCategory)
-    : robots;
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Hero Section with Video Background */}
       <div className="relative overflow-hidden min-h-screen flex items-center pt-20">
-        {/* Video Background */}
         <div className="absolute inset-0 z-0">
           <video
             width="1920"
@@ -116,11 +33,9 @@ function Robots() {
             <source src={AllyticVideo} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {/* Subtle dark overlay to ensure text readability */}
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
-        {/* Hero Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
           <div className="text-center">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
@@ -142,132 +57,130 @@ function Robots() {
         </div>
       </div>
 
-      <section className="py-16">
+      <section className="py-20 bg-slate-900/50">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-white text-center mb-12">Robot Categories</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-            {categories.map((category) => (
-              <button
-                key={category.name}
-                onClick={() => setSelectedCategory(
-                  selectedCategory === category.name ? null : category.name
-                )}
-                className={`p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 ${
-                  selectedCategory === category.name
-                    ? 'border-blue-400 bg-blue-500/20'
-                    : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
-                }`}
-              >
-                <div className={`inline-flex items-center justify-center w-12 h-12 ${category.color} rounded-full mb-3`}>
-                  <category.icon className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-white text-sm font-medium text-center">{category.name}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="relative group">
 
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-center mb-12">
-            <h2 className="text-4xl font-bold text-white">
-              {selectedCategory ? `${selectedCategory}s` : 'All Robots'}
-            </h2>
-            {selectedCategory && (
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className="text-blue-400 hover:text-blue-300 transition-colors"
+             <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
               >
-                Clear Filter
-              </button>
-            )}
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredRobots.map((robot) => (
-              <div
-                key={robot.id}
-                onMouseEnter={() => setHoveredRobot(robot.id)}
-                onMouseLeave={() => setHoveredRobot(null)}
-                className="bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-700 hover:border-blue-500/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20"
-              >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={robot.image}
-                    alt={robot.name}
-                    className="w-full h-48 object-cover transition-transform duration-500 hover:scale-110"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-semibold rounded-full">
-                      {robot.type}
-                    </span>
-                  </div>
-                  <div className="absolute top-4 right-4">
-                    <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1">
-                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                      <span className="text-white text-xs">{robot.rating}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">{robot.name}</h3>
-                  <p className="text-slate-300 text-sm mb-4 leading-relaxed">{robot.description}</p>
-                  
-                  <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-blue-400 mb-2">Key Capabilities:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {robot.capabilities.slice(0, 2).map((capability, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-full"
-                        >
-                          {capability}
-                        </span>
-                      ))}
-                      {robot.capabilities.length > 2 && (
-                        <span className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-full">
-                          +{robot.capabilities.length - 2} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-2xl font-bold text-white">{robot.price}</div>
-                    <div className="text-sm text-slate-400">
-                      {robot.reviews} reviews
-                    </div>
-                  </div>
-                  
-                  <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
-                    Learn More
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+                <source src={FoodTestingRobot} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
+                <h3 className="text-3xl font-bold text-white mb-4">
+                  Precision Food Safety Testing
+                </h3>
+                <p className="text-blue-100 mb-6 text-lg leading-relaxed">
+                  Revolutionary AI-powered robot that ensures food quality and safety with 99.9% accuracy. 
+                  Detect contaminants, measure nutritional content, and guarantee compliance in seconds.
+                </p>
+                <button className="w-fit px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+                  Order Now
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
-            ))}
+            </div>
+
+            <div className="relative group">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+              >
+                <source src={AgriculturalRobotVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
+                <h3 className="text-3xl font-bold text-white mb-4">
+                  Smart Agricultural Innovation
+                </h3>
+                <p className="text-blue-100 mb-6 text-lg leading-relaxed">
+                  Autonomous farming robot with advanced crop monitoring, precision planting, and harvesting capabilities. 
+                  Boost yields by 40% while reducing water usage and environmental impact.
+                </p>
+                <button className="w-fit px-8 py-4 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-full hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+                  Order Now
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto text-center px-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Welcome the Future?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-            Join thousands of businesses and individuals who have already embraced 
-            the power of intelligent robotics. Start your journey today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-              Get Started Today
-            </button>
-            <button className="px-8 py-4 border-2 border-blue-300 text-blue-100 font-semibold rounded-full hover:bg-blue-600 hover:border-blue-600 transition-all duration-300">
-              Contact Sales
-            </button>
+      <section className="py-20 bg-gradient-to-r from-blue-900/30 to-purple-900/30">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Ready to Welcome the Future?
+              </h2>
+              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+                Control cutting-edge robotics right from your smartphone. Experience seamless integration, 
+                real-time monitoring, and intelligent automation at your fingertips. The future of robotics 
+                is mobile, accessible, and incredibly powerful.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                  Get Started Today
+                </button>
+                <button className="px-8 py-4 border-2 border-blue-300 text-blue-100 font-semibold rounded-full hover:bg-blue-600 hover:border-blue-600 transition-all duration-300">
+                  Contact Sales
+                </button>
+              </div>
+            </div>
+            <div className="order-1 lg:order-2">
+               <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+              >
+                <source src={RoboticDog} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="relative group">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-[600px] object-cover rounded-3xl shadow-2xl"
+            >
+              <source src={IndustrialRobotVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent rounded-3xl flex flex-col justify-end p-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Industrial Excellence in Motion
+              </h2>
+              <p className="text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl">
+                Witness the power of advanced industrial robotics. Our precision-engineered robots deliver 
+                unmatched performance in manufacturing, assembly, and heavy-duty operations. Experience 
+                24/7 productivity with zero downtime and maximum efficiency.
+              </p>
+              <button className="w-fit px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-full hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+                Order Now
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
