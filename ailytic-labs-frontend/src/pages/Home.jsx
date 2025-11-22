@@ -291,15 +291,16 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Gallery Section - Edge to Edge */}
       <section className="py-24 bg-gradient-to-b from-gray-800 to-gray-900">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
+        <div className="w-full">
+          <div className="text-center mb-16 px-4">
             <h2 className="text-5xl md:text-6xl font-bold mb-6">Trusted By Industry Leaders</h2>
             <p className="text-xl text-gray-400">Explore our cutting-edge technology solutions</p>
           </div>
 
-          <div className="relative max-w-5xl mx-auto">
-            <div className="relative overflow-hidden rounded-3xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm">
+          <div className="relative w-full">
+            <div className="relative overflow-hidden bg-gray-800/50 backdrop-blur-sm">
               <div className="relative h-[600px]">
                 {galleryItems[currentGalleryIndex].video ? (
                   <video
@@ -322,7 +323,7 @@ const Home = () => {
                 
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
                 
-                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 max-w-7xl mx-auto">
                   <h3 className="text-4xl md:text-5xl font-bold mb-4 text-white">
                     {galleryItems[currentGalleryIndex].title}
                   </h3>
