@@ -1,5 +1,6 @@
 package com.allyticlabs.backend.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,9 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${cors.allowed.origins}")
+    private String allowedOrigins;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,12 +52,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Production frontend URL (Vercel)
-        configuration.setAllowedOrigins(Arrays.asList(
-            "https://ailytic-labs-frontend.vercel.app",  // Your production URL
-            "http://localhost:5173",                      // Local Vite development
-            "http://localhost:3000"                       // Local React development (if needed)
-        ));
+        // Load allowed origins from application properties
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
         
         // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
