@@ -61,7 +61,6 @@ function Robots() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative group">
-
              <video
                 autoPlay
                 muted
@@ -148,7 +147,6 @@ function Robots() {
                 <source src={RoboticDog} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-
             </div>
           </div>
         </div>
@@ -185,96 +183,96 @@ function Robots() {
         </div>
       </section>
 
-      <footer className="py-12 bg-slate-900/80 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="py-12 bg-gray-950/80 backdrop-blur-sm border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div>
-              <div className="bg-black text-white px-3 py-2 font-bold inline-block mb-4">
-                A
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center font-bold text-sm">
+                  A
+                </div>
+                <span className="text-lg font-bold text-white">Allytic Labs</span>
               </div>
-              <p className="text-gray-400 text-sm">AIlyticslabs</p>
+              <p className="text-gray-400 text-sm">Pioneering the future of robotics, drones, and renewable energy solutions.</p>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">Solutions</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Autopilots</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Drones</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Robots</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-4">Applications</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Academic Research</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Agriculture</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Construction</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Industrial</a></li>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li><a href="/robots" className="hover:text-white transition-colors">Robotics</a></li>
+                <li><a href="/drones" className="hover:text-white transition-colors">Drones</a></li>
+                <li><a href="/solarpanels" className="hover:text-white transition-colors">Solar</a></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">Company</h4>
-              <ul className="space-y-2 mb-6">
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Our story</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Careers</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Press</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-sm">Meet the Team</a></li>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">News</a></li>
               </ul>
-              
-              <div className="text-sm text-gray-400 space-y-1">
-                <p><strong>COC</strong> To be provided</p>
-                <p><strong>VAT</strong> To be provided</p>
-                <p><strong>A</strong> P.O box 00100, Nairobi</p>
-                <p><strong>E</strong> info@ailyticslabs.com</p>
-                <p><strong>T</strong> +254748630243</p>
-              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-white mb-4">Contact</h4>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li><a href="/contact" className="hover:text-white transition-colors">Get in Touch</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Support</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Partnerships</a></li>
+              </ul>
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-gray-700">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="mb-4 md:mb-0">
-                <div className="text-center mb-4">
-                  <h4 className="font-semibold text-white mb-2">Subscribe to our newsletter</h4>
-                  <p className="text-gray-400 text-sm mb-4">The latest news, articles, and resources, sent to your inbox monthly</p>
-                  <div className="flex max-w-md mx-auto">
-                    <input
-                      type="email"
-                      placeholder="Enter your email"
-                      className="flex-1 px-4 py-2 border border-gray-600 bg-slate-800 text-white rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z" />
-                      </svg>
-                    </button>
-                  </div>
+          <div className="border-t border-gray-800 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+              <div className="text-sm text-gray-400">
+                <p>&copy; 2025 Allytic Labs. All rights reserved.</p>
+                <div className="flex space-x-4 mt-4">
+                  <a href="#" className="hover:text-white transition-colors">Terms and Conditions</a>
+                  <span>|</span>
+                  <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
                 </div>
               </div>
-              
-              <div className="flex items-center space-x-4">
-                <div className="text-sm text-gray-400">
-                  <p>© 2025 AIlyticslabs. All rights reserved</p>
-                  <div className="flex space-x-4 mt-2">
-                    <a href="#" className="hover:text-white">Terms and Conditions</a>
-                    <span>|</span>
-                    <a href="#" className="hover:text-white">EULA</a>
-                  </div>
-                </div>
-                <div className="flex space-x-3">
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    <Instagram className="h-5 w-5" />
+
+              <div>
+                <p className="text-sm text-gray-400 mb-4 text-center md:text-right">Follow us on social media</p>
+                <div className="flex gap-3">
+                  <a 
+                    href="https://www.instagram.com/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on Instagram"
+                  >
+                    <Instagram className="h-5 w-5 text-white" />
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    <Github className="h-5 w-5" />
+                  <a 
+                    href="https://github.com/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on GitHub"
+                  >
+                    <Github className="h-5 w-5 text-white" />
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    <Youtube className="h-5 w-5" />
+                  <a 
+                    href="https://www.youtube.com/@ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Subscribe on YouTube"
+                  >
+                    <Youtube className="h-5 w-5 text-white" />
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    <Linkedin className="h-5 w-5" />
+                  <a 
+                    href="https://www.linkedin.com/company/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Connect on LinkedIn"
+                  >
+                    <Linkedin className="h-5 w-5 text-white" />
                   </a>
                 </div>
               </div>

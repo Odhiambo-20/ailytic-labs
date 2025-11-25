@@ -26,7 +26,6 @@ function Navbar() {
               <Link to="/robots" className="text-gray-300 hover:text-white transition-colors">Robots</Link>
               <Link to="/drones" className="text-gray-300 hover:text-white transition-colors">Drones</Link>
               <Link to="/solarpanels" className="text-gray-300 hover:text-white transition-colors">Solarpanels</Link>
-              <Link to="/sandbox-lab" className="text-gray-300 hover:text-white transition-colors">Sandboxlab</Link>
               <Link to="/contact" className="bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 rounded-lg hover:shadow-lg transition-all text-white">
                 Contact Us
               </Link>

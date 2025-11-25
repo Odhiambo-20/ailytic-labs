@@ -336,19 +336,46 @@ const Drones = () => {
                 </div>
               </div>
 
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Instagram className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Github className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Youtube className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Linkedin className="w-5 h-5" />
-                </a>
+              <div>
+                <p className="text-sm text-gray-400 mb-4 text-center md:text-right">Follow us on social media</p>
+                <div className="flex gap-3">
+                  <a 
+                    href="https://www.instagram.com/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on Instagram"
+                  >
+                    <Instagram className="h-5 w-5 text-white" />
+                  </a>
+                  <a 
+                    href="https://github.com/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on GitHub"
+                  >
+                    <Github className="h-5 w-5 text-white" />
+                  </a>
+                  <a 
+                    href="https://www.youtube.com/@ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Subscribe on YouTube"
+                  >
+                    <Youtube className="h-5 w-5 text-white" />
+                  </a>
+                  <a 
+                    href="https://www.linkedin.com/company/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Connect on LinkedIn"
+                  >
+                    <Linkedin className="h-5 w-5 text-white" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
