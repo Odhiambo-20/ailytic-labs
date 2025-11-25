@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { Send, Mail, Phone, MapPin, Instagram, Github, Youtube, Linkedin, YoutubeIcon } from 'lucide-react';
+import { Send, Mail, Phone, MapPin, Instagram, Github, Youtube, Linkedin, CheckCircle, AlertCircle } from 'lucide-react';
+import { contactAPI } from '../services/api';
 
 const Contact = () => {  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    helpType: 'product-info',
+    helpType: 'Product Information',
     message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,25 +21,52 @@ const Contact = () => {
       ...prev,
       [name]: value
     }));
+    // Clear status when user starts typing again
+    if (submitStatus) {
+      setSubmitStatus(null);
+      setErrorMessage('');
+    }
   };
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Form submitted:', formData);
-    setIsSubmitting(false);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      helpType: 'product-info',
-      message: ''
-    });
+    setSubmitStatus(null);
+    setErrorMessage('');
+
+    try {
+      // Submit to backend API
+      await contactAPI.submit(formData);
+      
+      // Success
+      setSubmitStatus('success');
+      
+      // Reset form after successful submission
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        helpType: 'Product Information',
+        message: ''
+      });
+
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus(null);
+      }, 5000);
+
+    } catch (error) {
+      console.error('Failed to submit contact form:', error);
+      setSubmitStatus('error');
+      setErrorMessage('Failed to send message. Please try again or contact us directly via email.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-blue-900 to-slate-800 text-white py-24">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -53,10 +83,33 @@ const Contact = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-16 -mt-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Contact Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-slate-200">
               <h2 className="text-3xl font-bold text-slate-900 mb-2">Send us a message</h2>
               <p className="text-slate-600 mb-8">Fill out the form below and our team will get back to you within 24 hours.</p>
+
+              {/* Success Alert */}
+              {submitStatus === 'success' && (
+                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start gap-3 animate-fade-in">
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-green-900 mb-1">Message sent successfully!</h4>
+                    <p className="text-sm text-green-700">Thank you for contacting us. We'll get back to you within 24 hours.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Alert */}
+              {submitStatus === 'error' && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-fade-in">
+                  <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-red-900 mb-1">Failed to send message</h4>
+                    <p className="text-sm text-red-700">{errorMessage}</p>
+                  </div>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -118,11 +171,12 @@ const Contact = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none appearance-none cursor-pointer"
                   >
-                    <option value="product-info">Product Information</option>
-                    <option value="technical-support">Technical Support</option>
-                    <option value="partnership">Partnership Inquiry</option>
-                    <option value="media">Media Inquiry</option>
-                    <option value="other">Other</option>
+                    <option value="Product Information">Product Information</option>
+                    <option value="Technical Support">Technical Support</option>
+                    <option value="Partnership Inquiry">Partnership Inquiry</option>
+                    <option value="Media Inquiry">Media Inquiry</option>
+                    <option value="Sales Inquiry">Sales Inquiry</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
@@ -171,6 +225,7 @@ const Contact = () => {
             </div>
           </div>
 
+          {/* Contact Info Sidebar */}
           <div className="space-y-6">
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
               <h3 className="text-2xl font-bold text-slate-900 mb-6">Contact Info</h3>
@@ -239,42 +294,41 @@ const Contact = () => {
                 <p className="text-sm text-blue-200 mb-4">Follow us on social media</p>
                 <div className="flex gap-3">
                   <a 
-                      href="https://www.instagram.com/ailyticslabs" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
-                      aria-label="Follow us on Instagram"
-                          >
-                      <Instagram className="h-5 w-5" />
-                 </a>
-                   <a 
-                      href="https://www.github.com/ailyticslabs" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
-                      aria-label="Follow us on GitHub"
-                          >
-                      <Github className="h-5 w-5" />
-                 </a>
-
+                    href="https://www.instagram.com/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on Instagram"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </a>
                   <a 
-                      href="https://www.youtube.com/ailyticslabs" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
-                      aria-label="Follow us on YouTube"
-                          >
-                      <Youtube className="h-5 w-5" />
-                 </a>
-                   <a 
-                      href="https://www.linkedin.com/ailyticslabs" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
-                      aria-label="Follow us on LinkedIn"
-                          >
-                      <Linkedin className="h-5 w-5" />
-                 </a>
+                    href="https://github.com/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on GitHub"
+                  >
+                    <Github className="h-5 w-5" />
+                  </a>
+                  <a 
+                    href="https://www.youtube.com/@ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on YouTube"
+                  >
+                    <Youtube className="h-5 w-5" />
+                  </a>
+                  <a 
+                    href="https://www.linkedin.com/company/ailyticslabs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
+                    aria-label="Follow us on LinkedIn"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                  </a>
                 </div>
               </div>
             </div>
@@ -282,22 +336,26 @@ const Contact = () => {
         </div>
       </div>
 
+      {/* Footer */}
       <footer className="bg-slate-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="bg-white text-slate-900 px-3 py-2 font-bold inline-block mb-4 rounded">
-                A
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center font-bold text-sm">
+                  A
+                </div>
+                <span className="text-lg font-bold text-white">Allytic Labs</span>
               </div>
-              <p className="text-slate-400 text-sm">AIlyticslabs</p>
+              <p className="text-slate-400 text-sm">Pioneering the future of robotics, drones, and renewable energy.</p>
             </div>
 
             <div>
               <h4 className="font-semibold mb-4">Solutions</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Autopilots</a></li>
-                <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Drones</a></li>
-                <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Robots</a></li>
+                <li><a href="/robots" className="text-slate-400 hover:text-white text-sm transition-colors">Robotics</a></li>
+                <li><a href="/drones" className="text-slate-400 hover:text-white text-sm transition-colors">Drones</a></li>
+                <li><a href="/solarpanels" className="text-slate-400 hover:text-white text-sm transition-colors">Solar Panels</a></li>
               </ul>
             </div>
 
@@ -314,21 +372,21 @@ const Contact = () => {
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Our story</a></li>
+                <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Our Story</a></li>
                 <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Careers</a></li>
                 <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Press</a></li>
-                <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Meet the Team</a></li>
+                <li><a href="/contact" className="text-slate-400 hover:text-white text-sm transition-colors">Contact Us</a></li>
               </ul>
             </div>
           </div>
 
           <div className="pt-8 border-t border-slate-800">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-slate-400">© 2025 AIlyticslabs. All rights reserved</p>
+              <p className="text-sm text-slate-400">© 2025 Allytic Labs. All rights reserved</p>
               <div className="flex gap-4 text-sm text-slate-400">
                 <a href="#" className="hover:text-white transition-colors">Terms and Conditions</a>
                 <span>|</span>
-                <a href="#" className="hover:text-white transition-colors">EULA</a>
+                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
               </div>
             </div>
           </div>
