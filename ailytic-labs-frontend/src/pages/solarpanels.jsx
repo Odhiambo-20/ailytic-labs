@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Zap, TrendingUp, Shield, Leaf, Globe, ArrowRight, Play, CheckCircle, Star, MapPin, Phone, Mail, Calendar, Users, Award, BarChart3 } from 'lucide-react';
+import { solarPanelAPI } from '../services/api';
 import solarVideo from '../assets/solar.mp4';
 import solar from '../assets/solar.webm';
 // Import all local images at the top
@@ -8,10 +9,34 @@ import cuttingEdgeImage from '../assets/cutting-edge solar panels.jpg';
 import solarPanels1Image from '../assets/solar panels 1.jpg';
 import RoofTopSolar from '../assets/roof-top solar.jpg';
 
-
 const SolarPanels = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [solarPanels, setSolarPanels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedType, setSelectedType] = useState('all');
 
+  // Fetch solar panels from backend
+  useEffect(() => {
+    const fetchSolarPanels = async () => {
+      try {
+        setLoading(true);
+        const panelsData = await solarPanelAPI.getAll();
+        setSolarPanels(panelsData);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch solar panels:', err);
+        setError('Failed to load solar panels. Please try again later.');
+        setSolarPanels([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSolarPanels();
+  }, []);
+
+  // Testimonials auto-slide
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % testimonials.length);
@@ -70,6 +95,14 @@ const SolarPanels = () => {
     }
   ];
 
+  // Filter solar panels by type
+  const filteredPanels = selectedType === 'all' 
+    ? solarPanels 
+    : solarPanels.filter(panel => panel.type === selectedType);
+
+  // Get unique panel types for filtering
+  const panelTypes = ['all', ...new Set(solarPanels.map(panel => panel.type))];
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Fullscreen Video */}
@@ -113,7 +146,7 @@ const SolarPanels = () => {
             <div className="order-2 lg:order-1">
               <img
                 src={RoofTopSolar}
-                alt="Solar Farm"
+                alt="Rooftop Solar"
                 className="w-full h-96 md:h-[500px] object-cover rounded-3xl shadow-2xl"
               />
             </div>
@@ -248,7 +281,148 @@ const SolarPanels = () => {
         </div>
       </div>
 
-     
+      {/* API-Driven Solar Panels Catalog Section */}
+      <div className="py-20 bg-gradient-to-br from-orange-50 to-yellow-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+              Our Solar Panel Collection
+            </h2>
+            <p className="text-xl text-slate-700 mb-8 max-w-3xl mx-auto">
+              Explore our complete range of solar panels designed for residential, commercial, and industrial applications
+            </p>
+
+            {/* Filter Buttons */}
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              {panelTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+                    selectedType === type
+                      ? 'bg-gradient-to-r from-orange-600 to-yellow-600 text-white'
+                      : 'bg-white text-slate-700 hover:bg-orange-100 border border-orange-200'
+                  }`}
+                >
+                  {type === 'all' ? 'All Panels' : type}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-20">
+              <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500 mb-4"></div>
+              <p className="text-xl text-slate-700">Loading solar panels from database...</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto bg-red-50 border border-red-300 rounded-lg p-8">
+                <p className="text-red-600 text-lg mb-4">{error}</p>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-3 bg-gradient-to-r from-orange-600 to-yellow-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-semibold"
+                >
+                  Retry Loading
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Solar Panels Grid - API Data */}
+          {!loading && !error && filteredPanels.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredPanels.map((panel) => (
+                <div
+                  key={panel.id}
+                  className="bg-white rounded-2xl overflow-hidden border border-orange-200 hover:border-orange-400 hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={panel.image || solarPanels1Image}
+                      alt={panel.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = solarPanels1Image;
+                      }}
+                    />
+                    <div className="absolute top-4 right-4 bg-orange-600/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <span className="text-white text-sm font-semibold">{panel.type}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    <h3 className="text-2xl font-bold text-slate-900 mb-2">{panel.name}</h3>
+                    <p className="text-slate-700 text-sm mb-4 line-clamp-3">
+                      {panel.description || 'High-efficiency solar panel technology'}
+                    </p>
+
+                    {/* Specifications */}
+                    <div className="space-y-2 mb-4">
+                      {panel.capacity && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-slate-600">Capacity:</span>
+                          <span className="text-sm font-semibold text-slate-900">{panel.capacity}</span>
+                        </div>
+                      )}
+                      {panel.efficiency && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-slate-600">Efficiency:</span>
+                          <span className="text-sm font-semibold text-slate-900">{panel.efficiency}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Price and Rating */}
+                    <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
+                      {panel.price && (
+                        <p className="text-2xl font-bold text-orange-600">{panel.price}</p>
+                      )}
+                      {panel.rating && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-yellow-500">★</span>
+                          <span className="text-slate-900 font-semibold">{panel.rating}</span>
+                          {panel.reviews && (
+                            <span className="text-slate-500 text-sm">({panel.reviews})</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <button className="w-full py-3 bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-semibold rounded-lg hover:from-orange-700 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+                      Get Quote
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && !error && filteredPanels.length === 0 && (
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto bg-white border border-orange-200 rounded-lg p-8">
+                <Sun className="w-16 h-16 text-orange-400 mx-auto mb-4" />
+                <p className="text-slate-700 text-lg mb-4">
+                  {selectedType === 'all' 
+                    ? 'No solar panels available at the moment.' 
+                    : `No ${selectedType} panels found.`}
+                </p>
+                <p className="text-slate-500 text-sm">
+                  {selectedType !== 'all' && 'Try selecting a different category or '}
+                  Please check back later for updates.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Innovation Section */}
       <div className="relative overflow-hidden min-h-screen flex items-center">
         {/* Fullscreen Video Background */}
@@ -260,7 +434,7 @@ const SolarPanels = () => {
             playsInline
             className="w-full h-full object-cover"
           >
-            <source src={solar} type="video/mp4" />
+            <source src={solar} type="video/webm" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
@@ -459,3 +633,5 @@ const SolarPanels = () => {
 };
 
 export default SolarPanels;
+
+      
