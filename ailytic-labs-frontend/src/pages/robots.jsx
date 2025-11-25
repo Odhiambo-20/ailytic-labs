@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, Instagram, Github, Youtube, Linkedin } from 'lucide-react';
+import { robotAPI } from '../services/api';
 import AllyticVideo from '../assets/Allytic.mp4';
 import FoodTestingRobot from '../assets/Food Testing Robot.webm';
 import AgriculturalRobotVideo from '../assets/Agricultural Robot.webm';
@@ -7,8 +8,42 @@ import RoboticDog from '../assets/Robotic Dog.mp4';
 import IndustrialRobotVideo from '../assets/Industrial Robot.webm';
 
 function Robots() {
+  const [robots, setRobots] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedType, setSelectedType] = useState('all');
+
+  // Fetch robots from backend on component mount
+  useEffect(() => {
+    const fetchRobots = async () => {
+      try {
+        setLoading(true);
+        const robotsData = await robotAPI.getAll();
+        setRobots(robotsData);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch robots:', err);
+        setError('Failed to load robots. Please try again later.');
+        setRobots([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRobots();
+  }, []);
+
+  // Filter robots by type
+  const filteredRobots = selectedType === 'all' 
+    ? robots 
+    : robots.filter(robot => robot.type === selectedType);
+
+  // Get unique robot types for filtering
+  const robotTypes = ['all', ...new Set(robots.map(robot => robot.type))];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      {/* Hero Section */}
       <div className="relative overflow-hidden min-h-screen flex items-center pt-20">
         <div className="absolute inset-0 z-0">
           <video
@@ -57,18 +92,19 @@ function Robots() {
         </div>
       </div>
 
+      {/* Featured Video Sections */}
       <section className="py-20 bg-slate-900/50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative group">
-             <video
+              <video
                 autoPlay
                 muted
                 loop
                 playsInline
                 className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
               >
-                <source src={FoodTestingRobot} type="video/mp4" />
+                <source src={FoodTestingRobot} type="video/webm" />
                 Your browser does not support the video tag.
               </video>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
@@ -94,7 +130,7 @@ function Robots() {
                 playsInline
                 className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
               >
-                <source src={AgriculturalRobotVideo} type="video/mp4" />
+                <source src={AgriculturalRobotVideo} type="video/webm" />
                 Your browser does not support the video tag.
               </video>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
@@ -115,6 +151,151 @@ function Robots() {
         </div>
       </section>
 
+      {/* API-Driven Robots Catalog Section */}
+      <section className="py-20 bg-gradient-to-r from-slate-900/80 to-blue-900/80">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Our Robot Collection
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+              Explore our complete lineup of intelligent robots powered by advanced AI and cutting-edge technology
+            </p>
+
+            {/* Filter Buttons */}
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              {robotTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+                    selectedType === type
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                      : 'bg-white/10 text-blue-100 hover:bg-white/20'
+                  }`}
+                >
+                  {type === 'all' ? 'All Robots' : type}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-20">
+              <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+              <p className="text-xl text-blue-100">Loading robots from database...</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto bg-red-900/20 border border-red-500/50 rounded-lg p-8">
+                <p className="text-red-400 text-lg mb-4">{error}</p>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-lg transition-all duration-300 font-semibold"
+                >
+                  Retry Loading
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Robots Grid - API Data */}
+          {!loading && !error && filteredRobots.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredRobots.map((robot) => (
+                <div
+                  key={robot.id}
+                  className="bg-gradient-to-br from-slate-800/80 to-blue-900/80 backdrop-blur-sm rounded-2xl overflow-hidden border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-105 shadow-xl"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={robot.image || "https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=600"}
+                      alt={robot.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = "https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=600";
+                      }}
+                    />
+                    <div className="absolute top-4 right-4 bg-blue-600/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <span className="text-white text-sm font-semibold">{robot.type}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    <h3 className="text-2xl font-bold text-white mb-2">{robot.name}</h3>
+                    <p className="text-blue-100 text-sm mb-4 line-clamp-3">
+                      {robot.description || 'Advanced robotics technology for modern applications'}
+                    </p>
+
+                    {/* Capabilities */}
+                    {robot.capabilities && robot.capabilities.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-xs text-blue-300 font-semibold uppercase tracking-wide mb-2">
+                          Key Capabilities:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {robot.capabilities.slice(0, 3).map((capability, index) => (
+                            <span
+                              key={index}
+                              className="text-xs bg-blue-600/30 text-blue-200 px-2 py-1 rounded-full"
+                            >
+                              {capability}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Price and Rating */}
+                    <div className="flex justify-between items-center mb-4">
+                      {robot.price && (
+                        <p className="text-2xl font-bold text-blue-400">{robot.price}</p>
+                      )}
+                      {robot.rating && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-yellow-400">★</span>
+                          <span className="text-white font-semibold">{robot.rating}</span>
+                          {robot.reviews && (
+                            <span className="text-gray-400 text-sm">({robot.reviews})</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+                      View Details
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && !error && filteredRobots.length === 0 && (
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto bg-slate-800/50 border border-blue-700/50 rounded-lg p-8">
+                <p className="text-blue-100 text-lg mb-4">
+                  {selectedType === 'all' 
+                    ? 'No robots available at the moment.' 
+                    : `No ${selectedType} robots found.`}
+                </p>
+                <p className="text-blue-300 text-sm">
+                  {selectedType !== 'all' && 'Try selecting a different category or '}
+                  Please check back later.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Ready to Welcome Section */}
       <section className="py-20 bg-gradient-to-r from-blue-900/30 to-purple-900/30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -137,7 +318,7 @@ function Robots() {
               </div>
             </div>
             <div className="order-1 lg:order-2">
-               <video
+              <video
                 autoPlay
                 muted
                 loop
@@ -152,6 +333,7 @@ function Robots() {
         </div>
       </section>
 
+      {/* Industrial Excellence Section */}
       <section className="py-20 bg-slate-900/50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="relative group">
@@ -162,7 +344,7 @@ function Robots() {
               playsInline
               className="w-full h-[600px] object-cover rounded-3xl shadow-2xl"
             >
-              <source src={IndustrialRobotVideo} type="video/mp4" />
+              <source src={IndustrialRobotVideo} type="video/webm" />
               Your browser does not support the video tag.
             </video>
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent rounded-3xl flex flex-col justify-end p-12">
@@ -183,6 +365,7 @@ function Robots() {
         </div>
       </section>
 
+      {/* Footer */}
       <footer className="py-12 bg-gray-950/80 backdrop-blur-sm border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
