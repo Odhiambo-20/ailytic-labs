@@ -163,21 +163,23 @@ function Robots() {
             </p>
 
             {/* Filter Buttons */}
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-              {robotTypes.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setSelectedType(type)}
-                  className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
-                    selectedType === type
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                      : 'bg-white/10 text-blue-100 hover:bg-white/20'
-                  }`}
-                >
-                  {type === 'all' ? 'All Robots' : type}
-                </button>
-              ))}
-            </div>
+            {robotTypes.length > 1 && (
+              <div className="flex flex-wrap justify-center gap-3 mb-8">
+                {robotTypes.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setSelectedType(type)}
+                    className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+                      selectedType === type
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                        : 'bg-white/10 text-blue-100 hover:bg-white/20'
+                    }`}
+                  >
+                    {type === 'all' ? 'All Robots' : type}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Loading State */}
