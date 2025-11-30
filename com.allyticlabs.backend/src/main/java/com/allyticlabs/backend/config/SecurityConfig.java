@@ -17,12 +17,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${cors.allowed.origins}")
+    @Value("${cors.allowed.origins:http://localhost:5174,http://localhost:5173,http://localhost:3000}")
     private String allowedOrigins;
 
     @Bean
@@ -37,8 +38,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/drones", "/api/drones/**").permitAll()
                 .requestMatchers("/api/solar-panels", "/api/solar-panels/**").permitAll()
                 
-                // Admin-only endpoints for viewing submissions
-                .requestMatchers("/api/contact/**", "/api/newsletter/**").hasRole("ADMIN")
+                // Admin-only endpoints for GET requests to view submissions
+                .requestMatchers("/api/contact/**").hasRole("ADMIN")
+                .requestMatchers("/api/newsletter/**").hasRole("ADMIN")
                 
                 // All other requests require authentication
                 .anyRequest().authenticated()
@@ -52,8 +54,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Load allowed origins from application properties
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        // Parse and set allowed origins from application properties
+        List<String> origins = Arrays.asList(allowedOrigins.split(","));
+        configuration.setAllowedOrigins(origins);
+        
+        // Log CORS configuration for debugging
+        System.out.println("CORS Configuration - Allowed Origins: " + origins);
         
         // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
@@ -72,7 +78,7 @@ public class SecurityConfig {
         // Allow credentials (cookies, authorization headers)
         configuration.setAllowCredentials(true);
         
-        // Cache preflight response for 1 hour
+        // Cache preflight response for 1 hour (3600 seconds)
         configuration.setMaxAge(3600L);
         
         // Expose headers that frontend can access
@@ -83,7 +89,9 @@ public class SecurityConfig {
             "Accept",
             "Origin",
             "Access-Control-Request-Method",
-            "Access-Control-Request-Headers"
+            "Access-Control-Request-Headers",
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials"
         ));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -96,7 +104,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder()
             .username("admin")
-            .password(passwordEncoder().encode("admin123")) // Using BCrypt for production
+            .password(passwordEncoder().encode("admin123"))
             .roles("ADMIN")
             .build();
         
