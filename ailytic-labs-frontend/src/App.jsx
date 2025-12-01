@@ -9,6 +9,8 @@ import Contact from './pages/contact';
 import RobotsCatalog from './pages/RobotsCatalog';
 import Order from './pages/Order';
 
+import LatestModels from './pages/LatestModels';
+
 import Solarpanels from './pages/solarpanels';  
 
 
@@ -25,6 +27,7 @@ export default function App() {
     
         <Route path="/solarpanels" element={<Solarpanels />} /> 
         <Route path="/robots/catalog" element={<RobotsCatalog />} /> 
+        <Route path="/latest-models" element={<LatestModels />} />
         <Route path="/order" element={<Order />} />
       </Routes>
     </div>
