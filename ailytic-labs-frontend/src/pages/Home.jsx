@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Zap, ChevronLeft, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import robotVideo from '../assets/robot.mp4';
 import robot1Video from '../assets/robot1.mp4';
 import solarpanelsVideo from '../assets/solar panels.mp4';
@@ -8,6 +9,7 @@ import ProfessionalDrone from '../assets/professional drone.jpg';
 import SolarEnergy from '../assets/solar energy.mp4';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -79,19 +81,22 @@ const Home = () => {
       image: ProfessionalDrone,
       title: "Professional Drones",
       description: "Experience unparalleled aerial precision with our enterprise-grade drones. Built for commercial applications, surveying, and autonomous operations with cutting-edge navigation systems.",
-      gradient: "from-emerald-500 to-teal-600"
+      gradient: "from-emerald-500 to-teal-600",
+      link: "/drones"
     },
     {
       video: AdvancedRobotics,
       title: "Advanced Robotics",
       description: "Transform your operations with intelligent automation. Our robots deliver precision, efficiency, and reliability across manufacturing, logistics, and industrial applications.",
-      gradient: "from-blue-600 to-purple-700"
+      gradient: "from-blue-600 to-purple-700",
+      link: "/robots"
     },
     {
       video: SolarEnergy,
       title: "Solar Energy Solutions",
       description: "Harness the power of the sun with our high-efficiency solar systems. Sustainable, cost-effective, and designed for maximum energy generation for decades to come.",
-      gradient: "from-orange-500 to-red-600"
+      gradient: "from-orange-500 to-red-600",
+      link: "/solarpanels"
     }
   ];
 
@@ -103,12 +108,20 @@ const Home = () => {
     setCurrentGalleryIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
   };
 
+  const handleHeroNavigate = (link) => {
+    navigate(link);
+  };
+
+  const handleGalleryNavigate = (link) => {
+    navigate(link);
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white overflow-hidden">
       <nav className="fixed top-0 w-full z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
               </div>
@@ -118,13 +131,13 @@ const Home = () => {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#home" className="text-gray-300 hover:text-white transition-colors">Home</a>
-              <a href="/robots" className="text-gray-300 hover:text-white transition-colors">Robots</a>
-              <a href="/drones" className="text-gray-300 hover:text-white transition-colors">Drones</a>
-              <a href="/solarpanels" className="text-gray-300 hover:text-white transition-colors">Solar</a>
-              <a href="/contact" className="bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 rounded-lg hover:shadow-lg transition-all">
+              <button onClick={() => navigate('/')} className="text-gray-300 hover:text-white transition-colors">Home</button>
+              <button onClick={() => navigate('/robots')} className="text-gray-300 hover:text-white transition-colors">Robots</button>
+              <button onClick={() => navigate('/drones')} className="text-gray-300 hover:text-white transition-colors">Drones</button>
+              <button onClick={() => navigate('/solarpanels')} className="text-gray-300 hover:text-white transition-colors">Solar</button>
+              <button onClick={() => navigate('/contact')} className="bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 rounded-lg hover:shadow-lg transition-all">
                 Contact Us
-              </a>
+              </button>
             </div>
 
             <button 
@@ -139,11 +152,11 @@ const Home = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-gray-800 border-t border-gray-700">
             <div className="px-4 py-2 space-y-2">
-              <a href="#home" className="block py-2 text-gray-300 hover:text-white">Home</a>
-              <a href="/robots" className="block py-2 text-gray-300 hover:text-white">Robots</a>
-              <a href="/drones" className="block py-2 text-gray-300 hover:text-white">Drones</a>
-              <a href="/solarpanels" className="block py-2 text-gray-300 hover:text-white">Solar</a>
-              <a href="/contact" className="block py-2 text-blue-400 hover:text-blue-300">Contact Us</a>
+              <button onClick={() => { navigate('/'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Home</button>
+              <button onClick={() => { navigate('/robots'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Robots</button>
+              <button onClick={() => { navigate('/drones'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Drones</button>
+              <button onClick={() => { navigate('/solarpanels'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Solar</button>
+              <button onClick={() => { navigate('/contact'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-blue-400 hover:text-blue-300">Contact Us</button>
             </div>
           </div>
         )}
@@ -187,7 +200,10 @@ const Home = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className={`px-8 py-4 bg-gradient-to-r ${heroSections[activeSection].gradient} rounded-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center backdrop-blur-sm`}>
+            <button 
+              onClick={() => handleHeroNavigate(heroSections[activeSection].link)}
+              className={`px-8 py-4 bg-gradient-to-r ${heroSections[activeSection].gradient} rounded-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center backdrop-blur-sm`}
+            >
               {heroSections[activeSection].cta}
               <ArrowRight className="ml-2 w-5 h-5" />
             </button>
@@ -251,9 +267,12 @@ const Home = () => {
                     ))}
                   </div>
                   
-                  <a href={innovations[0].link} className="inline-flex items-center text-blue-400 hover:text-blue-300 font-semibold group/link">
+                  <button 
+                    onClick={() => navigate(innovations[0].link)}
+                    className="inline-flex items-center text-blue-400 hover:text-blue-300 font-semibold group/link"
+                  >
                     Learn More <ArrowRight className="ml-2 w-5 h-5 group-hover/link:translate-x-1 transition-transform" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -281,9 +300,12 @@ const Home = () => {
                     ))}
                   </div>
                   
-                  <a href={innovations[1].link} className="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-semibold group/link">
+                  <button 
+                    onClick={() => navigate(innovations[1].link)}
+                    className="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-semibold group/link"
+                  >
                     Learn More <ArrowRight className="ml-2 w-5 h-5 group-hover/link:translate-x-1 transition-transform" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -291,7 +313,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Gallery Section - Edge to Edge */}
       <section className="py-24 bg-gradient-to-b from-gray-800 to-gray-900">
         <div className="w-full">
           <div className="text-center mb-16 px-4">
@@ -332,8 +353,11 @@ const Home = () => {
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <button className={`px-8 py-4 bg-gradient-to-r ${galleryItems[currentGalleryIndex].gradient} rounded-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center`}>
-                      Order Now
+                    <button 
+                      onClick={() => handleGalleryNavigate(galleryItems[currentGalleryIndex].link)}
+                      className={`px-8 py-4 bg-gradient-to-r ${galleryItems[currentGalleryIndex].gradient} rounded-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center`}
+                    >
+                      Explore Now
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </button>
                     <button className="px-8 py-4 border-2 border-white/30 bg-white/10 backdrop-blur-sm rounded-lg font-semibold hover:border-white hover:bg-white/20 transition-all duration-300">
@@ -400,7 +424,10 @@ const Home = () => {
           <p className="text-2xl text-gray-200 mb-12">
             Join thousands of companies leveraging our technology to drive innovation and sustainability
           </p>
-          <button className="px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-700 rounded-lg font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center mx-auto">
+          <button 
+            onClick={() => navigate('/contact')}
+            className="px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-700 rounded-lg font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center mx-auto"
+          >
             Schedule Demo
             <ArrowRight className="ml-3 w-6 h-6" />
           </button>
@@ -422,25 +449,25 @@ const Home = () => {
             <div>
               <h4 className="font-semibold mb-4">Solutions</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="/robots" className="hover:text-white transition-colors">Robotics</a></li>
-                <li><a href="/drones" className="hover:text-white transition-colors">Drones</a></li>
-                <li><a href="/solarpanels" className="hover:text-white transition-colors">Solar</a></li>
+                <li><button onClick={() => navigate('/robots')} className="hover:text-white transition-colors">Robotics</button></li>
+                <li><button onClick={() => navigate('/drones')} className="hover:text-white transition-colors">Drones</button></li>
+                <li><button onClick={() => navigate('/solarpanels')} className="hover:text-white transition-colors">Solar</button></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">News</a></li>
+                <li><button onClick={() => navigate('/about')} className="hover:text-white transition-colors">About</button></li>
+                <li><button onClick={() => navigate('/careers')} className="hover:text-white transition-colors">Careers</button></li>
+                <li><button onClick={() => navigate('/news')} className="hover:text-white transition-colors">News</button></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Connect</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="/contact" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Support</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Partners</a></li>
+                <li><button onClick={() => navigate('/contact')} className="hover:text-white transition-colors">Contact</button></li>
+                <li><button onClick={() => navigate('/support')} className="hover:text-white transition-colors">Support</button></li>
+                <li><button onClick={() => navigate('/partners')} className="hover:text-white transition-colors">Partners</button></li>
               </ul>
             </div>
           </div>
