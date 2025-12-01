@@ -141,7 +141,7 @@ const Drones = () => {
   const handleOrderNow = (drone) => {
     console.log('Navigating to order page with drone:', drone);
     navigate('/order', {
-      state: { drone },
+      state: { robot: drone },
       replace: false
     });
   };
