@@ -7,6 +7,7 @@ import Drones from './pages/drones';
 import Company from './pages/company';
 import Contact from './pages/contact';
 import RobotsCatalog from './pages/RobotsCatalog';
+import Order from './pages/Order';
 
 import Solarpanels from './pages/solarpanels';  
 
@@ -24,6 +25,7 @@ export default function App() {
     
         <Route path="/solarpanels" element={<Solarpanels />} /> 
         <Route path="/robots/catalog" element={<RobotsCatalog />} /> 
+        <Route path="/order" element={<Order />} />
       </Routes>
     </div>
   );

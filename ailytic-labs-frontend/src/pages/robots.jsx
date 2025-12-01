@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Instagram, Github, Youtube, Linkedin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { robotAPI } from '../services/api';
 import AllyticVideo from '../assets/Allytic.mp4';
 import FoodTestingRobot from '../assets/Food Testing Robot.webm';
@@ -8,6 +9,7 @@ import RoboticDog from '../assets/Robotic Dog.mp4';
 import IndustrialRobotVideo from '../assets/Industrial Robot.webm';
 
 function Robots() {
+  const navigate = useNavigate();
   const [robots, setRobots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,6 +42,16 @@ function Robots() {
 
   // Get unique robot types for filtering
   const robotTypes = ['all', ...new Set(robots.map(robot => robot.type))];
+
+  // Handle navigation to catalog page
+  const handleExploreCatalog = () => {
+    navigate('/robots/catalog');
+  };
+
+  // Handle navigation to order page with robot data
+  const handleOrderNow = (robot) => {
+    navigate('/order', { state: { robot } });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
@@ -81,7 +93,10 @@ function Robots() {
               enhance lives, and push the boundaries of what's possible.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button 
+                onClick={handleExploreCatalog}
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
                 Explore Robots
               </button>
               <button className="px-8 py-4 border-2 border-blue-300 text-blue-100 font-semibold rounded-full hover:bg-blue-600 hover:border-blue-600 transition-all duration-300">
@@ -115,7 +130,17 @@ function Robots() {
                   Revolutionary AI-powered robot that ensures food quality and safety with 99.9% accuracy. 
                   Detect contaminants, measure nutritional content, and guarantee compliance in seconds.
                 </p>
-                <button className="w-fit px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+                <button 
+                  onClick={() => handleOrderNow({
+                    id: 'food-testing-1',
+                    name: 'SafeTest 3000',
+                    type: 'Food Testing',
+                    price: '$78,000',
+                    description: 'Revolutionary food safety testing robot with 99.9% accuracy in detecting contaminants, measuring nutritional content, and ensuring compliance with food safety standards.',
+                    image: 'https://images.pexels.com/photos/2085832/pexels-photo-2085832.jpeg?auto=compress&cs=tinysrgb&w=800'
+                  })}
+                  className="w-fit px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+                >
                   Order Now
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -141,7 +166,17 @@ function Robots() {
                   Autonomous farming robot with advanced crop monitoring, precision planting, and harvesting capabilities. 
                   Boost yields by 40% while reducing water usage and environmental impact.
                 </p>
-                <button className="w-fit px-8 py-4 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-full hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+                <button 
+                  onClick={() => handleOrderNow({
+                    id: 'agricultural-1',
+                    name: 'AgroBot Pro X1',
+                    type: 'Agricultural',
+                    price: '$45,000',
+                    description: 'Advanced autonomous farming robot with AI-powered crop monitoring, precision planting, and smart harvesting capabilities. Increases yield by 40% while reducing water usage.',
+                    image: 'https://images.pexels.com/photos/2085831/pexels-photo-2085831.jpeg?auto=compress&cs=tinysrgb&w=800'
+                  })}
+                  className="w-fit px-8 py-4 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-full hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+                >
                   Order Now
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -268,8 +303,11 @@ function Robots() {
                       )}
                     </div>
 
-                    <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
-                      View Details
+                    <button 
+                      onClick={() => handleOrderNow(robot)}
+                      className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                    >
+                      Order Now
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -358,7 +396,17 @@ function Robots() {
                 unmatched performance in manufacturing, assembly, and heavy-duty operations. Experience 
                 24/7 productivity with zero downtime and maximum efficiency.
               </p>
-              <button className="w-fit px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-full hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+              <button 
+                onClick={() => handleOrderNow({
+                  id: 'industrial-1',
+                  name: 'IndustrialArm MAX',
+                  type: 'Industrial',
+                  price: '$125,000',
+                  description: 'High-precision industrial robotic arm designed for manufacturing, assembly, and heavy-duty operations. Delivers 24/7 productivity with zero downtime.',
+                  image: 'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=800'
+                })}
+                className="w-fit px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-full hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+              >
                 Order Now
                 <ChevronRight className="w-5 h-5" />
               </button>
