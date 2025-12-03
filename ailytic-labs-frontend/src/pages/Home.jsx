@@ -37,7 +37,8 @@ const Home = () => {
       cta: "Explore Robots",
       gradient: "from-blue-600 to-purple-700",
       videoUrl: robotVideo,
-      link: "/robots"
+      link: "/robots",
+      demoType: "robot"
     },
     {
       title: "Professional Drone Services",
@@ -45,7 +46,8 @@ const Home = () => {
       cta: "Explore Drones",
       gradient: "from-emerald-500 to-teal-600",
       videoUrl: robot1Video,
-      link: "/drones"
+      link: "/drones",
+      demoType: "drone"
     },
     {
       title: "Solar Energy Systems",
@@ -53,7 +55,8 @@ const Home = () => {
       cta: "Explore Solar",
       gradient: "from-orange-500 to-red-600",
       videoUrl: solarpanelsVideo,
-      link: "/solarpanels"
+      link: "/solarpanels",
+      demoType: "solar"
     }
   ];
 
@@ -114,6 +117,11 @@ const Home = () => {
 
   const handleGalleryNavigate = (link) => {
     navigate(link);
+  };
+
+  const handleWatchDemo = () => {
+    const currentDemoType = heroSections[activeSection].demoType;
+    navigate(`/demo?type=${currentDemoType}`);
   };
 
   return (
@@ -207,7 +215,10 @@ const Home = () => {
               {heroSections[activeSection].cta}
               <ArrowRight className="ml-2 w-5 h-5" />
             </button>
-            <button className="px-8 py-4 border-2 border-gray-300 rounded-lg font-semibold hover:border-white hover:bg-white hover:text-gray-900 transition-all duration-300 backdrop-blur-sm">
+            <button 
+              onClick={handleWatchDemo}
+              className="px-8 py-4 border-2 border-gray-300 rounded-lg font-semibold hover:border-white hover:bg-white hover:text-gray-900 transition-all duration-300 backdrop-blur-sm"
+            >
               Watch Demo
             </button>
           </div>
