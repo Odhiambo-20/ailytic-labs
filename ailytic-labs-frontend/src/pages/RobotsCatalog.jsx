@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 
 function RobotsCatalog() {
   const [robots, setRobots] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchRobots = async () => {
@@ -178,16 +179,30 @@ function RobotsCatalog() {
     fetchRobots();
   }, []);
 
-  const groupedRobots = robots.reduce((acc, robot) => {
-    const type = robot.type;
-    if (!acc[type]) {
-      acc[type] = [];
-    }
-    acc[type].push(robot);
-    return acc;
-  }, {});
+  // Auto-advance slideshow
+  useEffect(() => {
+    if (robots.length === 0) return;
 
-  const robotCategories = Object.entries(groupedRobots);
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % robots.length);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [robots.length]);
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % robots.length);
+  };
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + robots.length) % robots.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
+
+  const currentRobot = robots[currentIndex];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
@@ -214,114 +229,89 @@ function RobotsCatalog() {
           <p className="text-xl text-blue-100">Loading our amazing robots...</p>
         </div>
       ) : (
-        <div className="space-y-20 py-16">
-          {robotCategories.map(([category, categoryRobots]) => (
-            <div key={category} className="max-w-7xl mx-auto px-6">
-              <div className="mb-10">
-                <h2 className="text-4xl font-bold text-white mb-2">{category}</h2>
-                <div className="w-20 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {categoryRobots.slice(0, 2).map((robot) => (
-              <div
-                key={robot.id}
-                className="bg-gradient-to-br from-slate-800/90 to-blue-900/90 backdrop-blur-sm rounded-2xl overflow-hidden border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={robot.image || "https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=600"}
-                    alt={robot.name}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                    onError={(e) => {
-                      e.target.src = "https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=600";
-                    }}
-                  />
-                  <div className="absolute top-4 right-4 bg-blue-600/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
-                    <span className="text-white text-sm font-semibold">{robot.type}</span>
-                  </div>
-                  {robot.rating && (
-                    <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
-                      <span className="text-yellow-400 text-lg">★</span>
-                      <span className="text-white font-semibold">{robot.rating}</span>
-                    </div>
-                  )}
+        <div className="w-full py-16">
+          <div className="relative w-full">
+            {/* Main Gallery Display */}
+            <div className="bg-gradient-to-br from-slate-800/90 to-blue-900/90 backdrop-blur-sm overflow-hidden shadow-2xl">
+              <div className="relative h-96 md:h-[600px] lg:h-[700px] overflow-hidden">
+                <img
+                  src={currentRobot?.image || "https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=1200"}
+                  alt={currentRobot?.name}
+                  className="w-full h-full object-cover transition-all duration-700"
+                  onError={(e) => {
+                    e.target.src = "https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=1200";
+                  }}
+                />
+                
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                
+                {/* Navigation Arrows */}
+                <button
+                  onClick={goToPrevious}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 backdrop-blur-sm p-3 rounded-full transition-all duration-300 transform hover:scale-110 z-20"
+                >
+                  <ChevronLeft className="w-6 h-6 text-white" />
+                </button>
+                <button
+                  onClick={goToNext}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 backdrop-blur-sm p-3 rounded-full transition-all duration-300 transform hover:scale-110 z-20"
+                >
+                  <ChevronRight className="w-6 h-6 text-white" />
+                </button>
+
+                {/* Type Badge */}
+                <div className="absolute top-6 right-6 bg-blue-600/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg z-10">
+                  <span className="text-white text-sm font-semibold">{currentRobot?.type}</span>
                 </div>
 
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-white mb-3">{robot.name}</h3>
-                  <p className="text-blue-100 text-sm mb-4 leading-relaxed line-clamp-3">
-                    {robot.description}
-                  </p>
+                {/* Rating */}
+                {currentRobot?.rating && (
+                  <div className="absolute top-6 left-6 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 z-10">
+                    <span className="text-yellow-400 text-lg">★</span>
+                    <span className="text-white font-semibold">{currentRobot.rating}</span>
+                  </div>
+                )}
 
-                  {robot.capabilities && robot.capabilities.length > 0 && (
-                    <div className="mb-4">
-                      <p className="text-xs text-blue-300 font-semibold uppercase tracking-wide mb-2">
-                        Key Capabilities:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {robot.capabilities.slice(0, 4).map((capability, index) => (
+                {/* Slide Counter */}
+                <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full z-10">
+                  <span className="text-white text-sm font-semibold">
+                    {currentIndex + 1} / {robots.length}
+                  </span>
+                </div>
+
+                {/* Robot Details Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 lg:px-20 pb-8 pt-20 z-10">
+                  <div className="max-w-7xl mx-auto">
+                    <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+                      {currentRobot?.name}
+                    </h3>
+                    <p className="text-white text-lg md:text-xl mb-6 max-w-3xl drop-shadow-lg leading-relaxed">
+                      {currentRobot?.description}
+                    </p>
+
+                    {currentRobot?.capabilities && currentRobot.capabilities.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {currentRobot.capabilities.slice(0, 4).map((capability, index) => (
                           <span
                             key={index}
-                            className="text-xs bg-blue-600/30 text-blue-200 px-3 py-1 rounded-full"
+                            className="text-sm bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full border border-white/30"
                           >
                             {capability}
                           </span>
                         ))}
                       </div>
-                    </div>
-                  )}
-
-                  {robot.specifications && (
-                    <div className="mb-4 p-3 bg-black/20 rounded-lg">
-                      <p className="text-xs text-blue-300 font-semibold uppercase tracking-wide mb-2">
-                        Specifications:
-                      </p>
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        {robot.specifications.weight && (
-                          <div className="text-blue-100">
-                            <span className="text-gray-400">Weight:</span> {robot.specifications.weight}
-                          </div>
-                        )}
-                        {robot.specifications.batteryLife && (
-                          <div className="text-blue-100">
-                            <span className="text-gray-400">Battery:</span> {robot.specifications.batteryLife}
-                          </div>
-                        )}
-                        {robot.specifications.height && (
-                          <div className="text-blue-100">
-                            <span className="text-gray-400">Height:</span> {robot.specifications.height}
-                          </div>
-                        )}
-                        {robot.specifications.speed && (
-                          <div className="text-blue-100">
-                            <span className="text-gray-400">Speed:</span> {robot.specifications.speed}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center mb-4">
-                    {robot.price && (
-                      <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                        {robot.price}
-                      </p>
                     )}
-                    {robot.reviews && (
-                      <span className="text-gray-400 text-sm">({robot.reviews} reviews)</span>
-                    )}
+
+                    <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+                      Learn More
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
                   </div>
-
-                  <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
-                    View Details
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
                 </div>
               </div>
-                ))}
-              </div>
             </div>
-          ))}
+          </div>
         </div>
       )}
 
