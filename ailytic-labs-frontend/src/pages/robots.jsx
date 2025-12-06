@@ -107,80 +107,78 @@ function Robots() {
         </div>
       </div>
 
-      {/* Featured Video Sections */}
+      {/* Featured Video Sections - Edge Stretched */}
       <section className="py-20 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="relative group">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 px-4">
+          <div className="relative group">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+            >
+              <source src={FoodTestingRobot} type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
+              <h3 className="text-3xl font-bold text-white mb-4">
+                Precision Food Safety Testing
+              </h3>
+              <p className="text-blue-100 mb-6 text-lg leading-relaxed">
+                Revolutionary AI-powered robot that ensures food quality and safety with 99.9% accuracy. 
+                Detect contaminants, measure nutritional content, and guarantee compliance in seconds.
+              </p>
+              <button 
+                onClick={() => handleOrderNow({
+                  id: 'food-testing-1',
+                  name: 'SafeTest 3000',
+                  type: 'Food Testing',
+                  price: '$78,000',
+                  description: 'Revolutionary food safety testing robot with 99.9% accuracy in detecting contaminants, measuring nutritional content, and ensuring compliance with food safety standards.',
+                  image: 'https://images.pexels.com/photos/2085832/pexels-photo-2085832.jpeg?auto=compress&cs=tinysrgb&w=800'
+                })}
+                className="w-fit px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
               >
-                <source src={FoodTestingRobot} type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
-                <h3 className="text-3xl font-bold text-white mb-4">
-                  Precision Food Safety Testing
-                </h3>
-                <p className="text-blue-100 mb-6 text-lg leading-relaxed">
-                  Revolutionary AI-powered robot that ensures food quality and safety with 99.9% accuracy. 
-                  Detect contaminants, measure nutritional content, and guarantee compliance in seconds.
-                </p>
-                <button 
-                  onClick={() => handleOrderNow({
-                    id: 'food-testing-1',
-                    name: 'SafeTest 3000',
-                    type: 'Food Testing',
-                    price: '$78,000',
-                    description: 'Revolutionary food safety testing robot with 99.9% accuracy in detecting contaminants, measuring nutritional content, and ensuring compliance with food safety standards.',
-                    image: 'https://images.pexels.com/photos/2085832/pexels-photo-2085832.jpeg?auto=compress&cs=tinysrgb&w=800'
-                  })}
-                  className="w-fit px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
-                >
-                  Order Now
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
+                Order Now
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
+          </div>
 
-            <div className="relative group">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+          <div className="relative group">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+            >
+              <source src={AgriculturalRobotVideo} type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
+              <h3 className="text-3xl font-bold text-white mb-4">
+                Smart Agricultural Innovation
+              </h3>
+              <p className="text-blue-100 mb-6 text-lg leading-relaxed">
+                Autonomous farming robot with advanced crop monitoring, precision planting, and harvesting capabilities. 
+                Boost yields by 40% while reducing water usage and environmental impact.
+              </p>
+              <button 
+                onClick={() => handleOrderNow({
+                  id: 'agricultural-1',
+                  name: 'AgroBot Pro X1',
+                  type: 'Agricultural',
+                  price: '$45,000',
+                  description: 'Advanced autonomous farming robot with AI-powered crop monitoring, precision planting, and smart harvesting capabilities. Increases yield by 40% while reducing water usage.',
+                  image: 'https://images.pexels.com/photos/2085831/pexels-photo-2085831.jpeg?auto=compress&cs=tinysrgb&w=800'
+                })}
+                className="w-fit px-8 py-4 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-full hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
               >
-                <source src={AgriculturalRobotVideo} type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-3xl flex flex-col justify-end p-8">
-                <h3 className="text-3xl font-bold text-white mb-4">
-                  Smart Agricultural Innovation
-                </h3>
-                <p className="text-blue-100 mb-6 text-lg leading-relaxed">
-                  Autonomous farming robot with advanced crop monitoring, precision planting, and harvesting capabilities. 
-                  Boost yields by 40% while reducing water usage and environmental impact.
-                </p>
-                <button 
-                  onClick={() => handleOrderNow({
-                    id: 'agricultural-1',
-                    name: 'AgroBot Pro X1',
-                    type: 'Agricultural',
-                    price: '$45,000',
-                    description: 'Advanced autonomous farming robot with AI-powered crop monitoring, precision planting, and smart harvesting capabilities. Increases yield by 40% while reducing water usage.',
-                    image: 'https://images.pexels.com/photos/2085831/pexels-photo-2085831.jpeg?auto=compress&cs=tinysrgb&w=800'
-                  })}
-                  className="w-fit px-8 py-4 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-full hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
-                >
-                  Order Now
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
+                Order Now
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
@@ -335,47 +333,45 @@ function Robots() {
         </div>
       </section>
 
-      {/* Ready to Welcome Section */}
+      {/* Ready to Welcome Section - Edge Stretched */}
       <section className="py-20 bg-gradient-to-r from-blue-900/30 to-purple-900/30">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Ready to Welcome the Future?
-              </h2>
-              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                Control cutting-edge robotics right from your smartphone. Experience seamless integration, 
-                real-time monitoring, and intelligent automation at your fingertips. The future of robotics 
-                is mobile, accessible, and incredibly powerful.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  Get Started Today
-                </button>
-                <button className="px-8 py-4 border-2 border-blue-300 text-blue-100 font-semibold rounded-full hover:bg-blue-600 hover:border-blue-600 transition-all duration-300">
-                  Contact Sales
-                </button>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center px-4">
+          <div className="order-2 lg:order-1 px-4 lg:px-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Welcome the Future?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+              Control cutting-edge robotics right from your smartphone. Experience seamless integration, 
+              real-time monitoring, and intelligent automation at your fingertips. The future of robotics 
+              is mobile, accessible, and incredibly powerful.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                Get Started Today
+              </button>
+              <button className="px-8 py-4 border-2 border-blue-300 text-blue-100 font-semibold rounded-full hover:bg-blue-600 hover:border-blue-600 transition-all duration-300">
+                Contact Sales
+              </button>
             </div>
-            <div className="order-1 lg:order-2">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
-              >
-                <source src={RoboticDog} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+          </div>
+          <div className="order-1 lg:order-2">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+            >
+              <source src={RoboticDog} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       </section>
 
-      {/* Industrial Excellence Section */}
+      {/* Industrial Excellence Section - Edge Stretched */}
       <section className="py-20 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="px-4">
           <div className="relative group">
             <video
               autoPlay
