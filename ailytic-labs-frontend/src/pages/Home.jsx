@@ -242,82 +242,84 @@ const Home = () => {
       </section>
 
       <section className="py-24 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:pr-4 lg:pl-0">
-          <div className="text-center mb-16 lg:px-4">
+        <div className="max-w-7xl mx-auto px-4 mb-16">
+          <div className="text-center">
             <h2 className="text-5xl md:text-6xl font-bold mb-6">Innovative Solutions</h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Cutting-edge technology powering the next generation of automation and innovation
             </p>
           </div>
+        </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div className="relative group overflow-hidden rounded-r-3xl lg:rounded-r-3xl border border-gray-700 hover:border-blue-500 transition-all duration-500 h-96 lg:h-full min-h-[500px]">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-              >
-                <source src={innovations[0].videoUrl} type="video/mp4" />
-              </video>
-              
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500"></div>
-              
-              <div className="absolute inset-0 flex flex-col justify-between p-8">
-                <div></div>
-                <div>
-                  <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white">{innovations[0].title}</h3>
-                  <p className="text-gray-200 mb-6 max-w-md text-lg">{innovations[0].description}</p>
-                  
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    {innovations[0].stats.map((stat, idx) => (
-                      <div key={idx} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                        <p className="text-sm text-gray-300">{stat}</p>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <button 
-                    onClick={() => navigate(innovations[0].link)}
-                    className="inline-flex items-center text-blue-400 hover:text-blue-300 font-semibold group/link"
-                  >
-                    Learn More <ArrowRight className="ml-2 w-5 h-5 group-hover/link:translate-x-1 transition-transform" />
-                  </button>
+        <div className="grid lg:grid-cols-2 gap-12 px-4">
+          {/* Advanced Robotics - Stretches near left edge */}
+          <div className="relative group overflow-hidden rounded-2xl border border-gray-700 hover:border-blue-500 transition-all duration-500 h-96 lg:h-full min-h-[500px]">
+            <video
+              className="w-full h-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+            >
+              <source src={innovations[0].videoUrl} type="video/mp4" />
+            </video>
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500"></div>
+            
+            <div className="absolute inset-0 flex flex-col justify-between p-8">
+              <div></div>
+              <div>
+                <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white">{innovations[0].title}</h3>
+                <p className="text-gray-200 mb-6 max-w-md text-lg">{innovations[0].description}</p>
+                
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  {innovations[0].stats.map((stat, idx) => (
+                    <div key={idx} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                      <p className="text-sm text-gray-300">{stat}</p>
+                    </div>
+                  ))}
                 </div>
+                
+                <button 
+                  onClick={() => navigate(innovations[0].link)}
+                  className="inline-flex items-center text-blue-400 hover:text-blue-300 font-semibold group/link"
+                >
+                  Learn More <ArrowRight className="ml-2 w-5 h-5 group-hover/link:translate-x-1 transition-transform" />
+                </button>
               </div>
             </div>
+          </div>
 
-            <div className="relative group overflow-hidden rounded-2xl border border-gray-700 hover:border-emerald-500 transition-all duration-500 h-96 lg:h-full min-h-[500px]">
-              <img
-                src={innovations[1].image}
-                alt={innovations[1].title}
-                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-              />
-              
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500"></div>
-              
-              <div className="absolute inset-0 flex flex-col justify-between p-8">
-                <div></div>
-                <div>
-                  <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white">{innovations[1].title}</h3>
-                  <p className="text-gray-200 mb-6 max-w-md text-lg">{innovations[1].description}</p>
-                  
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    {innovations[1].stats.map((stat, idx) => (
-                      <div key={idx} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                        <p className="text-sm text-gray-300">{stat}</p>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <button 
-                    onClick={() => navigate(innovations[1].link)}
-                    className="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-semibold group/link"
-                  >
-                    Learn More <ArrowRight className="ml-2 w-5 h-5 group-hover/link:translate-x-1 transition-transform" />
-                  </button>
+          {/* Professional Drones - Stretches near right edge */}
+          <div className="relative group overflow-hidden rounded-2xl border border-gray-700 hover:border-emerald-500 transition-all duration-500 h-96 lg:h-full min-h-[500px]">
+            <img
+              src={innovations[1].image}
+              alt={innovations[1].title}
+              className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+            />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500"></div>
+            
+            <div className="absolute inset-0 flex flex-col justify-between p-8">
+              <div></div>
+              <div>
+                <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white">{innovations[1].title}</h3>
+                <p className="text-gray-200 mb-6 max-w-md text-lg">{innovations[1].description}</p>
+                
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  {innovations[1].stats.map((stat, idx) => (
+                    <div key={idx} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                      <p className="text-sm text-gray-300">{stat}</p>
+                    </div>
+                  ))}
                 </div>
+                
+                <button 
+                  onClick={() => navigate(innovations[1].link)}
+                  className="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-semibold group/link"
+                >
+                  Learn More <ArrowRight className="ml-2 w-5 h-5 group-hover/link:translate-x-1 transition-transform" />
+                </button>
               </div>
             </div>
           </div>
