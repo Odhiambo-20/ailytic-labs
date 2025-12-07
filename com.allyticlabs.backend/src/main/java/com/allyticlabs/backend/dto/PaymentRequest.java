@@ -1,26 +1,24 @@
-package com.yourcompany.payment.dto;
-
-import com.yourcompany.payment.model.PaymentMethod;
+package com.allyticlabs.backend.dto;
+import com.allyticlabs.backend.model.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.util.Map;
 
-/**
- * DTO for initiating payment requests
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentRequest {
+    
+    // Payment ID (generated or provided)
+    private String paymentId;
     
     @NotBlank(message = "User ID is required")
     private String userId;
@@ -52,16 +50,23 @@ public class PaymentRequest {
     private String description;
     private String orderId;
     private String merchantId;
+    private String merchantName;
     private String callbackUrl;
     private String returnUrl;
+    
+    // Customer information
+    private String customerEmail;
+    private String customerPhone;
     
     // Additional metadata
     private Map<String, String> metadata;
     
     // Security fields
     private String clientIpAddress;
+    private String ipAddress;
     private String userAgent;
     private String deviceId;
+    private String deviceFingerprint;
     private String sessionId;
     
     // Idempotency key to prevent duplicate payments
@@ -73,4 +78,9 @@ public class PaymentRequest {
     
     // Request signature for additional security
     private String signature;
+    
+    // Helper methods for backward compatibility
+    public String getIpAddress() {
+        return ipAddress != null ? ipAddress : clientIpAddress;
+    }
 }

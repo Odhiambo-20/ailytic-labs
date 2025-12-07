@@ -1,0 +1,571 @@
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[71,64] incompatible types: java.lang.String cannot be converted to byte[]
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[81,72] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[124,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[127,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[142,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[179,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[186,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[229,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[248,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[270,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[290,57] method findByMerchantId in class com.allyticlabs.backend.repository.QRPaymentRepository cannot be applied to given types;
+  required: java.lang.String
+  found:    java.lang.String,int
+  reason: actual and formal argument lists differ in length
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[302,25] incompatible types: inference variable T has incompatible bounds
+    equality constraints: java.util.Map<java.lang.String,java.lang.Object>
+    lower bounds: java.util.Map<java.lang.String,java.lang.Object&java.io.Serializable&java.lang.Comparable<? extends java.lang.Object&java.io.Serializable&java.lang.Comparable<?>&java.lang.constant.Constable>&java.lang.constant.Constable>
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[317,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[322,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[330,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[46,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[51,43] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[129,21] cannot find symbol
+  symbol:   class AttributeValue
+  location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[130,32] cannot find symbol
+  symbol:   variable AttributeValue
+  location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[132,9] cannot find symbol
+  symbol:   class GetItemRequest
+  location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[133,24] cannot find symbol
+  symbol:   variable TABLE_NAME
+  location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[132,34] cannot find symbol
+  symbol:   variable GetItemRequest
+  location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[137,9] cannot find symbol
+  symbol:   class GetItemResponse
+  location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[137,36] cannot find symbol
+  symbol:   variable dynamoDbClient
+  location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[264,44] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[265,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[285,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[306,56] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[328,30] incompatible types: bad return type in method reference
+    java.lang.String cannot be converted to double
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[447,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/MpesaService.java:[104,72] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/MpesaService.java:[156,31] cannot find symbol
+  symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+  location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/MpesaService.java:[173,31] cannot find symbol
+  symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+  location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[58,78] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[98,21] cannot find symbol
+  symbol:   method clientSecret(java.lang.String)
+  location: class com.allyticlabs.backend.dto.PaymentResponse.PaymentResponseBuilder
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[136,31] cannot find symbol
+  symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+  location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[299,27] cannot find symbol
+  symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+  location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[331,54] incompatible types: java.lang.String cannot be converted to java.math.BigDecimal
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[74,15] maxNetworkRetries has private access in com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[78,19] cannot find symbol
+  symbol:   variable apiVersion
+  location: class com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[82,34] cannot find symbol
+  symbol:   variable apiVersion
+  location: class com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[82,62] cannot find symbol
+  symbol:   variable apiVersion
+  location: class com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[52,28] cannot find symbol
+  symbol:   method generatePaymentId()
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[58,13] cannot find symbol
+  symbol:   method isDuplicatePayment(java.lang.String)
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[60,20] cannot find symbol
+  symbol:   method getPaymentByIdempotencyKey(java.lang.String)
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[68,68] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[85,36] cannot find symbol
+  symbol:   method generateTransactionHash(com.allyticlabs.backend.model.Payment)
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[91,9] cannot find symbol
+  symbol:   method logTransaction(java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[107,34] cannot find symbol
+  symbol:   variable mpesaConfig
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[107,71] cannot find symbol
+  symbol:   variable mpesaConfig
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[108,41] cannot find symbol
+  symbol:   variable Base64
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[110,13] cannot find symbol
+  symbol:   class HttpHeaders
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[110,39] cannot find symbol
+  symbol:   class HttpHeaders
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[111,36] cannot find symbol
+  symbol:   variable MediaType
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[114,13] cannot find symbol
+  symbol:   class HttpEntity
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[114,45] cannot find symbol
+  symbol:   class HttpEntity
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[116,13] cannot find symbol
+  symbol:   class ResponseEntity
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[118,21] cannot find symbol
+  symbol:   variable HttpMethod
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[116,47] cannot find symbol
+  symbol:   variable restTemplate
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[117,21] cannot find symbol
+  symbol:   variable mpesaConfig
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[123,13] cannot find symbol
+  symbol:   class JsonNode
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[123,37] cannot find symbol
+  symbol:   variable objectMapper
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[124,13] cannot find symbol
+  symbol:   variable accessToken
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[126,13] cannot find symbol
+  symbol:   variable tokenExpiry
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[129,20] cannot find symbol
+  symbol:   variable accessToken
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[142,23] cannot find symbol
+  symbol:   variable mpesaConfig
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[142,52] cannot find symbol
+  symbol:   variable mpesaConfig
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[143,16] cannot find symbol
+  symbol:   variable Base64
+  location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[42,45] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[44,41] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[126,61] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[165,45] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[216,30] incompatible types: bad return type in method reference
+    java.lang.String cannot be converted to double
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[44,49] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[46,20] cannot find symbol
+  symbol:   method setUpdatedAt(java.time.Instant)
+  location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[175,65] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[193,65] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[232,24] cannot find symbol
+  symbol:   method setStatus(com.allyticlabs.backend.model.PaymentStatus)
+  location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[234,24] cannot find symbol
+  symbol:   method setUpdatedAt(java.time.Instant)
+  location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[248,51] cannot find symbol
+  symbol:   method getStatus()
+  location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[249,30] invalid method reference
+  cannot find symbol
+    symbol:   method getAmount(T)
+    location: class com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[267,65] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[272,51] cannot find symbol
+  symbol:   method getStatus()
+  location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[273,30] invalid method reference
+  cannot find symbol
+    symbol:   method getAmount(T)
+    location: class com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[195,16] cannot find symbol
+  symbol:   variable sandbox
+  location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[200,16] cannot find symbol
+  symbol:   variable sandbox
+  location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[205,16] cannot find symbol
+  symbol:   variable sandbox
+  location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[210,16] cannot find symbol
+  symbol:   variable sandbox
+  location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[219,16] cannot find symbol
+  symbol:   variable sandbox
+  location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[224,16] cannot find symbol
+  symbol:   variable sandbox
+  location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[336,28] cannot find symbol
+  symbol:   class RSAPublicKey
+  location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[337,22] cannot find symbol
+  symbol:   class RSAPublicKey
+  location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[338,35] cannot find symbol
+  symbol:   class RSAPrivateKey
+  location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[339,22] cannot find symbol
+  symbol:   class RSAPrivateKey
+  location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/WebhookVerificationService.java:[48,33] method validateStripeSignature in class com.allyticlabs.backend.security.HMACValidator cannot be applied to given types;
+  required: java.lang.String,java.lang.String,java.lang.String,long
+  found:    java.lang.String,java.lang.String,java.lang.String
+  reason: actual and formal argument lists differ in length
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/WebhookVerificationService.java:[217,25] incompatible types: inference variable T has incompatible bounds
+    equality constraints: java.util.Map<java.lang.String,java.lang.Object>
+    lower bounds: java.util.Map<java.lang.String,java.lang.Object&java.io.Serializable&java.lang.Comparable<? extends java.lang.Object&java.io.Serializable&java.lang.Comparable<?>&java.lang.constant.Constable>&java.lang.constant.Constable>
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/exception/PaymentVerificationException.java:[267,16] no suitable constructor found for PaymentVerificationException(java.lang.String,<nulltype>,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String)
+    constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/exception/PaymentVerificationException.java:[305,16] no suitable constructor found for PaymentVerificationException(java.lang.String,<nulltype>,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String)
+    constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Throwable) is not applicable
+      (actual and formal argument lists differ in length)
+    constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/controller/PaymentController.java:[74,50] cannot find symbol
+  symbol:   method getPaymentById(@jakarta.validation.constraints.NotBlank java.lang.String)
+  location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/controller/PaymentController.java:[89,46] cannot find symbol
+  symbol:   method getPaymentStatus(@jakarta.validation.constraints.NotBlank java.lang.String)
+  location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;34mINFO[m] 100 errors 
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[71,64] incompatible types: java.lang.String cannot be converted to byte[]
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[81,72] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[124,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[127,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[142,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[179,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[186,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[229,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[248,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[270,36] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[290,57] method findByMerchantId in class com.allyticlabs.backend.repository.QRPaymentRepository cannot be applied to given types;
+[[1;31mERROR[m]   required: java.lang.String
+[[1;31mERROR[m]   found:    java.lang.String,int
+[[1;31mERROR[m]   reason: actual and formal argument lists differ in length
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[302,25] incompatible types: inference variable T has incompatible bounds
+[[1;31mERROR[m]     equality constraints: java.util.Map<java.lang.String,java.lang.Object>
+[[1;31mERROR[m]     lower bounds: java.util.Map<java.lang.String,java.lang.Object&java.io.Serializable&java.lang.Comparable<? extends java.lang.Object&java.io.Serializable&java.lang.Comparable<?>&java.lang.constant.Constable>&java.lang.constant.Constable>
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[317,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[322,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/QRCodeService.java:[330,19] no suitable constructor found for InvalidQRCodeException(java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.InvalidQRCodeException.InvalidQRCodeException(java.lang.String,com.allyticlabs.backend.exception.InvalidQRCodeException.QRErrorReason,java.lang.String,java.time.Instant,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[46,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[51,43] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[129,21] cannot find symbol
+[[1;31mERROR[m]   symbol:   class AttributeValue
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[130,32] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable AttributeValue
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[132,9] cannot find symbol
+[[1;31mERROR[m]   symbol:   class GetItemRequest
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[133,24] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable TABLE_NAME
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[132,34] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable GetItemRequest
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[137,9] cannot find symbol
+[[1;31mERROR[m]   symbol:   class GetItemResponse
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[137,36] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable dynamoDbClient
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.repository.QRPaymentRepository
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[264,44] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[265,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[285,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[306,56] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[328,30] incompatible types: bad return type in method reference
+[[1;31mERROR[m]     java.lang.String cannot be converted to double
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/QRPaymentRepository.java:[447,47] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/MpesaService.java:[104,72] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/MpesaService.java:[156,31] cannot find symbol
+[[1;31mERROR[m]   symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+[[1;31mERROR[m]   location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/MpesaService.java:[173,31] cannot find symbol
+[[1;31mERROR[m]   symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+[[1;31mERROR[m]   location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[58,78] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[98,21] cannot find symbol
+[[1;31mERROR[m]   symbol:   method clientSecret(java.lang.String)
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.dto.PaymentResponse.PaymentResponseBuilder
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[136,31] cannot find symbol
+[[1;31mERROR[m]   symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+[[1;31mERROR[m]   location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[299,27] cannot find symbol
+[[1;31mERROR[m]   symbol:   method updatePaymentStatus(java.lang.String,com.allyticlabs.backend.model.PaymentStatus,java.lang.String)
+[[1;31mERROR[m]   location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/StripeService.java:[331,54] incompatible types: java.lang.String cannot be converted to java.math.BigDecimal
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[74,15] maxNetworkRetries has private access in com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[78,19] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable apiVersion
+[[1;31mERROR[m]   location: class com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[82,34] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable apiVersion
+[[1;31mERROR[m]   location: class com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/StripeConfig.java:[82,62] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable apiVersion
+[[1;31mERROR[m]   location: class com.stripe.Stripe
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[52,28] cannot find symbol
+[[1;31mERROR[m]   symbol:   method generatePaymentId()
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[58,13] cannot find symbol
+[[1;31mERROR[m]   symbol:   method isDuplicatePayment(java.lang.String)
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[60,20] cannot find symbol
+[[1;31mERROR[m]   symbol:   method getPaymentByIdempotencyKey(java.lang.String)
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[68,68] incompatible types: java.math.BigDecimal cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[85,36] cannot find symbol
+[[1;31mERROR[m]   symbol:   method generateTransactionHash(com.allyticlabs.backend.model.Payment)
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[91,9] cannot find symbol
+[[1;31mERROR[m]   symbol:   method logTransaction(java.lang.String,java.lang.String,java.lang.String,java.lang.String)
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[107,34] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable mpesaConfig
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[107,71] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable mpesaConfig
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[108,41] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable Base64
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[110,13] cannot find symbol
+[[1;31mERROR[m]   symbol:   class HttpHeaders
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[110,39] cannot find symbol
+[[1;31mERROR[m]   symbol:   class HttpHeaders
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[111,36] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable MediaType
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[114,13] cannot find symbol
+[[1;31mERROR[m]   symbol:   class HttpEntity
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[114,45] cannot find symbol
+[[1;31mERROR[m]   symbol:   class HttpEntity
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[116,13] cannot find symbol
+[[1;31mERROR[m]   symbol:   class ResponseEntity
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[118,21] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable HttpMethod
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[116,47] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable restTemplate
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[117,21] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable mpesaConfig
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[123,13] cannot find symbol
+[[1;31mERROR[m]   symbol:   class JsonNode
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[123,37] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable objectMapper
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[124,13] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable accessToken
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[126,13] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable tokenExpiry
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[129,20] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable accessToken
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[142,23] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable mpesaConfig
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[142,52] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable mpesaConfig
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/PaymentService.java:[143,16] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable Base64
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[42,45] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[44,41] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[126,61] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[165,45] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/PaymentRepository.java:[216,30] incompatible types: bad return type in method reference
+[[1;31mERROR[m]     java.lang.String cannot be converted to double
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[44,49] incompatible types: java.time.Instant cannot be converted to java.lang.String
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[46,20] cannot find symbol
+[[1;31mERROR[m]   symbol:   method setUpdatedAt(java.time.Instant)
+[[1;31mERROR[m]   location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[175,65] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[193,65] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[232,24] cannot find symbol
+[[1;31mERROR[m]   symbol:   method setStatus(com.allyticlabs.backend.model.PaymentStatus)
+[[1;31mERROR[m]   location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[234,24] cannot find symbol
+[[1;31mERROR[m]   symbol:   method setUpdatedAt(java.time.Instant)
+[[1;31mERROR[m]   location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[248,51] cannot find symbol
+[[1;31mERROR[m]   symbol:   method getStatus()
+[[1;31mERROR[m]   location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[249,30] invalid method reference
+[[1;31mERROR[m]   cannot find symbol
+[[1;31mERROR[m]     symbol:   method getAmount(T)
+[[1;31mERROR[m]     location: class com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[267,65] incompatible types: java.lang.String cannot be converted to java.time.Instant
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[272,51] cannot find symbol
+[[1;31mERROR[m]   symbol:   method getStatus()
+[[1;31mERROR[m]   location: variable transaction of type com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/TransactionRepository.java:[273,30] invalid method reference
+[[1;31mERROR[m]   cannot find symbol
+[[1;31mERROR[m]     symbol:   method getAmount(T)
+[[1;31mERROR[m]     location: class com.allyticlabs.backend.model.PaymentTransaction
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[195,16] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable sandbox
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[200,16] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable sandbox
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[205,16] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable sandbox
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[210,16] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable sandbox
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[219,16] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable sandbox
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/MpesaConfig.java:[224,16] cannot find symbol
+[[1;31mERROR[m]   symbol:   variable sandbox
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.config.MpesaConfig
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[336,28] cannot find symbol
+[[1;31mERROR[m]   symbol:   class RSAPublicKey
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[337,22] cannot find symbol
+[[1;31mERROR[m]   symbol:   class RSAPublicKey
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[338,35] cannot find symbol
+[[1;31mERROR[m]   symbol:   class RSAPrivateKey
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/RSAKeyManager.java:[339,22] cannot find symbol
+[[1;31mERROR[m]   symbol:   class RSAPrivateKey
+[[1;31mERROR[m]   location: class com.allyticlabs.backend.security.RSAKeyManager
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/WebhookVerificationService.java:[48,33] method validateStripeSignature in class com.allyticlabs.backend.security.HMACValidator cannot be applied to given types;
+[[1;31mERROR[m]   required: java.lang.String,java.lang.String,java.lang.String,long
+[[1;31mERROR[m]   found:    java.lang.String,java.lang.String,java.lang.String
+[[1;31mERROR[m]   reason: actual and formal argument lists differ in length
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/WebhookVerificationService.java:[217,25] incompatible types: inference variable T has incompatible bounds
+[[1;31mERROR[m]     equality constraints: java.util.Map<java.lang.String,java.lang.Object>
+[[1;31mERROR[m]     lower bounds: java.util.Map<java.lang.String,java.lang.Object&java.io.Serializable&java.lang.Comparable<? extends java.lang.Object&java.io.Serializable&java.lang.Comparable<?>&java.lang.constant.Constable>&java.lang.constant.Constable>
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/exception/PaymentVerificationException.java:[267,16] no suitable constructor found for PaymentVerificationException(java.lang.String,<nulltype>,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/exception/PaymentVerificationException.java:[305,16] no suitable constructor found for PaymentVerificationException(java.lang.String,<nulltype>,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Throwable) is not applicable
+[[1;31mERROR[m]       (actual and formal argument lists differ in length)
+[[1;31mERROR[m]     constructor com.allyticlabs.backend.exception.PaymentVerificationException.PaymentVerificationException(java.lang.String,java.lang.String,com.allyticlabs.backend.exception.PaymentVerificationException.VerificationErrorReason,java.lang.String,java.lang.String,java.lang.String) is not applicable
+--
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/controller/PaymentController.java:[74,50] cannot find symbol
+[[1;31mERROR[m]   symbol:   method getPaymentById(@jakarta.validation.constraints.NotBlank java.lang.String)
+[[1;31mERROR[m]   location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/controller/PaymentController.java:[89,46] cannot find symbol
+[[1;31mERROR[m]   symbol:   method getPaymentStatus(@jakarta.validation.constraints.NotBlank java.lang.String)
+[[1;31mERROR[m]   location: variable paymentService of type com.allyticlabs.backend.service.PaymentService
+[[1;31mERROR[m] -> [1m[Help 1][m

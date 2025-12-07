@@ -1,4 +1,4 @@
-package com.payment.backend.exception;
+package com.allyticlabs.backend.exception;
 
 import lombok.Getter;
 import java.time.Instant;

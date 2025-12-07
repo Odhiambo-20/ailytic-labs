@@ -1,4 +1,4 @@
-package com.payment.util;
+package com.allyticlabs.backend.util;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -134,6 +134,20 @@ public class QRCodeGenerator {
      * @throws WriterException if QR generation fails
      * @throws IOException if image conversion fails
      */
+    /**
+     * Generate QR code with width and height parameters
+     * @param content QR code content
+     * @param width Image width
+     * @param height Image height
+     * @return Base64 encoded QR code image
+     * @throws WriterException if QR generation fails
+     * @throws IOException if image conversion fails
+     */
+    public String generateQRCode(String content, int width, int height) 
+            throws WriterException, IOException {
+        return generateQRCodeBase64(content, width, height);
+    }
+
     public String generateQRCodeBase64(String content) throws WriterException, IOException {
         return generateQRCodeBase64(content, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }

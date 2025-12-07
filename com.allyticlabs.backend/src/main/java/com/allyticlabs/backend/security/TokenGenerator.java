@@ -1,4 +1,4 @@
-package com.payment.backend.security;
+package com.allyticlabs.backend.security;
 
 import org.springframework.stereotype.Component;
 import java.security.SecureRandom;
@@ -272,4 +272,30 @@ public class TokenGenerator {
             return generateAlphanumericToken(8);
         }
     }
+
+    /**
+     * Generate TOTP secret for QR codes
+     */
+    public String generateTOTPSecret() {
+        byte[] secretBytes = new byte[20];
+        secureRandom.nextBytes(secretBytes);
+        return java.util.Base64.getEncoder().encodeToString(secretBytes);
+    }
+
+    /**
+     * Generate TOTP code from secret
+     */
+    public String generateTOTP(String secret) {
+        long timestamp = System.currentTimeMillis() / 30000;
+        return String.format("%06d", Math.abs((secret + timestamp).hashCode() % 1000000));
+    }
+
+    /**
+     * Validate TOTP code
+     */
+    public boolean validateTOTP(String secret, String code) {
+        String expectedCode = generateTOTP(secret);
+        return expectedCode.equals(code);
+    }
+
 }

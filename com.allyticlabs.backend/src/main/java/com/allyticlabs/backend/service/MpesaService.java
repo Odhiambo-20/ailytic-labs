@@ -398,3 +398,9 @@ public class MpesaService {
         }
         
         try {
+        } catch (Exception e) {
+            log.error("Error getting access token", e);
+            throw new PaymentException("Failed to get access token: " + e.getMessage());
+        }
+    }
+}

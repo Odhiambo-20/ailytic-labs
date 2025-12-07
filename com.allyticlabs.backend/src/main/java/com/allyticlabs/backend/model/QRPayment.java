@@ -1,14 +1,9 @@
-// ============================================================================
-// File: model/QRPayment.java
-// ============================================================================
 package com.allyticlabs.backend.model;
-
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.Instant;
 
 @Data
@@ -19,11 +14,15 @@ import java.time.Instant;
 public class QRPayment {
     
     @DynamoDBHashKey(attributeName = "qrCodeToken")
-    private String qrCodeToken; // Unique token for QR code
+    private String qrCodeToken;
     
     @DynamoDBRangeKey(attributeName = "expiryTimestamp")
     @DynamoDBTypeConvertedTimestamp(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timeZone = "UTC")
-    private Long expiryTimestamp; // TTL for auto-deletion
+    private Long expiryTimestamp;
+    
+    @DynamoDBAttribute(attributeName = "qrPaymentId")
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "QRPaymentIdIndex")
+    private String qrPaymentId;
     
     @DynamoDBAttribute(attributeName = "paymentId")
     @DynamoDBIndexHashKey(globalSecondaryIndexName = "PaymentIdIndex")
@@ -37,7 +36,7 @@ public class QRPayment {
     
     @DynamoDBAttribute(attributeName = "amount")
     @DynamoDBTypeConverted(converter = Payment.EncryptedStringConverter.class)
-    private String amount; // Encrypted
+    private String amount;
     
     @DynamoDBAttribute(attributeName = "currency")
     private String currency;
@@ -47,17 +46,20 @@ public class QRPayment {
     private PaymentStatus status;
     
     @DynamoDBAttribute(attributeName = "qrCodeData")
-    private String qrCodeData; // Encrypted QR data
+    private String qrCodeData;
     
     @DynamoDBAttribute(attributeName = "qrCodeImage")
-    private String qrCodeImage; // Base64 encoded QR image
+    private String qrCodeImage;
     
     @DynamoDBAttribute(attributeName = "totp")
-    private String totp; // Time-based one-time password
+    private String totp;
     
     @DynamoDBAttribute(attributeName = "totpSecret")
     @DynamoDBTypeConverted(converter = Payment.EncryptedStringConverter.class)
-    private String totpSecret; // Encrypted TOTP secret
+    private String totpSecret;
+    
+    @DynamoDBAttribute(attributeName = "used")
+    private Boolean used;
     
     @DynamoDBAttribute(attributeName = "usedAt")
     private String usedAt;
@@ -78,10 +80,13 @@ public class QRPayment {
     private String description;
     
     @DynamoDBAttribute(attributeName = "maxScans")
-    private Integer maxScans; // Limit number of scans (default: 1)
+    private Integer maxScans;
     
     @DynamoDBAttribute(attributeName = "singleUse")
-    private Boolean singleUse; // True = can only be used once
+    private Boolean singleUse;
+    
+    @DynamoDBAttribute(attributeName = "expiresAt")
+    private String expiresAt;
     
     @DynamoDBAttribute(attributeName = "createdAt")
     private String createdAt;
@@ -98,13 +103,48 @@ public class QRPayment {
             this.createdAt = Instant.now().toString();
         }
         this.updatedAt = Instant.now().toString();
+        
+        if (this.expiresAt == null && this.expiryTimestamp != null) {
+            this.expiresAt = Instant.ofEpochMilli(this.expiryTimestamp).toString();
+        }
     }
     
     public boolean isExpired() {
-        return Instant.now().toEpochMilli() > this.expiryTimestamp;
+        if (expiryTimestamp != null) {
+            return Instant.now().toEpochMilli() > this.expiryTimestamp;
+        }
+        if (expiresAt != null) {
+            return Instant.now().isAfter(Instant.parse(expiresAt));
+        }
+        return false;
     }
     
     public boolean isUsed() {
-        return this.status == PaymentStatus.COMPLETED || this.usedAt != null;
+        return this.status == PaymentStatus.COMPLETED || this.used == Boolean.TRUE || this.usedAt != null;
+    }
+    
+    // Compatibility methods
+    public Instant getExpiresAt() {
+        if (expiresAt != null) {
+            return Instant.parse(expiresAt);
+        }
+        if (expiryTimestamp != null) {
+            return Instant.ofEpochMilli(expiryTimestamp);
+        }
+        return null;
+    }
+    
+    public void setExpiresAt(Instant instant) {
+        if (instant != null) {
+            this.expiresAt = instant.toString();
+            this.expiryTimestamp = instant.toEpochMilli();
+        }
+    }
+    
+    public void setUsed(boolean used) {
+        this.used = used;
+        if (used && this.usedAt == null) {
+            this.usedAt = Instant.now().toString();
+        }
     }
 }

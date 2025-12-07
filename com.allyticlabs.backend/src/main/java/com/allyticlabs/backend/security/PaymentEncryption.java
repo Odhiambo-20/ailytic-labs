@@ -1,4 +1,4 @@
-package com.payment.backend.security;
+package com.allyticlabs.backend.security;
 
 import org.springframework.stereotype.Component;
 import javax.crypto.Cipher;

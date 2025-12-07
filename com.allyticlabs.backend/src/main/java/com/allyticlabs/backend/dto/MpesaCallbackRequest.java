@@ -1,4 +1,4 @@
-package com.yourcompany.payment.dto;
+package com.allyticlabs.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -9,21 +9,15 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * DTO for M-Pesa callback/webhook requests
- * Supports both STK Push callback and C2B validation/confirmation
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MpesaCallbackRequest {
     
-    // STK Push Callback fields
     @JsonProperty("Body")
     private StkCallbackBody body;
     
-    // C2B Callback fields (validation/confirmation)
     @JsonProperty("TransactionType")
     private String transactionType;
     
@@ -63,29 +57,20 @@ public class MpesaCallbackRequest {
     @JsonProperty("LastName")
     private String lastName;
     
-    // Raw callback data for logging/audit
     private String rawCallbackData;
     
-    /**
-     * STK Push Callback Body
-     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class StkCallbackBody {
-        
         @JsonProperty("stkCallback")
         private StkCallback stkCallback;
     }
     
-    /**
-     * STK Callback details
-     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class StkCallback {
-        
         @JsonProperty("MerchantRequestID")
         private String merchantRequestId;
         
@@ -102,26 +87,18 @@ public class MpesaCallbackRequest {
         private CallbackMetadata callbackMetadata;
     }
     
-    /**
-     * Callback Metadata containing transaction details
-     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CallbackMetadata {
-        
         @JsonProperty("Item")
         private List<CallbackItem> item;
     }
     
-    /**
-     * Individual callback item
-     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CallbackItem {
-        
         @JsonProperty("Name")
         private String name;
         
@@ -129,9 +106,36 @@ public class MpesaCallbackRequest {
         private Object value;
     }
     
-    /**
-     * Helper method to extract specific callback item
-     */
+    // Top-level convenience methods
+    public String getCheckoutRequestId() {
+        if (body != null && body.getStkCallback() != null) {
+            return body.getStkCallback().getCheckoutRequestId();
+        }
+        return null;
+    }
+    
+    public Integer getResultCode() {
+        if (body != null && body.getStkCallback() != null) {
+            return body.getStkCallback().getResultCode();
+        }
+        return null;
+    }
+    
+    public String getResultDesc() {
+        if (body != null && body.getStkCallback() != null) {
+            return body.getStkCallback().getResultDesc();
+        }
+        return null;
+    }
+    
+    public String getTransactionDate() {
+        Object value = getCallbackValue("TransactionDate");
+        if (value != null) {
+            return value.toString();
+        }
+        return transTime;
+    }
+    
     public Object getCallbackValue(String name) {
         if (body != null && body.getStkCallback() != null 
             && body.getStkCallback().getCallbackMetadata() != null
@@ -146,9 +150,6 @@ public class MpesaCallbackRequest {
         return null;
     }
     
-    /**
-     * Extract amount from callback
-     */
     public BigDecimal getAmount() {
         Object value = getCallbackValue("Amount");
         if (value instanceof Number) {
@@ -157,17 +158,11 @@ public class MpesaCallbackRequest {
         return transAmount;
     }
     
-    /**
-     * Extract M-Pesa receipt number
-     */
     public String getMpesaReceiptNumber() {
         Object value = getCallbackValue("MpesaReceiptNumber");
         return value != null ? value.toString() : null;
     }
     
-    /**
-     * Extract phone number
-     */
     public String getPhoneNumber() {
         Object value = getCallbackValue("PhoneNumber");
         if (value != null) {
@@ -176,9 +171,6 @@ public class MpesaCallbackRequest {
         return msisdn;
     }
     
-    /**
-     * Check if transaction was successful
-     */
     public boolean isSuccessful() {
         if (body != null && body.getStkCallback() != null) {
             return body.getStkCallback().getResultCode() != null 

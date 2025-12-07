@@ -1,4 +1,4 @@
-package com.payment.util;
+package com.allyticlabs.backend.util;
 
 import org.springframework.stereotype.Component;
 

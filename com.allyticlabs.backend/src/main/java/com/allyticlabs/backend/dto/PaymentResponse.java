@@ -1,19 +1,14 @@
-package com.yourcompany.payment.dto;
-
-import com.yourcompany.payment.model.PaymentMethod;
-import com.yourcompany.payment.model.PaymentStatus;
+package com.allyticlabs.backend.dto;
+import com.allyticlabs.backend.model.PaymentMethod;
+import com.allyticlabs.backend.model.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Map;
 
-/**
- * DTO for payment response
- */
 @Data
 @Builder
 @NoArgsConstructor
@@ -52,6 +47,7 @@ public class PaymentResponse {
     // Payment gateway response
     private String gatewayResponse;
     private String gatewayTransactionId;
+    private String providerTransactionId;
     
     // Status messages
     private String message;
