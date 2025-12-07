@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Zap, Clock, Lightbulb, ChevronRight, Calendar, Cpu, Wifi } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DJIAIR3S from '../assets/DJI Air 3S.avif';
 import DJIAVATA2FLYMORECOMBO from '../assets/dji avata 2 fly more combo.jpg';
@@ -8,7 +8,6 @@ import Mavic2 from '../assets/mavic 2.jpg';
 
 const LatestModels = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [drones, setDrones] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,46 +15,38 @@ const LatestModels = () => {
     {
       id: 'drone-1',
       name: 'DJI Air 3S',
-      category: 'development',
-      description: 'Next-generation reconnaissance drone with AI-powered threat detection and real-time data processing',
+      tagline: 'AI-Powered Reconnaissance',
+      description: 'Next-gen drone with advanced threat detection and 500km range',
       image: DJIAIR3S,
-      specs: ['100+ hour flight time', '8K + Thermal imaging', '500km range', 'AI threat detection'],
       timeline: 'Q2 2025',
-      innovations: ['Advanced AI Detection System', 'Ultra-long endurance battery', 'Quantum encryption'],
-      targetApplications: ['Security', 'Surveillance', 'Border monitoring']
+      gradient: 'from-blue-600 to-cyan-600'
     },
     {
       id: 'drone-2',
       name: 'DJI Avata 2 Fly More Combo',
-      category: 'launch',
-      description: 'Heavy-lift autonomous cargo drone designed for large-scale industrial logistics and emergency response',
+      tagline: 'Heavy-Lift Cargo Master',
+      description: 'Autonomous logistics drone with 500kg payload capacity',
       image: DJIAVATA2FLYMORECOMBO,
-      specs: ['500kg payload capacity', 'Autonomous landing system', 'Weather resistant', 'Real-time tracking'],
       timeline: 'Q3 2025',
-      innovations: ['Advanced stabilization', 'Autonomous dock charging', 'Swarm capability'],
-      targetApplications: ['Logistics', 'Emergency Response', 'Industrial Transport']
+      gradient: 'from-green-600 to-emerald-600'
     },
     {
       id: 'drone-3',
       name: 'DJI Mavic 4 Pro Drone Combo',
-      category: 'concept',
-      description: 'Advanced agricultural drone with hyper-spectral imaging and precision pesticide application',
+      tagline: 'Precision Agriculture',
+      description: 'Hyperspectral imaging for sustainable farming solutions',
       image: DJIMAVIC4PRODRONECOMBO,
-      specs: ['Hyperspectral imaging', 'Precision spray system', 'AI crop analysis', '1000 hectare/day capacity'],
       timeline: 'Q2 2025',
-      innovations: ['Hyperspectral sensors', 'Precision targeting', 'ML crop health analysis'],
-      targetApplications: ['Precision farming', 'Sustainable agriculture', 'Crop monitoring']
+      gradient: 'from-purple-600 to-pink-600'
     },
     {
       id: 'drone-4',
       name: 'Mavic 2',
-      category: 'development',
-      description: 'Professional cinema drone with 8K HDR recording and advanced gimbal stabilization',
+      tagline: 'Professional Cinema',
+      description: '8K HDR recording with advanced gimbal stabilization',
       image: Mavic2,
-      specs: ['8K HDR video', '3-axis gimbal', 'RAW format recording', '40min flight time'],
       timeline: 'January 2025',
-      innovations: ['Advanced gimbal AI', 'Wireless video transmission', 'Cloud integration'],
-      targetApplications: ['Cinema', 'Broadcasting', 'Commercial production']
+      gradient: 'from-orange-600 to-red-600'
     }
   ];
 
@@ -66,36 +57,6 @@ const LatestModels = () => {
       setLoading(false);
     }, 500);
   }, []);
-
-  const filteredDrones = selectedCategory === 'all'
-    ? drones
-    : drones.filter(drone => drone.category === selectedCategory);
-
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case 'development':
-        return { bg: 'from-blue-600 to-cyan-600', text: 'bg-blue-500/20 text-blue-200', icon: Zap };
-      case 'launch':
-        return { bg: 'from-green-600 to-emerald-600', text: 'bg-green-500/20 text-green-200', icon: Clock };
-      case 'concept':
-        return { bg: 'from-purple-600 to-pink-600', text: 'bg-purple-500/20 text-purple-200', icon: Lightbulb };
-      default:
-        return { bg: 'from-gray-600 to-gray-700', text: 'bg-gray-500/20 text-gray-200', icon: Zap };
-    }
-  };
-
-  const getCategoryLabel = (category) => {
-    switch (category) {
-      case 'development':
-        return 'Under Development';
-      case 'launch':
-        return 'Expected to Launch';
-      case 'concept':
-        return 'Being Conceptualized';
-      default:
-        return category;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
@@ -113,51 +74,8 @@ const LatestModels = () => {
             Latest Drone Models
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-            Explore the cutting-edge drone technology currently being developed, prepared for launch, and conceptualized by Allytic Labs
+            Discover cutting-edge drone technology designed to transform industries and push the boundaries of innovation
           </p>
-
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                selectedCategory === 'all'
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                  : 'bg-white/10 text-blue-200 hover:bg-white/20'
-              }`}
-            >
-              All Models
-            </button>
-            <button
-              onClick={() => setSelectedCategory('development')}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                selectedCategory === 'development'
-                  ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                  : 'bg-white/10 text-blue-200 hover:bg-white/20'
-              }`}
-            >
-              Under Development
-            </button>
-            <button
-              onClick={() => setSelectedCategory('launch')}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                selectedCategory === 'launch'
-                  ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg'
-                  : 'bg-white/10 text-blue-200 hover:bg-white/20'
-              }`}
-            >
-              Expected Launches
-            </button>
-            <button
-              onClick={() => setSelectedCategory('concept')}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                selectedCategory === 'concept'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                  : 'bg-white/10 text-blue-200 hover:bg-white/20'
-              }`}
-            >
-              Conceptualized
-            </button>
-          </div>
         </div>
 
         {loading ? (
@@ -165,135 +83,66 @@ const LatestModels = () => {
             <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
             <p className="text-xl text-blue-100">Loading latest drone models...</p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
-            {filteredDrones.map((drone) => {
-              const colors = getCategoryColor(drone.category);
-              const IconComponent = colors.icon;
-
-              return (
-                <div
-                  key={drone.id}
-                  className="group relative overflow-hidden rounded-3xl border border-white/10 hover:border-white/30 transition-all duration-300 bg-white/5 backdrop-blur-lg hover:shadow-2xl"
-                >
-                  <div className="relative h-96 overflow-hidden">
-                    <img
-                      src={drone.image}
-                      alt={drone.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.pexels.com/photos/442587/pexels-photo-442587.jpeg?auto=compress&cs=tinysrgb&w=600';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-
-                    <div className="absolute top-4 left-4">
-                      <div className={`${colors.text} px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-md`}>
-                        <IconComponent className="w-4 h-4" />
-                        <span className="text-sm font-semibold">{getCategoryLabel(drone.category)}</span>
-                      </div>
-                    </div>
-
-                    {drone.timeline && (
-                      <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
-                        <div className="flex items-center gap-2 text-white text-sm font-semibold">
-                          <Calendar className="w-4 h-4" />
-                          {drone.timeline}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="p-8 space-y-6">
-                    <div>
-                      <h3 className="text-3xl font-bold text-white mb-2">{drone.name}</h3>
-                      <p className="text-blue-100 text-lg leading-relaxed">{drone.description}</p>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-bold text-blue-300 uppercase tracking-wide mb-3 flex items-center gap-2">
-                        <Cpu className="w-4 h-4" />
-                        Key Specifications
-                      </h4>
-                      <div className="space-y-2">
-                        {drone.specs.map((spec, idx) => (
-                          <div key={idx} className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"></div>
-                            <span className="text-blue-200">{spec}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-bold text-purple-300 uppercase tracking-wide mb-3 flex items-center gap-2">
-                        <Zap className="w-4 h-4" />
-                        Innovation Highlights
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {drone.innovations.map((innovation, idx) => (
-                          <span
-                            key={idx}
-                            className="px-3 py-1 bg-gradient-to-r from-purple-600/30 to-pink-600/30 border border-purple-500/50 rounded-full text-xs font-semibold text-purple-200"
-                          >
-                            {innovation}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-bold text-green-300 uppercase tracking-wide mb-3 flex items-center gap-2">
-                        <Wifi className="w-4 h-4" />
-                        Target Applications
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {drone.targetApplications.map((app, idx) => (
-                          <span
-                            key={idx}
-                            className="px-3 py-1 bg-gradient-to-r from-green-600/30 to-emerald-600/30 border border-green-500/50 rounded-full text-xs font-semibold text-green-200"
-                          >
-                            {app}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <button className={`w-full py-3 bg-gradient-to-r ${colors.bg} text-white font-bold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2`}>
-                      Learn More
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {!loading && filteredDrones.length === 0 && (
-          <div className="text-center py-20">
-            <div className="max-w-md mx-auto bg-white/10 border border-white/20 rounded-2xl p-8">
-              <p className="text-blue-100 text-lg">No models found in this category.</p>
-              <p className="text-blue-300 text-sm mt-2">Try selecting a different filter.</p>
-            </div>
-          </div>
-        )}
+        ) : null}
       </div>
 
-      <section className="py-20 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-t border-white/10 mt-16">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Stay Updated</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Subscribe to receive updates on the latest drone models, launch dates, and exclusive early access opportunities
+      {!loading && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 mb-16">
+          {drones.map((drone) => (
+            <div
+              key={drone.id}
+              className="group relative overflow-hidden rounded-3xl border border-white/10 hover:border-white/30 transition-all duration-300 hover:shadow-2xl h-[500px]"
+            >
+              <img
+                src={drone.image}
+                alt={drone.name}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.pexels.com/photos/442587/pexels-photo-442587.jpeg?auto=compress&cs=tinysrgb&w=600';
+                }}
+              />
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+
+              <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                <div className="flex items-center gap-2 text-white text-sm font-semibold">
+                  <Calendar className="w-4 h-4" />
+                  {drone.timeline}
+                </div>
+              </div>
+
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <div className={`inline-block px-4 py-2 bg-gradient-to-r ${drone.gradient} rounded-full mb-4`}>
+                  <span className="text-white text-sm font-bold">{drone.tagline}</span>
+                </div>
+                
+                <h3 className="text-4xl font-bold text-white mb-3">{drone.name}</h3>
+                <p className="text-blue-100 text-lg mb-6">{drone.description}</p>
+
+                <button className={`px-8 py-3 bg-gradient-to-r ${drone.gradient} text-white font-bold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2`}>
+                  Learn More
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <section className="py-20 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-t border-white/10">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Stay Ahead of Innovation</h2>
+          <p className="text-xl text-blue-100 mb-10">
+            Get exclusive updates on new drone launches, early access opportunities, and cutting-edge technology insights
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-6 py-4 bg-white/10 border border-white/20 rounded-full text-white placeholder-blue-300/50 focus:outline-none focus:border-blue-400 transition-all"
+              className="flex-1 px-6 py-4 bg-white/10 border border-white/20 rounded-full text-white placeholder-blue-300/60 focus:outline-none focus:border-blue-400 focus:bg-white/15 transition-all backdrop-blur-sm"
             />
-            <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-full hover:shadow-lg transition-all duration-300">
-              Notify Me
+            <button className="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              Subscribe
             </button>
           </div>
         </div>
