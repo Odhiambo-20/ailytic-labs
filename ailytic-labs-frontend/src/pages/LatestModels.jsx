@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Zap, Clock, Lightbulb, ChevronRight, Calendar, Cpu, Wifi, Battery } from 'lucide-react';
+import { ArrowLeft, Zap, Clock, Lightbulb, ChevronRight, Calendar, Cpu, Wifi } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DJIAIR3S from '../assets/DJI Air 3S.avif';
+import DJIAVATA2FLYMORECOMBO from '../assets/dji avata 2 fly more combo.jpg';
+import DJIMAVIC4PRODRONECOMBO from '../assets/DJI Mavic 4 Pro Drone Combo.png';
+import Mavic2 from '../assets/mavic 2.jpg';
 
 const LatestModels = () => {
   const navigate = useNavigate();
@@ -10,100 +14,48 @@ const LatestModels = () => {
 
   const allDrones = [
     {
-      id: 'dev-1',
-      name: 'UltraVision X2',
+      id: 'drone-1',
+      name: 'DJI Air 3S',
       category: 'development',
       description: 'Next-generation reconnaissance drone with AI-powered threat detection and real-time data processing',
-      image: 'https://images.pexels.com/photos/442587/pexels-photo-442587.jpeg?auto=compress&cs=tinysrgb&w=600',
+      image: DJIAIR3S,
       specs: ['100+ hour flight time', '8K + Thermal imaging', '500km range', 'AI threat detection'],
       timeline: 'Q2 2025',
       innovations: ['Advanced AI Detection System', 'Ultra-long endurance battery', 'Quantum encryption'],
       targetApplications: ['Security', 'Surveillance', 'Border monitoring']
     },
     {
-      id: 'dev-2',
-      name: 'CargoMax Titan',
-      category: 'development',
+      id: 'drone-2',
+      name: 'DJI Avata 2 Fly More Combo',
+      category: 'launch',
       description: 'Heavy-lift autonomous cargo drone designed for large-scale industrial logistics and emergency response',
-      image: 'https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=600',
+      image: DJIAVATA2FLYMORECOMBO,
       specs: ['500kg payload capacity', 'Autonomous landing system', 'Weather resistant', 'Real-time tracking'],
       timeline: 'Q3 2025',
       innovations: ['Advanced stabilization', 'Autonomous dock charging', 'Swarm capability'],
       targetApplications: ['Logistics', 'Emergency Response', 'Industrial Transport']
     },
     {
-      id: 'dev-3',
-      name: 'AgriPrecision Pro',
-      category: 'development',
+      id: 'drone-3',
+      name: 'DJI Mavic 4 Pro Drone Combo',
+      category: 'concept',
       description: 'Advanced agricultural drone with hyper-spectral imaging and precision pesticide application',
-      image: 'https://images.pexels.com/photos/1034650/pexels-photo-1034650.jpeg?auto=compress&cs=tinysrgb&w=600',
+      image: DJIMAVIC4PRODRONECOMBO,
       specs: ['Hyperspectral imaging', 'Precision spray system', 'AI crop analysis', '1000 hectare/day capacity'],
       timeline: 'Q2 2025',
       innovations: ['Hyperspectral sensors', 'Precision targeting', 'ML crop health analysis'],
       targetApplications: ['Precision farming', 'Sustainable agriculture', 'Crop monitoring']
     },
     {
-      id: 'launch-1',
-      name: 'SkyFlow HD Pro',
-      category: 'launch',
+      id: 'drone-4',
+      name: 'Mavic 2',
+      category: 'development',
       description: 'Professional cinema drone with 8K HDR recording and advanced gimbal stabilization',
-      image: 'https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&cs=tinysrgb&w=600',
+      image: Mavic2,
       specs: ['8K HDR video', '3-axis gimbal', 'RAW format recording', '40min flight time'],
       timeline: 'January 2025',
       innovations: ['Advanced gimbal AI', 'Wireless video transmission', 'Cloud integration'],
       targetApplications: ['Cinema', 'Broadcasting', 'Commercial production']
-    },
-    {
-      id: 'launch-2',
-      name: 'MediDrone Response',
-      category: 'launch',
-      description: 'Emergency response drone for medical supply delivery and disaster management operations',
-      image: 'https://images.pexels.com/photos/1730877/pexels-photo-1730877.jpeg?auto=compress&cs=tinysrgb&w=600',
-      specs: ['50km autonomous range', 'Temperature controlled payload', 'GPS + visual navigation', '2hr flight time'],
-      timeline: 'February 2025',
-      innovations: ['Insulated cargo', 'Autonomous routing', 'Emergency beacon integration'],
-      targetApplications: ['Emergency response', 'Medical delivery', 'Disaster management']
-    },
-    {
-      id: 'launch-3',
-      name: 'MapperLite RTK',
-      category: 'launch',
-      description: 'Lightweight surveying drone with RTK positioning for precise mapping and 3D reconstruction',
-      image: 'https://images.pexels.com/photos/2246476/pexels-photo-2246476.jpeg?auto=compress&cs=tinysrgb&w=600',
-      specs: ['2cm RTK accuracy', 'Lightweight design', 'Cloud processing', 'Real-time orthomosaics'],
-      timeline: 'December 2024',
-      innovations: ['Compact RTK antenna', 'Cloud photogrammetry', 'Real-time processing'],
-      targetApplications: ['Land surveying', 'Construction', '3D mapping']
-    },
-    {
-      id: 'concept-1',
-      name: 'NeuralFly Swarm',
-      category: 'concept',
-      description: 'Revolutionary swarm intelligence drone system with decentralized AI coordination and self-healing formations',
-      image: 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600',
-      specs: ['100+ drone coordination', 'Decentralized AI', 'Self-healing formations', 'Quantum communication'],
-      innovations: ['Quantum entanglement comm', 'Swarm consciousness AI', 'Self-repairing mesh network'],
-      targetApplications: ['Military operations', 'Disaster mapping', 'Large-scale surveillance']
-    },
-    {
-      id: 'concept-2',
-      name: 'HyperSonic Scout',
-      category: 'concept',
-      description: 'Ultra-high-speed reconnaissance drone capable of breaking sound barriers with advanced aerodynamics',
-      image: 'https://images.pexels.com/photos/3587620/pexels-photo-3587620.jpeg?auto=compress&cs=tinysrgb&w=600',
-      specs: ['Mach 2+ speed capability', 'Advanced stealth coating', 'Plasma propulsion', '10,000km range'],
-      innovations: ['Hypersonic aerodynamics', 'Plasma jet engines', 'Stealth technology'],
-      targetApplications: ['High-speed reconnaissance', 'Research missions', 'Extreme conditions']
-    },
-    {
-      id: 'concept-3',
-      name: 'OceanCrawler Deep',
-      category: 'concept',
-      description: 'Amphibious drone designed for underwater exploration and marine research with autonomous navigation',
-      image: 'https://images.pexels.com/photos/3587630/pexels-photo-3587630.jpeg?auto=compress&cs=tinysrgb&w=600',
-      specs: ['10,000m depth capability', 'Sonar mapping', 'Underwater propulsion', 'Autonomous navigation'],
-      innovations: ['Deep-sea materials', 'Advanced sonar', 'Underwater AI navigation'],
-      targetApplications: ['Marine research', 'Deep sea exploration', 'Underwater mining']
     }
   ];
 
@@ -214,7 +166,7 @@ const LatestModels = () => {
             <p className="text-xl text-blue-100">Loading latest drone models...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
             {filteredDrones.map((drone) => {
               const colors = getCategoryColor(drone.category);
               const IconComponent = colors.icon;

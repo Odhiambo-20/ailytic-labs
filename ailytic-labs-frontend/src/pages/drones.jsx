@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Instagram, Github, Youtube, Linkedin } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import DeliveryDrone from '../assets/delivery drone.jpg';
+import DroneImage from '../assets/drone.jpg';
+import AgriculturalDrone from '../assets/agricultural drone.jpg';
+import DroneVideo from '../assets/drone.mp4';
 
 const droneAPI = {
   getAll: async () => {
@@ -111,19 +115,19 @@ const Drones = () => {
 
   const galleryItems = [
     {
-      image: "https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      image: DeliveryDrone,
       title: "Professional Delivery Drones",
       subtitle: "Revolutionary cargo solutions for modern logistics",
       highlight: "Transport"
     },
     {
-      image: "https://images.pexels.com/photos/442587/pexels-photo-442587.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      image: DroneImage,
       title: "Advanced Surveillance Systems",
       subtitle: "Cutting-edge aerial security and monitoring",
       highlight: "Security"
     },
     {
-      image: "https://images.pexels.com/photos/1034650/pexels-photo-1034650.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      image: AgriculturalDrone,
       title: "Precision Agriculture Drones",
       subtitle: "Smart farming with AI-powered crop analysis",
       highlight: "Agriculture"
@@ -386,11 +390,16 @@ const Drones = () => {
       </section>
 
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <img
-          src="https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=1400"
-          alt="Latest Drone Innovation"
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="absolute inset-0 w-full h-full object-cover"
-        />
+        >
+          <source src={DroneVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/40 to-gray-900/80"></div>
 
