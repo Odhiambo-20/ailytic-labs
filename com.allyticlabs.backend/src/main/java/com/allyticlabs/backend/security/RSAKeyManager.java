@@ -18,20 +18,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class RSAKeyManager {
-    
+
     private static final String ALGORITHM = "RSA";
     private static final String TRANSFORMATION = "RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING";
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
     private static final int KEY_SIZE = 2048;
     private static final int MAX_ENCRYPT_BLOCK = 190; // For RSA-2048 with OAEP padding
     private static final int MAX_DECRYPT_BLOCK = 256; // RSA-2048 key size in bytes
-    
+
     private final SecureRandom secureRandom;
-    
+
     public RSAKeyManager() {
         this.secureRandom = new SecureRandom();
     }
-    
+
     /**
      * Generate new RSA key pair (2048-bit)
      * @return KeyPair containing public and private keys
@@ -41,7 +41,7 @@ public class RSAKeyManager {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM);
             keyPairGenerator.initialize(KEY_SIZE, secureRandom);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            
+
             log.info("Generated new RSA-{} key pair", KEY_SIZE);
             return keyPair;
         } catch (NoSuchAlgorithmException e) {
@@ -49,7 +49,7 @@ public class RSAKeyManager {
             throw new RuntimeException("Failed to generate RSA key pair", e);
         }
     }
-    
+
     /**
      * Export public key as Base64 encoded string (PEM-like format)
      * @param publicKey Public key to export
@@ -60,7 +60,7 @@ public class RSAKeyManager {
         log.debug("Exported public key: {} bytes", publicKey.getEncoded().length);
         return base64Key;
     }
-    
+
     /**
      * Export private key as Base64 encoded string (PEM-like format)
      * WARNING: Store private keys securely, never expose them
@@ -72,7 +72,7 @@ public class RSAKeyManager {
         log.debug("Exported private key: {} bytes", privateKey.getEncoded().length);
         return base64Key;
     }
-    
+
     /**
      * Export public key in PEM format
      * @param publicKey Public key to export
@@ -82,7 +82,7 @@ public class RSAKeyManager {
         String base64Key = Base64.getEncoder().encodeToString(publicKey.getEncoded());
         StringBuilder pem = new StringBuilder();
         pem.append("-----BEGIN PUBLIC KEY-----\n");
-        
+
         // Split into 64-character lines
         int index = 0;
         while (index < base64Key.length()) {
@@ -90,11 +90,11 @@ public class RSAKeyManager {
             pem.append("\n");
             index += 64;
         }
-        
+
         pem.append("-----END PUBLIC KEY-----");
         return pem.toString();
     }
-    
+
     /**
      * Import public key from Base64 encoded string
      * @param keyString Base64 encoded public key
@@ -107,12 +107,12 @@ public class RSAKeyManager {
                 .replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "")
                 .replaceAll("\\s+", "");
-            
+
             byte[] keyBytes = Base64.getDecoder().decode(cleanKey);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             PublicKey publicKey = keyFactory.generatePublic(spec);
-            
+
             log.debug("Imported public key successfully");
             return publicKey;
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public class RSAKeyManager {
             throw new RuntimeException("Failed to import public key", e);
         }
     }
-    
+
     /**
      * Import private key from Base64 encoded string
      * @param keyString Base64 encoded private key
@@ -135,12 +135,12 @@ public class RSAKeyManager {
                 .replace("-----BEGIN RSA PRIVATE KEY-----", "")
                 .replace("-----END RSA PRIVATE KEY-----", "")
                 .replaceAll("\\s+", "");
-            
+
             byte[] keyBytes = Base64.getDecoder().decode(cleanKey);
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             PrivateKey privateKey = keyFactory.generatePrivate(spec);
-            
+
             log.debug("Imported private key successfully");
             return privateKey;
         } catch (Exception e) {
@@ -148,7 +148,7 @@ public class RSAKeyManager {
             throw new RuntimeException("Failed to import private key", e);
         }
     }
-    
+
     /**
      * Encrypt data using RSA public key
      * Handles data larger than key size by splitting into blocks
@@ -161,7 +161,7 @@ public class RSAKeyManager {
             byte[] dataBytes = data.getBytes("UTF-8");
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            
+
             // For large data, split into blocks
             if (dataBytes.length <= MAX_ENCRYPT_BLOCK) {
                 byte[] encryptedBytes = cipher.doFinal(dataBytes);
@@ -175,7 +175,7 @@ public class RSAKeyManager {
             throw new RuntimeException("RSA encryption failed", e);
         }
     }
-    
+
     /**
      * Decrypt data using RSA private key
      * @param encryptedData Base64 encoded encrypted data
@@ -187,7 +187,7 @@ public class RSAKeyManager {
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedData);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            
+
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
             return new String(decryptedBytes, "UTF-8");
         } catch (Exception e) {
@@ -195,7 +195,7 @@ public class RSAKeyManager {
             throw new RuntimeException("RSA decryption failed", e);
         }
     }
-    
+
     /**
      * Sign data using RSA private key (for non-repudiation)
      * @param data Data to sign
@@ -208,7 +208,7 @@ public class RSAKeyManager {
             signature.initSign(privateKey, secureRandom);
             signature.update(data.getBytes("UTF-8"));
             byte[] signatureBytes = signature.sign();
-            
+
             log.debug("Generated RSA signature for data");
             return Base64.getEncoder().encodeToString(signatureBytes);
         } catch (Exception e) {
@@ -216,7 +216,7 @@ public class RSAKeyManager {
             throw new RuntimeException("RSA signing failed", e);
         }
     }
-    
+
     /**
      * Verify signature using RSA public key
      * @param data Original data
@@ -230,7 +230,7 @@ public class RSAKeyManager {
             Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
             signature.initVerify(publicKey);
             signature.update(data.getBytes("UTF-8"));
-            
+
             boolean isValid = signature.verify(signatureBytes);
             log.debug("Signature verification result: {}", isValid);
             return isValid;
@@ -239,7 +239,7 @@ public class RSAKeyManager {
             return false;
         }
     }
-    
+
     /**
      * Encrypt M-Pesa security credential using M-Pesa public key
      * M-Pesa requires RSA encryption for sensitive credentials
@@ -258,7 +258,7 @@ public class RSAKeyManager {
             throw new RuntimeException("M-Pesa credential encryption failed", e);
         }
     }
-    
+
     /**
      * Encrypt M-Pesa password for API authentication
      * Format: Base64(Shortcode+Passkey+Timestamp)
@@ -272,7 +272,7 @@ public class RSAKeyManager {
             String rawPassword = shortcode + passkey + timestamp;
             byte[] passwordBytes = rawPassword.getBytes("UTF-8");
             String encodedPassword = Base64.getEncoder().encodeToString(passwordBytes);
-            
+
             log.debug("Generated M-Pesa password for timestamp: {}", timestamp);
             return encodedPassword;
         } catch (Exception e) {
@@ -280,7 +280,7 @@ public class RSAKeyManager {
             throw new RuntimeException("Failed to generate M-Pesa password", e);
         }
     }
-    
+
     /**
      * Generate key fingerprint for verification and identification
      * @param publicKey Public key
@@ -290,7 +290,7 @@ public class RSAKeyManager {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(publicKey.getEncoded());
-            
+
             // Convert to hex format
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
@@ -298,7 +298,7 @@ public class RSAKeyManager {
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
-            
+
             String fingerprint = hexString.toString();
             log.debug("Generated key fingerprint: {}", fingerprint.substring(0, 16) + "...");
             return fingerprint;
@@ -307,7 +307,7 @@ public class RSAKeyManager {
             throw new RuntimeException("Failed to generate key fingerprint", e);
         }
     }
-    
+
     /**
      * Validate that public and private keys form a matching pair
      * @param publicKey Public key
@@ -319,7 +319,7 @@ public class RSAKeyManager {
             String testData = "validation_test_" + System.currentTimeMillis();
             String encrypted = encrypt(testData, publicKey);
             String decrypted = decrypt(encrypted, privateKey);
-            
+
             boolean isValid = testData.equals(decrypted);
             log.debug("Key pair validation result: {}", isValid);
             return isValid;
@@ -328,7 +328,7 @@ public class RSAKeyManager {
             return false;
         }
     }
-    
+
     /**
      * Get RSA key size in bits
      * @param key Public or Private key
@@ -342,7 +342,7 @@ public class RSAKeyManager {
         }
         return 0;
     }
-    
+
     /**
      * Hybrid encryption: Encrypt AES key with RSA
      * Used to securely exchange symmetric keys
@@ -355,7 +355,7 @@ public class RSAKeyManager {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encryptedKey = cipher.doFinal(aesKey);
-            
+
             log.debug("Encrypted AES key with RSA");
             return Base64.getEncoder().encodeToString(encryptedKey);
         } catch (Exception e) {
@@ -363,7 +363,7 @@ public class RSAKeyManager {
             throw new RuntimeException("Failed to encrypt AES key", e);
         }
     }
-    
+
     /**
      * Hybrid encryption: Decrypt AES key with RSA
      * @param encryptedAESKey Base64 encoded encrypted AES key
@@ -375,7 +375,7 @@ public class RSAKeyManager {
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedAESKey);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            
+
             byte[] decryptedKey = cipher.doFinal(encryptedBytes);
             log.debug("Decrypted AES key with RSA");
             return decryptedKey;

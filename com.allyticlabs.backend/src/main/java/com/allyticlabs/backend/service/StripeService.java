@@ -47,13 +47,13 @@ public class StripeService {
      */
     @Transactional
     public PaymentResponse createPaymentIntent(PaymentRequest request) {
-        log.info("Creating Stripe Payment Intent for amount: {} {}", 
+        log.info("Creating Stripe Payment Intent for amount: {} {}",
                 request.getAmount(), request.getCurrency());
-        
+
         try {
             // Convert amount to cents
             long amountInCents = (long) (Double.parseDouble(request.getAmount()) * 100);
-            
+
             // Create Payment Intent
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                     .setAmount(amountInCents)
@@ -68,9 +68,9 @@ public class StripeService {
                                     .build()
                     )
                     .build();
-            
+
             PaymentIntent intent = PaymentIntent.create(params);
-            
+
             // Save Stripe payment record
             StripePayment stripePayment = StripePayment.builder()
                     .stripePaymentIntentId(intent.getId())
@@ -83,11 +83,11 @@ public class StripeService {
                     .clientSecret(encryptionService.encrypt(intent.getClientSecret()))
                     .createdAt(Instant.now().toString())
                     .build();
-            
+
             stripePaymentRepository.save(stripePayment);
-            
+
             log.info("Stripe Payment Intent created: {}", intent.getId());
-            
+
             return PaymentResponse.builder()
                     .paymentId(request.getPaymentId())
                     .status(PaymentStatus.PENDING)
@@ -95,7 +95,7 @@ public class StripeService {
                     .clientSecret(intent.getClientSecret())
                     .message("Payment Intent created successfully")
                     .build();
-            
+
         } catch (Exception e) {
             log.error("Error creating Stripe Payment Intent", e);
             throw new PaymentException("Failed to create payment intent: " + e.getMessage());
@@ -108,10 +108,10 @@ public class StripeService {
     @Transactional
     public PaymentResponse confirmPaymentIntent(String paymentIntentId, String paymentMethodId) {
         log.info("Confirming Stripe Payment Intent: {}", paymentIntentId);
-        
+
         try {
             PaymentIntent intent = PaymentIntent.retrieve(paymentIntentId);
-            
+
             if (paymentMethodId != null) {
                 PaymentIntentConfirmParams params = PaymentIntentConfirmParams.builder()
                         .setPaymentMethod(paymentMethodId)
@@ -120,14 +120,14 @@ public class StripeService {
             } else {
                 intent = intent.confirm();
             }
-            
+
             // Update Stripe payment record
             StripePayment stripePayment = stripePaymentRepository.findByStripePaymentIntentId(paymentIntentId)
                     .orElseThrow(() -> new PaymentException("Stripe payment not found"));
-            
+
             stripePayment.setStripeStatus(intent.getStatus());
             stripePayment.setUpdatedAt(Instant.now().toString());
-            
+
             if ("succeeded".equals(intent.getStatus())) {
                 stripePayment.setStatus(PaymentStatus.COMPLETED);
                 paymentService.updatePaymentStatus(
@@ -138,15 +138,15 @@ public class StripeService {
             } else if ("requires_action".equals(intent.getStatus())) {
                 stripePayment.setStatus(PaymentStatus.PROCESSING);
             }
-            
+
             stripePaymentRepository.save(stripePayment);
-            
+
             return PaymentResponse.builder()
                     .paymentId(stripePayment.getPaymentId())
                     .status(stripePayment.getStatus())
                     .providerTransactionId(paymentIntentId)
                     .build();
-            
+
         } catch (Exception e) {
             log.error("Error confirming Payment Intent", e);
             throw new PaymentException("Failed to confirm payment: " + e.getMessage());
@@ -158,22 +158,22 @@ public class StripeService {
      */
     public Map<String, String> createCustomer(String email, String name, String phone) {
         log.info("Creating Stripe customer for email: {}", email);
-        
+
         try {
             CustomerCreateParams params = CustomerCreateParams.builder()
                     .setEmail(email)
                     .setName(name)
                     .setPhone(phone)
                     .build();
-            
+
             Customer customer = Customer.create(params);
-            
+
             return Map.of(
                     "customerId", customer.getId(),
                     "email", customer.getEmail(),
                     "created", String.valueOf(customer.getCreated())
             );
-            
+
         } catch (Exception e) {
             log.error("Error creating Stripe customer", e);
             throw new PaymentException("Failed to create customer: " + e.getMessage());
@@ -185,22 +185,22 @@ public class StripeService {
      */
     public Map<String, String> attachPaymentMethod(String customerId, String paymentMethodId) {
         log.info("Attaching payment method to customer: {}", customerId);
-        
+
         try {
             PaymentMethod paymentMethod = PaymentMethod.retrieve(paymentMethodId);
-            
+
             PaymentMethodAttachParams params = PaymentMethodAttachParams.builder()
                     .setCustomer(customerId)
                     .build();
-            
+
             paymentMethod.attach(params);
-            
+
             return Map.of(
                     "paymentMethodId", paymentMethod.getId(),
                     "customerId", customerId,
                     "type", paymentMethod.getType()
             );
-            
+
         } catch (Exception e) {
             log.error("Error attaching payment method", e);
             throw new PaymentException("Failed to attach payment method: " + e.getMessage());
@@ -212,15 +212,15 @@ public class StripeService {
      */
     public Map<String, Object> getCustomerPaymentMethods(String customerId) {
         log.info("Fetching payment methods for customer: {}", customerId);
-        
+
         try {
             PaymentMethodListParams params = PaymentMethodListParams.builder()
                     .setCustomer(customerId)
                     .setType(PaymentMethodListParams.Type.CARD)
                     .build();
-            
+
             List<PaymentMethod> paymentMethods = PaymentMethod.list(params).getData();
-            
+
             List<Map<String, String>> methods = paymentMethods.stream()
                     .map(pm -> Map.of(
                             "id", pm.getId(),
@@ -229,12 +229,12 @@ public class StripeService {
                             "cardLast4", pm.getCard().getLast4()
                     ))
                     .collect(Collectors.toList());
-            
+
             return Map.of(
                     "customerId", customerId,
                     "paymentMethods", methods
             );
-            
+
         } catch (Exception e) {
             log.error("Error fetching payment methods", e);
             throw new PaymentException("Failed to fetch payment methods: " + e.getMessage());
@@ -246,16 +246,16 @@ public class StripeService {
      */
     public Map<String, String> detachPaymentMethod(String paymentMethodId) {
         log.info("Detaching payment method: {}", paymentMethodId);
-        
+
         try {
             PaymentMethod paymentMethod = PaymentMethod.retrieve(paymentMethodId);
             paymentMethod.detach();
-            
+
             return Map.of(
                     "paymentMethodId", paymentMethodId,
                     "status", "detached"
             );
-            
+
         } catch (Exception e) {
             log.error("Error detaching payment method", e);
             throw new PaymentException("Failed to detach payment method: " + e.getMessage());
@@ -268,43 +268,43 @@ public class StripeService {
     @Transactional
     public PaymentResponse createRefund(String paymentIntentId, Long amount, String reason) {
         log.info("Creating refund for Payment Intent: {}", paymentIntentId);
-        
+
         try {
             RefundCreateParams.Builder paramsBuilder = RefundCreateParams.builder()
                     .setPaymentIntent(paymentIntentId);
-            
+
             if (amount != null) {
                 paramsBuilder.setAmount(amount);
             }
-            
+
             if (reason != null) {
                 paramsBuilder.setReason(RefundCreateParams.Reason.REQUESTED_BY_CUSTOMER);
             }
-            
+
             Refund refund = Refund.create(paramsBuilder.build());
-            
+
             // Update Stripe payment record
             StripePayment stripePayment = stripePaymentRepository.findByStripePaymentIntentId(paymentIntentId)
                     .orElseThrow(() -> new PaymentException("Stripe payment not found"));
-            
+
             stripePayment.setRefundId(refund.getId());
             stripePayment.setStatus(PaymentStatus.REFUNDED);
             stripePayment.setUpdatedAt(Instant.now().toString());
-            
+
             stripePaymentRepository.save(stripePayment);
-            
+
             paymentService.updatePaymentStatus(
                     stripePayment.getPaymentId(),
                     PaymentStatus.REFUNDED,
                     "Refund processed: " + refund.getId()
             );
-            
+
             return PaymentResponse.builder()
                     .paymentId(stripePayment.getPaymentId())
                     .status(PaymentStatus.REFUNDED)
                     .providerTransactionId(refund.getId())
                     .build();
-            
+
         } catch (Exception e) {
             log.error("Error creating refund", e);
             throw new PaymentException("Failed to create refund: " + e.getMessage());
@@ -316,13 +316,13 @@ public class StripeService {
      */
     public PaymentResponse getPaymentIntent(String paymentIntentId) {
         log.info("Fetching Payment Intent: {}", paymentIntentId);
-        
+
         try {
             PaymentIntent intent = PaymentIntent.retrieve(paymentIntentId);
-            
+
             StripePayment stripePayment = stripePaymentRepository.findByStripePaymentIntentId(paymentIntentId)
                     .orElseThrow(() -> new PaymentException("Stripe payment not found"));
-            
+
             return PaymentResponse.builder()
                     .paymentId(stripePayment.getPaymentId())
                     .amount(encryptionService.decrypt(stripePayment.getAmount()))
@@ -330,7 +330,7 @@ public class StripeService {
                     .status(stripePayment.getStatus())
                     .providerTransactionId(intent.getId())
                     .build();
-            
+
         } catch (Exception e) {
             log.error("Error fetching Payment Intent", e);
             throw new PaymentException("Failed to fetch payment intent: " + e.getMessage());
@@ -343,16 +343,16 @@ public class StripeService {
     @Transactional
     public void processWebhookEvent(String payload, String signature) {
         log.info("Processing Stripe webhook event");
-        
+
         try {
             Event event = Webhook.constructEvent(
-                    payload, 
-                    signature, 
+                    payload,
+                    signature,
                     stripeConfig.getWebhookSecret()
             );
-            
+
             String eventType = event.getType();
-            
+
             switch (eventType) {
                 case "payment_intent.succeeded":
                     handlePaymentIntentSucceeded(event);
@@ -366,7 +366,7 @@ public class StripeService {
                 default:
                     log.info("Unhandled event type: {}", eventType);
             }
-            
+
         } catch (Exception e) {
             log.error("Error processing Stripe webhook", e);
             throw new PaymentException("Failed to process webhook: " + e.getMessage());
@@ -376,7 +376,7 @@ public class StripeService {
     private void handlePaymentIntentSucceeded(Event event) {
         PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
                 .getObject().orElse(null);
-        
+
         if (intent != null) {
             log.info("Payment succeeded: {}", intent.getId());
             // Update payment status
@@ -386,7 +386,7 @@ public class StripeService {
     private void handlePaymentIntentFailed(Event event) {
         PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
                 .getObject().orElse(null);
-        
+
         if (intent != null) {
             log.warn("Payment failed: {}", intent.getId());
             // Update payment status
@@ -396,7 +396,7 @@ public class StripeService {
     private void handleChargeRefunded(Event event) {
         Charge charge = (Charge) event.getDataObjectDeserializer()
                 .getObject().orElse(null);
-        
+
         if (charge != null) {
             log.info("Charge refunded: {}", charge.getId());
             // Update payment status

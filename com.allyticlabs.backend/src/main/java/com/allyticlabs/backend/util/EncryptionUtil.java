@@ -28,7 +28,7 @@ public class EncryptionUtil {
     private static final int GCM_IV_LENGTH = 12;
     private static final int AES_KEY_SIZE = 256;
     private static final int RSA_KEY_SIZE = 2048;
-    
+
     /**
      * Generate AES SecretKey
      * @return SecretKey for AES encryption
@@ -39,7 +39,7 @@ public class EncryptionUtil {
         keyGenerator.init(AES_KEY_SIZE);
         return keyGenerator.generateKey();
     }
-    
+
     /**
      * Generate RSA KeyPair
      * @return KeyPair for RSA encryption
@@ -50,7 +50,7 @@ public class EncryptionUtil {
         keyPairGenerator.initialize(RSA_KEY_SIZE);
         return keyPairGenerator.generateKeyPair();
     }
-    
+
     /**
      * Encrypt data using AES-256-GCM
      * @param plainText Plain text to encrypt
@@ -63,24 +63,24 @@ public class EncryptionUtil {
         byte[] iv = new byte[GCM_IV_LENGTH];
         SecureRandom random = new SecureRandom();
         random.nextBytes(iv);
-        
+
         // Create cipher
         Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, parameterSpec);
-        
+
         // Encrypt
         byte[] cipherText = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
-        
+
         // Combine IV and cipher text
         ByteBuffer byteBuffer = ByteBuffer.allocate(iv.length + cipherText.length);
         byteBuffer.put(iv);
         byteBuffer.put(cipherText);
-        
+
         // Encode to Base64
         return Base64.getEncoder().encodeToString(byteBuffer.array());
     }
-    
+
     /**
      * Decrypt data using AES-256-GCM
      * @param encryptedData Base64 encoded encrypted data with IV
@@ -91,24 +91,24 @@ public class EncryptionUtil {
     public String decryptAES(String encryptedData, SecretKey secretKey) throws Exception {
         // Decode from Base64
         byte[] decodedData = Base64.getDecoder().decode(encryptedData);
-        
+
         // Extract IV and cipher text
         ByteBuffer byteBuffer = ByteBuffer.wrap(decodedData);
         byte[] iv = new byte[GCM_IV_LENGTH];
         byteBuffer.get(iv);
         byte[] cipherText = new byte[byteBuffer.remaining()];
         byteBuffer.get(cipherText);
-        
+
         // Create cipher
         Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
         cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
-        
+
         // Decrypt
         byte[] plainText = cipher.doFinal(cipherText);
         return new String(plainText, StandardCharsets.UTF_8);
     }
-    
+
     /**
      * Encrypt data using RSA public key
      * Used for M-Pesa security credentials
@@ -120,11 +120,11 @@ public class EncryptionUtil {
     public String encryptRSA(String plainText, PublicKey publicKey) throws Exception {
         Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-        
+
         byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
-    
+
     /**
      * Decrypt data using RSA private key
      * @param encryptedData Base64 encoded encrypted data
@@ -134,14 +134,14 @@ public class EncryptionUtil {
      */
     public String decryptRSA(String encryptedData, PrivateKey privateKey) throws Exception {
         byte[] encryptedBytes = Base64.getDecoder().decode(encryptedData);
-        
+
         Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        
+
         byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
         return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
-    
+
     /**
      * Hash data using SHA-256
      * @param data Data to hash
@@ -153,7 +153,7 @@ public class EncryptionUtil {
         byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
         return bytesToHex(hash);
     }
-    
+
     /**
      * Generate HMAC-SHA256 signature
      * @param data Data to sign
@@ -164,15 +164,15 @@ public class EncryptionUtil {
     public String generateHMAC(String data, String secret) throws Exception {
         javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
         SecretKeySpec secretKeySpec = new SecretKeySpec(
-            secret.getBytes(StandardCharsets.UTF_8), 
+            secret.getBytes(StandardCharsets.UTF_8),
             "HmacSHA256"
         );
         mac.init(secretKeySpec);
-        
+
         byte[] hash = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
         return bytesToHex(hash);
     }
-    
+
     /**
      * Verify HMAC signature
      * @param data Original data
@@ -188,7 +188,7 @@ public class EncryptionUtil {
             calculatedSignature.getBytes(StandardCharsets.UTF_8)
         );
     }
-    
+
     /**
      * Generate secure random token
      * @param length Length of token in bytes
@@ -199,7 +199,7 @@ public class EncryptionUtil {
         new SecureRandom().nextBytes(token);
         return bytesToHex(token);
     }
-    
+
     /**
      * Convert SecretKey to Base64 string for storage
      * @param secretKey Secret key to convert
@@ -208,7 +208,7 @@ public class EncryptionUtil {
     public String secretKeyToString(SecretKey secretKey) {
         return Base64.getEncoder().encodeToString(secretKey.getEncoded());
     }
-    
+
     /**
      * Convert Base64 string back to SecretKey
      * @param keyString Base64 encoded key
@@ -218,7 +218,7 @@ public class EncryptionUtil {
         byte[] decodedKey = Base64.getDecoder().decode(keyString);
         return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
-    
+
     /**
      * Convert PublicKey to Base64 string
      * @param publicKey Public key to convert
@@ -227,7 +227,7 @@ public class EncryptionUtil {
     public String publicKeyToString(PublicKey publicKey) {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
-    
+
     /**
      * Convert Base64 string to PublicKey
      * @param keyString Base64 encoded key
@@ -240,7 +240,7 @@ public class EncryptionUtil {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePublic(keySpec);
     }
-    
+
     /**
      * Convert PrivateKey to Base64 string
      * @param privateKey Private key to convert
@@ -249,7 +249,7 @@ public class EncryptionUtil {
     public String privateKeyToString(PrivateKey privateKey) {
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }
-    
+
     /**
      * Convert Base64 string to PrivateKey
      * @param keyString Base64 encoded key
@@ -262,7 +262,7 @@ public class EncryptionUtil {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePrivate(keySpec);
     }
-    
+
     /**
      * Encrypt sensitive payment data (card number, CVV, etc.)
      * PCI DSS compliant encryption
@@ -274,7 +274,7 @@ public class EncryptionUtil {
     public String encryptSensitivePaymentData(String sensitiveData, SecretKey secretKey) throws Exception {
         return encryptAES(sensitiveData, secretKey);
     }
-    
+
     /**
      * Decrypt sensitive payment data
      * @param encryptedData Encrypted sensitive data
@@ -285,7 +285,7 @@ public class EncryptionUtil {
     public String decryptSensitivePaymentData(String encryptedData, SecretKey secretKey) throws Exception {
         return decryptAES(encryptedData, secretKey);
     }
-    
+
     /**
      * Generate checksum for data integrity verification
      * @param data Data to checksum
@@ -295,7 +295,7 @@ public class EncryptionUtil {
     public String generateChecksum(String data) throws NoSuchAlgorithmException {
         return hashSHA256(data);
     }
-    
+
     /**
      * Verify data integrity using checksum
      * @param data Original data
@@ -310,7 +310,7 @@ public class EncryptionUtil {
             calculatedChecksum.getBytes(StandardCharsets.UTF_8)
         );
     }
-    
+
     /**
      * Convert byte array to hex string
      * @param bytes Byte array
@@ -327,7 +327,7 @@ public class EncryptionUtil {
         }
         return hexString.toString();
     }
-    
+
     /**
      * Convert hex string to byte array
      * @param hex Hex string
@@ -342,7 +342,7 @@ public class EncryptionUtil {
         }
         return bytes;
     }
-    
+
     /**
      * Mask sensitive data for logging
      * Shows only last 4 characters
@@ -353,12 +353,12 @@ public class EncryptionUtil {
         if (data == null || data.length() <= 4) {
             return "****";
         }
-        
+
         int length = data.length();
         String masked = "*".repeat(length - 4);
         return masked + data.substring(length - 4);
     }
-    
+
     /**
      * Generate secure password hash using BCrypt-like approach
      * @param password Password to hash

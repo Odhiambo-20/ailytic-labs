@@ -22,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class WebhookController {
-    
+
     private final WebhookVerificationService webhookVerificationService;
 
     /**
@@ -34,31 +34,31 @@ public class WebhookController {
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String signature,
             HttpServletRequest request) {
-        
+
         log.info("Stripe webhook received");
-        
+
         String ipAddress = getClientIpAddress(request);
         Map<String, String> headers = extractHeaders(request);
-        
+
         try {
             // Verify webhook signature
             boolean isValid = webhookVerificationService.verifyStripeSignature(
                     payload, signature);
-            
+
             if (!isValid) {
                 log.error("Invalid Stripe webhook signature");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("error", "Invalid signature"));
             }
-            
+
             // Process webhook
             webhookVerificationService.processStripeWebhook(
                     payload, ipAddress, headers);
-            
+
             log.info("Stripe webhook processed successfully");
-            
+
             return ResponseEntity.ok(Map.of("status", "success"));
-            
+
         } catch (Exception e) {
             log.error("Error processing Stripe webhook", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -74,16 +74,16 @@ public class WebhookController {
     public ResponseEntity<Map<String, String>> validateMpesaTransaction(
             @RequestBody MpesaCallbackRequest validationRequest,
             HttpServletRequest request) {
-        
+
         log.info("M-Pesa validation request received");
-        
+
         String ipAddress = getClientIpAddress(request);
-        
+
         try {
             // Validate the transaction
             boolean isValid = webhookVerificationService.validateMpesaTransaction(
                     validationRequest, ipAddress);
-            
+
             if (isValid) {
                 return ResponseEntity.ok(Map.of(
                         "ResultCode", "0",
@@ -95,7 +95,7 @@ public class WebhookController {
                         "ResultDesc", "Rejected"
                 ));
             }
-            
+
         } catch (Exception e) {
             log.error("Error validating M-Pesa transaction", e);
             return ResponseEntity.ok(Map.of(
@@ -113,24 +113,24 @@ public class WebhookController {
     public ResponseEntity<Map<String, String>> confirmMpesaTransaction(
             @RequestBody MpesaCallbackRequest confirmationRequest,
             HttpServletRequest request) {
-        
+
         log.info("M-Pesa confirmation request received");
-        
+
         String ipAddress = getClientIpAddress(request);
         Map<String, String> headers = extractHeaders(request);
-        
+
         try {
             // Process confirmation
             webhookVerificationService.processMpesaConfirmation(
                     confirmationRequest, ipAddress, headers);
-            
+
             log.info("M-Pesa confirmation processed successfully");
-            
+
             return ResponseEntity.ok(Map.of(
                     "ResultCode", "0",
                     "ResultDesc", "Accepted"
             ));
-            
+
         } catch (Exception e) {
             log.error("Error processing M-Pesa confirmation", e);
             return ResponseEntity.ok(Map.of(
@@ -148,19 +148,19 @@ public class WebhookController {
     public ResponseEntity<Map<String, String>> handleMpesaTimeout(
             @RequestBody MpesaCallbackRequest timeoutRequest,
             HttpServletRequest request) {
-        
+
         log.info("M-Pesa timeout request received");
-        
+
         String ipAddress = getClientIpAddress(request);
-        
+
         try {
             webhookVerificationService.processMpesaTimeout(timeoutRequest, ipAddress);
-            
+
             return ResponseEntity.ok(Map.of(
                     "ResultCode", "0",
                     "ResultDesc", "Accepted"
             ));
-            
+
         } catch (Exception e) {
             log.error("Error processing M-Pesa timeout", e);
             return ResponseEntity.ok(Map.of(
@@ -178,23 +178,23 @@ public class WebhookController {
     public ResponseEntity<Map<String, String>> handleMpesaResult(
             @RequestBody MpesaCallbackRequest resultRequest,
             HttpServletRequest request) {
-        
+
         log.info("M-Pesa result request received");
-        
+
         String ipAddress = getClientIpAddress(request);
         Map<String, String> headers = extractHeaders(request);
-        
+
         try {
             webhookVerificationService.processMpesaResult(
                     resultRequest, ipAddress, headers);
-            
+
             log.info("M-Pesa result processed successfully");
-            
+
             return ResponseEntity.ok(Map.of(
                     "ResultCode", "0",
                     "ResultDesc", "Accepted"
             ));
-            
+
         } catch (Exception e) {
             log.error("Error processing M-Pesa result", e);
             return ResponseEntity.ok(Map.of(
@@ -224,12 +224,12 @@ public class WebhookController {
     public ResponseEntity<Map<String, Object>> getWebhookLogs(
             @RequestParam(required = false) String provider,
             @RequestParam(defaultValue = "20") int limit) {
-        
+
         log.info("Fetching webhook logs");
-        
+
         Map<String, Object> logs = webhookVerificationService.getWebhookLogs(
                 provider, limit);
-        
+
         return ResponseEntity.ok(logs);
     }
 
@@ -240,17 +240,17 @@ public class WebhookController {
     @PostMapping("/{webhookId}/retry")
     public ResponseEntity<Map<String, String>> retryWebhook(
             @PathVariable String webhookId) {
-        
+
         log.info("Retrying webhook: {}", webhookId);
-        
+
         try {
             webhookVerificationService.retryWebhook(webhookId);
-            
+
             return ResponseEntity.ok(Map.of(
                     "status", "success",
                     "message", "Webhook retry initiated"
             ));
-            
+
         } catch (Exception e) {
             log.error("Error retrying webhook", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -266,24 +266,24 @@ public class WebhookController {
         if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
             return xForwardedFor.split(",")[0].trim();
         }
-        
+
         String xRealIp = request.getHeader("X-Real-IP");
         if (xRealIp != null && !xRealIp.isEmpty()) {
             return xRealIp;
         }
-        
+
         return request.getRemoteAddr();
     }
 
     private Map<String, String> extractHeaders(HttpServletRequest request) {
         Map<String, String> headers = new HashMap<>();
         Enumeration<String> headerNames = request.getHeaderNames();
-        
+
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             headers.put(headerName, request.getHeader(headerName));
         }
-        
+
         return headers;
     }
 }

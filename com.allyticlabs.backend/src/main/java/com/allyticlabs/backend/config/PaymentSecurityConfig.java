@@ -37,51 +37,51 @@ public class PaymentSecurityConfig {
     private int encryptionKeySize = 256;
     private int gcmTagLength = 128;
     private int gcmIvLength = 12;
-    
+
     // Hashing Settings
     private String hashAlgorithm = "SHA-256";
     private String hmacAlgorithm = "HmacSHA256";
-    
+
     // RSA Settings for M-Pesa
     private int rsaKeySize = 2048;
     private String rsaAlgorithm = "RSA/ECB/PKCS1Padding";
-    
+
     // JWT Settings
     private String jwtSecret;
     private long jwtExpirationMs = 86400000; // 24 hours
     private String jwtIssuer = "payment-service";
-    
+
     // API Security
     private List<String> allowedOrigins = Arrays.asList("http://localhost:3000", "https://yourdomain.com");
     private List<String> allowedMethods = Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS");
     private List<String> allowedHeaders = Arrays.asList("*");
     private boolean allowCredentials = true;
     private long maxAge = 3600L;
-    
+
     // Rate Limiting
     private int rateLimitPerMinute = 60;
     private int rateLimitPerHour = 1000;
     private boolean enableRateLimiting = true;
-    
+
     // Webhook Security
     private long webhookTimestampTolerance = 300000; // 5 minutes in milliseconds
     private boolean validateWebhookSignature = true;
-    
+
     // IP Whitelisting
     private List<String> whitelistedIps;
     private boolean enableIpWhitelisting = false;
-    
+
     // PCI DSS Compliance Settings
     private boolean maskSensitiveData = true;
     private boolean enableAuditLogging = true;
     private int passwordMinLength = 12;
     private boolean requireStrongPasswords = true;
-    
+
     // Session Settings
     private int sessionTimeout = 1800; // 30 minutes in seconds
     private boolean useSecureCookies = true;
     private String cookieSameSite = "Strict";
-    
+
     /**
      * Configure HTTP Security with payment-specific rules
      */
@@ -103,18 +103,18 @@ public class PaymentSecurityConfig {
                 .requestMatchers("/api/webhooks/**").permitAll()
                 .requestMatchers("/api/payments/callback/**").permitAll()
                 .requestMatchers("/api/health", "/api/status").permitAll()
-                
+
                 // QR code generation (requires authentication)
                 .requestMatchers("/api/qr/generate").authenticated()
-                
+
                 // Payment endpoints (requires authentication)
                 .requestMatchers("/api/payments/**").authenticated()
                 .requestMatchers("/api/mpesa/**").authenticated()
                 .requestMatchers("/api/stripe/**").authenticated()
-                
+
                 // Admin endpoints
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                
+
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )
@@ -126,10 +126,10 @@ public class PaymentSecurityConfig {
                 .xssProtection(xss -> xss.headerValue("1; mode=block"))
                 .contentTypeOptions(contentType -> contentType.disable())
             );
-        
+
         return http.build();
     }
-    
+
     /**
      * Configure CORS for cross-origin requests
      */
@@ -141,13 +141,13 @@ public class PaymentSecurityConfig {
         configuration.setAllowedHeaders(allowedHeaders);
         configuration.setAllowCredentials(allowCredentials);
         configuration.setMaxAge(maxAge);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
+
         return source;
     }
-    
+
     /**
      * Password encoder for secure password hashing
      */
@@ -155,7 +155,7 @@ public class PaymentSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12); // BCrypt with strength 12
     }
-    
+
     /**
      * Generate AES SecretKey for encryption
      */
@@ -165,7 +165,7 @@ public class PaymentSecurityConfig {
         keyGenerator.init(encryptionKeySize);
         return keyGenerator.generateKey();
     }
-    
+
     /**
      * Generate RSA KeyPair for M-Pesa communication
      */
@@ -175,7 +175,7 @@ public class PaymentSecurityConfig {
         keyPairGenerator.initialize(rsaKeySize);
         return keyPairGenerator.generateKeyPair();
     }
-    
+
     /**
      * Get MessageDigest for hashing
      */
@@ -183,7 +183,7 @@ public class PaymentSecurityConfig {
     public MessageDigest messageDigest() throws NoSuchAlgorithmException {
         return MessageDigest.getInstance(hashAlgorithm);
     }
-    
+
     /**
      * SecureRandom for generating cryptographically strong random values
      */
@@ -191,7 +191,7 @@ public class PaymentSecurityConfig {
     public SecureRandom secureRandom() {
         return new SecureRandom();
     }
-    
+
     /**
      * Validate if IP address is whitelisted
      */
@@ -199,14 +199,14 @@ public class PaymentSecurityConfig {
         if (!enableIpWhitelisting) {
             return true;
         }
-        
+
         if (whitelistedIps == null || whitelistedIps.isEmpty()) {
             return true;
         }
-        
+
         return whitelistedIps.contains(ipAddress);
     }
-    
+
     /**
      * Check if timestamp is within acceptable tolerance
      */
@@ -215,7 +215,7 @@ public class PaymentSecurityConfig {
         long difference = Math.abs(currentTime - timestamp);
         return difference <= webhookTimestampTolerance;
     }
-    
+
     /**
      * Generate secure random token
      */
@@ -225,7 +225,7 @@ public class PaymentSecurityConfig {
         random.nextBytes(token);
         return bytesToHex(token);
     }
-    
+
     /**
      * Convert byte array to hex string
      */
@@ -240,7 +240,7 @@ public class PaymentSecurityConfig {
         }
         return hexString.toString();
     }
-    
+
     /**
      * Mask sensitive data for logging (PCI DSS compliance)
      */
@@ -248,14 +248,14 @@ public class PaymentSecurityConfig {
         if (!maskSensitiveData || data == null || data.length() <= 4) {
             return data;
         }
-        
+
         int visibleChars = 4;
         int totalLength = data.length();
         String masked = "*".repeat(totalLength - visibleChars);
-        
+
         return masked + data.substring(totalLength - visibleChars);
     }
-    
+
     /**
      * Mask card number (PCI DSS Level 1 compliance)
      */
@@ -263,12 +263,12 @@ public class PaymentSecurityConfig {
         if (cardNumber == null || cardNumber.length() < 13) {
             return "****";
         }
-        
+
         // Show only last 4 digits
         String lastFour = cardNumber.substring(cardNumber.length() - 4);
         return "**** **** **** " + lastFour;
     }
-    
+
     /**
      * Validate password strength
      */
@@ -276,20 +276,20 @@ public class PaymentSecurityConfig {
         if (!requireStrongPasswords) {
             return password != null && password.length() >= passwordMinLength;
         }
-        
+
         if (password == null || password.length() < passwordMinLength) {
             return false;
         }
-        
+
         // Check for uppercase, lowercase, digit, and special character
         boolean hasUppercase = password.matches(".*[A-Z].*");
         boolean hasLowercase = password.matches(".*[a-z].*");
         boolean hasDigit = password.matches(".*\\d.*");
         boolean hasSpecial = password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*");
-        
+
         return hasUppercase && hasLowercase && hasDigit && hasSpecial;
     }
-    
+
     /**
      * Get security headers for responses
      */
@@ -302,10 +302,10 @@ public class PaymentSecurityConfig {
         headers.put("Content-Security-Policy", "default-src 'self'");
         headers.put("Referrer-Policy", "strict-origin-when-cross-origin");
         headers.put("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-        
+
         return headers;
     }
-    
+
     /**
      * Calculate request signature for API authentication
      */
@@ -318,7 +318,7 @@ public class PaymentSecurityConfig {
         byte[] hash = mac.doFinal(data.getBytes());
         return bytesToHex(hash);
     }
-    
+
     /**
      * Validate request signature
      */
@@ -326,14 +326,14 @@ public class PaymentSecurityConfig {
         try {
             String calculatedSignature = calculateSignature(data, secret);
             return MessageDigest.isEqual(
-                signature.getBytes(), 
+                signature.getBytes(),
                 calculatedSignature.getBytes()
             );
         } catch (Exception e) {
             return false;
         }
     }
-    
+
     /**
      * Get masked configuration for logging
      */

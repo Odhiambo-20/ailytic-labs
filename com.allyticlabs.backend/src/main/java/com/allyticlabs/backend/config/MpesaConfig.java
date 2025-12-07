@@ -28,7 +28,7 @@ public class MpesaConfig {
     private String shortCode;
     private String initiatorName;
     private String initiatorPassword;
-    
+
     // API URLs
     private String oauthUrl;
     private String stkPushUrl;
@@ -37,19 +37,19 @@ public class MpesaConfig {
     private String c2bRegisterUrl;
     private String transactionStatusUrl;
     private String accountBalanceUrl;
-    
+
     // Callback URLs
     private String callbackUrl;
     private String timeoutUrl;
     private String resultUrl;
     private String validationUrl;
     private String confirmationUrl;
-    
+
     // Configuration Settings
     private String environment; // sandbox or production
     private int connectionTimeout = 30000; // 30 seconds
     private int readTimeout = 30000;
-    
+
     // Transaction Settings
     private String transactionType = "CustomerPayBillOnline";
     private String commandId = "TransactionReversal";
@@ -57,7 +57,7 @@ public class MpesaConfig {
     private String partyB; // Organization receiving the funds
     private String accountReference = "Payment";
     private String transactionDesc = "Payment for services";
-    
+
     /**
      * Generate OAuth token for M-Pesa API authentication
      * @return Base64 encoded credentials
@@ -66,7 +66,7 @@ public class MpesaConfig {
         String credentials = consumerKey + ":" + consumerSecret;
         return Base64.getEncoder().encodeToString(credentials.getBytes());
     }
-    
+
     /**
      * Generate password for STK Push
      * Format: Base64(Shortcode + Passkey + Timestamp)
@@ -77,7 +77,7 @@ public class MpesaConfig {
         String rawPassword = shortCode + passkey + timestamp;
         return Base64.getEncoder().encodeToString(rawPassword.getBytes());
     }
-    
+
     /**
      * Get security credential for B2C and other secured APIs
      * This should be encrypted using M-Pesa public key
@@ -88,7 +88,7 @@ public class MpesaConfig {
         // For now, returning base64 encoded password (update with proper encryption)
         return Base64.getEncoder().encodeToString(initiatorPassword.getBytes());
     }
-    
+
     /**
      * Configure RestTemplate with timeouts and interceptors for M-Pesa API calls
      * @return Configured RestTemplate
@@ -98,9 +98,9 @@ public class MpesaConfig {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(connectionTimeout);
         factory.setReadTimeout(readTimeout);
-        
+
         RestTemplate restTemplate = new RestTemplate(factory);
-        
+
         // Add logging interceptor for debugging
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add((request, body, execution) -> {
@@ -108,11 +108,11 @@ public class MpesaConfig {
             System.out.println("M-Pesa API Request: " + request.getMethod() + " " + request.getURI());
             return execution.execute(request, body);
         });
-        
+
         restTemplate.setInterceptors(interceptors);
         return restTemplate;
     }
-    
+
     /**
      * Check if running in production environment
      * @return true if production, false if sandbox
@@ -120,7 +120,7 @@ public class MpesaConfig {
     public boolean isProduction() {
         return "production".equalsIgnoreCase(environment);
     }
-    
+
     /**
      * Get appropriate base URL based on environment
      * @return Base URL for M-Pesa API
@@ -132,7 +132,7 @@ public class MpesaConfig {
             return "https://sandbox.safaricom.co.ke";
         }
     }
-    
+
     /**
      * Validate M-Pesa configuration
      * @return true if configuration is valid
@@ -144,7 +144,7 @@ public class MpesaConfig {
                shortCode != null && !shortCode.isEmpty() &&
                callbackUrl != null && !callbackUrl.isEmpty();
     }
-    
+
     /**
      * Get full OAuth URL
      * @return Complete OAuth endpoint URL
@@ -152,7 +152,7 @@ public class MpesaConfig {
     public String getFullOauthUrl() {
         return getBaseUrl() + (oauthUrl != null ? oauthUrl : "/oauth/v1/generate?grant_type=client_credentials");
     }
-    
+
     /**
      * Get full STK Push URL
      * @return Complete STK Push endpoint URL
@@ -160,7 +160,7 @@ public class MpesaConfig {
     public String getFullStkPushUrl() {
         return getBaseUrl() + (stkPushUrl != null ? stkPushUrl : "/mpesa/stkpush/v1/processrequest");
     }
-    
+
     /**
      * Get full STK Query URL
      * @return Complete STK Query endpoint URL
@@ -168,7 +168,7 @@ public class MpesaConfig {
     public String getFullStkQueryUrl() {
         return getBaseUrl() + (stkQueryUrl != null ? stkQueryUrl : "/mpesa/stkpushquery/v1/query");
     }
-    
+
     /**
      * Get full Transaction Status URL
      * @return Complete Transaction Status endpoint URL
@@ -176,7 +176,7 @@ public class MpesaConfig {
     public String getFullTransactionStatusUrl() {
         return getBaseUrl() + (transactionStatusUrl != null ? transactionStatusUrl : "/mpesa/transactionstatus/v1/query");
     }
-    
+
     /**
      * Mask sensitive configuration data for logging
      * @return Masked configuration string

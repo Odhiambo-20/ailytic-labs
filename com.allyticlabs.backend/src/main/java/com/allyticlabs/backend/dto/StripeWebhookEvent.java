@@ -16,37 +16,37 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StripeWebhookEvent {
-    
+
     @JsonProperty("id")
     private String id;
-    
+
     @JsonProperty("object")
     private String object; // "event"
-    
+
     @JsonProperty("api_version")
     private String apiVersion;
-    
+
     @JsonProperty("created")
     private Long created;
-    
+
     @JsonProperty("data")
     private EventData data;
-    
+
     @JsonProperty("livemode")
     private Boolean livemode;
-    
+
     @JsonProperty("pending_webhooks")
     private Integer pendingWebhooks;
-    
+
     @JsonProperty("request")
     private EventRequest request;
-    
+
     @JsonProperty("type")
     private String type; // e.g., "payment_intent.succeeded"
-    
+
     // Raw event JSON for logging/audit
     private String rawEventJson;
-    
+
     /**
      * Event Data containing the actual object
      */
@@ -54,14 +54,14 @@ public class StripeWebhookEvent {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class EventData {
-        
+
         @JsonProperty("object")
         private Map<String, Object> object;
-        
+
         @JsonProperty("previous_attributes")
         private Map<String, Object> previousAttributes;
     }
-    
+
     /**
      * Event Request information
      */
@@ -69,18 +69,18 @@ public class StripeWebhookEvent {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class EventRequest {
-        
+
         @JsonProperty("id")
         private String id;
-        
+
         @JsonProperty("idempotency_key")
         private String idempotencyKey;
     }
-    
+
     /**
      * Helper methods to extract common fields
      */
-    
+
     public String getPaymentIntentId() {
         if (data != null && data.getObject() != null) {
             Object id = data.getObject().get("id");
@@ -88,7 +88,7 @@ public class StripeWebhookEvent {
         }
         return null;
     }
-    
+
     public String getChargeId() {
         if (data != null && data.getObject() != null) {
             Object id = data.getObject().get("id");
@@ -114,7 +114,7 @@ public class StripeWebhookEvent {
         }
         return null;
     }
-    
+
     public Long getAmount() {
         if (data != null && data.getObject() != null) {
             Object amount = data.getObject().get("amount");
@@ -124,7 +124,7 @@ public class StripeWebhookEvent {
         }
         return null;
     }
-    
+
     public String getCurrency() {
         if (data != null && data.getObject() != null) {
             Object currency = data.getObject().get("currency");
@@ -132,7 +132,7 @@ public class StripeWebhookEvent {
         }
         return null;
     }
-    
+
     public String getStatus() {
         if (data != null && data.getObject() != null) {
             Object status = data.getObject().get("status");
@@ -140,7 +140,7 @@ public class StripeWebhookEvent {
         }
         return null;
     }
-    
+
     public Map<String, String> getMetadata() {
         if (data != null && data.getObject() != null) {
             Object metadata = data.getObject().get("metadata");
@@ -152,14 +152,14 @@ public class StripeWebhookEvent {
         }
         return null;
     }
-    
+
     public boolean isPaymentSucceeded() {
-        return "payment_intent.succeeded".equals(type) || 
+        return "payment_intent.succeeded".equals(type) ||
                "charge.succeeded".equals(type);
     }
-    
+
     public boolean isPaymentFailed() {
-        return "payment_intent.payment_failed".equals(type) || 
+        return "payment_intent.payment_failed".equals(type) ||
                "charge.failed".equals(type);
     }
 }

@@ -38,18 +38,18 @@ public class StripeController {
     public ResponseEntity<PaymentResponse> createPaymentIntent(
             @Valid @RequestBody PaymentRequest paymentRequest,
             HttpServletRequest request) {
-        
-        log.info("Creating Stripe Payment Intent for amount: {} {}", 
+
+        log.info("Creating Stripe Payment Intent for amount: {} {}",
                 paymentRequest.getAmount(), paymentRequest.getCurrency());
-        
+
         // Extract client info
         String ipAddress = getClientIpAddress(request);
         paymentRequest.setIpAddress(ipAddress);
-        
+
         PaymentResponse response = stripeService.createPaymentIntent(paymentRequest);
-        
+
         log.info("Stripe Payment Intent created: {}", response.getPaymentId());
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -62,12 +62,12 @@ public class StripeController {
     public ResponseEntity<PaymentResponse> confirmPaymentIntent(
             @PathVariable @NotBlank String paymentIntentId,
             @RequestParam(required = false) String paymentMethodId) {
-        
+
         log.info("Confirming Stripe Payment Intent: {}", paymentIntentId);
-        
+
         PaymentResponse response = stripeService.confirmPaymentIntent(
                 paymentIntentId, paymentMethodId);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -81,11 +81,11 @@ public class StripeController {
             @RequestParam @NotBlank String email,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String phone) {
-        
+
         log.info("Creating Stripe customer for email: {}", email);
-        
+
         Map<String, String> response = stripeService.createCustomer(email, name, phone);
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -98,12 +98,12 @@ public class StripeController {
     public ResponseEntity<Map<String, String>> attachPaymentMethod(
             @PathVariable @NotBlank String customerId,
             @RequestParam @NotBlank String paymentMethodId) {
-        
+
         log.info("Attaching payment method to customer: {}", customerId);
-        
+
         Map<String, String> response = stripeService.attachPaymentMethod(
                 customerId, paymentMethodId);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -115,11 +115,11 @@ public class StripeController {
     @PreAuthorize("hasAnyRole('USER', 'MERCHANT', 'ADMIN')")
     public ResponseEntity<Map<String, Object>> getPaymentMethods(
             @PathVariable @NotBlank String customerId) {
-        
+
         log.info("Fetching payment methods for customer: {}", customerId);
-        
+
         Map<String, Object> response = stripeService.getCustomerPaymentMethods(customerId);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -131,11 +131,11 @@ public class StripeController {
     @PreAuthorize("hasAnyRole('USER', 'MERCHANT', 'ADMIN')")
     public ResponseEntity<Map<String, String>> detachPaymentMethod(
             @PathVariable @NotBlank String paymentMethodId) {
-        
+
         log.info("Detaching payment method: {}", paymentMethodId);
-        
+
         Map<String, String> response = stripeService.detachPaymentMethod(paymentMethodId);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -149,12 +149,12 @@ public class StripeController {
             @PathVariable @NotBlank String paymentIntentId,
             @RequestParam(required = false) Long amount,
             @RequestParam(required = false) String reason) {
-        
+
         log.info("Creating refund for Payment Intent: {}", paymentIntentId);
-        
+
         PaymentResponse response = stripeService.createRefund(
                 paymentIntentId, amount, reason);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -166,11 +166,11 @@ public class StripeController {
     @PreAuthorize("hasAnyRole('USER', 'MERCHANT', 'ADMIN')")
     public ResponseEntity<PaymentResponse> getPaymentIntent(
             @PathVariable @NotBlank String paymentIntentId) {
-        
+
         log.info("Fetching Stripe Payment Intent: {}", paymentIntentId);
-        
+
         PaymentResponse response = stripeService.getPaymentIntent(paymentIntentId);
-        
+
         return ResponseEntity.ok(response);
     }
 

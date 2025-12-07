@@ -17,10 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class HMACValidator {
-    
+
     private static final String HMAC_SHA256 = "HmacSHA256";
     private static final String HMAC_SHA512 = "HmacSHA512";
-    
+
     /**
      * Generate HMAC-SHA256 signature
      * @param data Data to sign
@@ -31,7 +31,7 @@ public class HMACValidator {
         try {
             Mac mac = Mac.getInstance(HMAC_SHA256);
             SecretKeySpec secretKeySpec = new SecretKeySpec(
-                secret.getBytes(StandardCharsets.UTF_8), 
+                secret.getBytes(StandardCharsets.UTF_8),
                 HMAC_SHA256
             );
             mac.init(secretKeySpec);
@@ -42,7 +42,7 @@ public class HMACValidator {
             throw new RuntimeException("Failed to generate HMAC signature", e);
         }
     }
-    
+
     /**
      * Generate HMAC-SHA256 signature (Base64 encoded)
      * @param data Data to sign
@@ -53,7 +53,7 @@ public class HMACValidator {
         try {
             Mac mac = Mac.getInstance(HMAC_SHA256);
             SecretKeySpec secretKeySpec = new SecretKeySpec(
-                secret.getBytes(StandardCharsets.UTF_8), 
+                secret.getBytes(StandardCharsets.UTF_8),
                 HMAC_SHA256
             );
             mac.init(secretKeySpec);
@@ -64,7 +64,7 @@ public class HMACValidator {
             throw new RuntimeException("Failed to generate HMAC signature", e);
         }
     }
-    
+
     /**
      * Generate HMAC-SHA512 signature for enhanced security
      * @param data Data to sign
@@ -75,7 +75,7 @@ public class HMACValidator {
         try {
             Mac mac = Mac.getInstance(HMAC_SHA512);
             SecretKeySpec secretKeySpec = new SecretKeySpec(
-                secret.getBytes(StandardCharsets.UTF_8), 
+                secret.getBytes(StandardCharsets.UTF_8),
                 HMAC_SHA512
             );
             mac.init(secretKeySpec);
@@ -86,7 +86,7 @@ public class HMACValidator {
             throw new RuntimeException("Failed to generate HMAC signature", e);
         }
     }
-    
+
     /**
      * Validate HMAC signature (constant-time comparison)
      * @param data Original data
@@ -103,7 +103,7 @@ public class HMACValidator {
             return false;
         }
     }
-    
+
     /**
      * Validate HMAC signature with Base64 encoding
      * @param data Original data
@@ -120,7 +120,7 @@ public class HMACValidator {
             return false;
         }
     }
-    
+
     /**
      * Validate Stripe webhook signature
      * @param payload Webhook payload
@@ -129,23 +129,23 @@ public class HMACValidator {
      * @param timestamp Timestamp from header
      * @return true if signature is valid
      */
-    public boolean validateStripeSignature(String payload, String signature, 
+    public boolean validateStripeSignature(String payload, String signature,
                                           String secret, long timestamp) {
         try {
             // Stripe uses format: t=timestamp,v1=signature
             String signedPayload = timestamp + "." + payload;
             String computedSignature = generateHMACSHA256(signedPayload, secret);
-            
+
             // Extract v1 signature from header
             String v1Signature = extractSignatureFromHeader(signature, "v1");
-            
+
             return constantTimeEquals(v1Signature, computedSignature);
         } catch (Exception e) {
             log.error("Error validating Stripe signature", e);
             return false;
         }
     }
-    
+
     /**
      * Validate M-Pesa callback signature
      * @param payload Callback payload
@@ -162,7 +162,7 @@ public class HMACValidator {
             return false;
         }
     }
-    
+
     /**
      * Generate QR payment signature with expiry
      * @param qrData QR code data
@@ -174,7 +174,7 @@ public class HMACValidator {
         String dataWithExpiry = qrData + "|" + expiryTimestamp;
         return generateHMACSHA256(dataWithExpiry, secret);
     }
-    
+
     /**
      * Validate QR payment signature with expiry check
      * @param qrData QR code data
@@ -183,19 +183,19 @@ public class HMACValidator {
      * @param expiryTimestamp Expiry timestamp
      * @return true if signature is valid and not expired
      */
-    public boolean validateQRSignature(String qrData, String signature, 
+    public boolean validateQRSignature(String qrData, String signature,
                                       String secret, long expiryTimestamp) {
         // Check if expired
         if (System.currentTimeMillis() > expiryTimestamp) {
             log.warn("QR code signature expired");
             return false;
         }
-        
+
         String dataWithExpiry = qrData + "|" + expiryTimestamp;
         String computedSignature = generateHMACSHA256(dataWithExpiry, secret);
         return constantTimeEquals(signature, computedSignature);
     }
-    
+
     /**
      * Constant-time string comparison to prevent timing attacks
      * @param a First string
@@ -206,13 +206,13 @@ public class HMACValidator {
         if (a == null || b == null) {
             return false;
         }
-        
+
         byte[] aBytes = a.getBytes(StandardCharsets.UTF_8);
         byte[] bBytes = b.getBytes(StandardCharsets.UTF_8);
-        
+
         return MessageDigest.isEqual(aBytes, bBytes);
     }
-    
+
     /**
      * Extract specific signature from Stripe header format
      * @param header Signature header
@@ -229,7 +229,7 @@ public class HMACValidator {
         }
         return null;
     }
-    
+
     /**
      * Convert byte array to hex string
      * @param bytes Byte array

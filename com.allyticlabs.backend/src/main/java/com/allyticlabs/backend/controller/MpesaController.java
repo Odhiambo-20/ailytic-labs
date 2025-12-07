@@ -39,18 +39,18 @@ public class MpesaController {
     public ResponseEntity<PaymentResponse> initiateSTKPush(
             @Valid @RequestBody PaymentRequest paymentRequest,
             HttpServletRequest request) {
-        
-        log.info("M-Pesa STK Push request received for phone: {}", 
+
+        log.info("M-Pesa STK Push request received for phone: {}",
                 maskPhoneNumber(paymentRequest.getPhoneNumber()));
-        
+
         // Extract client info
         String ipAddress = getClientIpAddress(request);
         paymentRequest.setIpAddress(ipAddress);
-        
+
         PaymentResponse response = mpesaService.initiateSTKPush(paymentRequest);
-        
+
         log.info("M-Pesa STK Push initiated: {}", response.getPaymentId());
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -62,25 +62,25 @@ public class MpesaController {
     public ResponseEntity<Map<String, String>> handleSTKCallback(
             @RequestBody MpesaCallbackRequest callbackRequest,
             HttpServletRequest request) {
-        
+
         log.info("M-Pesa callback received");
-        
+
         // Extract request metadata
         String ipAddress = getClientIpAddress(request);
         String userAgent = request.getHeader("User-Agent");
-        
+
         try {
             mpesaService.processSTKCallback(callbackRequest, ipAddress, userAgent);
-            
+
             log.info("M-Pesa callback processed successfully");
-            
+
             return ResponseEntity.ok(Map.of(
                     "ResultCode", "0",
                     "ResultDesc", "Accepted"
             ));
         } catch (Exception e) {
             log.error("Error processing M-Pesa callback", e);
-            
+
             return ResponseEntity.ok(Map.of(
                     "ResultCode", "1",
                     "ResultDesc", "Failed to process callback"
@@ -96,11 +96,11 @@ public class MpesaController {
     @PreAuthorize("hasAnyRole('USER', 'MERCHANT', 'ADMIN')")
     public ResponseEntity<Map<String, Object>> queryTransactionStatus(
             @PathVariable @NotBlank String checkoutRequestId) {
-        
+
         log.info("Querying M-Pesa transaction status: {}", checkoutRequestId);
-        
+
         Map<String, Object> status = mpesaService.queryTransactionStatus(checkoutRequestId);
-        
+
         return ResponseEntity.ok(status);
     }
 
@@ -114,12 +114,12 @@ public class MpesaController {
             @RequestParam @NotBlank String shortCode,
             @RequestParam @NotBlank String validationUrl,
             @RequestParam @NotBlank String confirmationUrl) {
-        
+
         log.info("Registering M-Pesa C2B URLs for shortcode: {}", shortCode);
-        
+
         Map<String, String> response = mpesaService.registerC2BUrls(
                 shortCode, validationUrl, confirmationUrl);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -133,12 +133,12 @@ public class MpesaController {
             @RequestParam @NotBlank String phoneNumber,
             @RequestParam @NotBlank String amount,
             @RequestParam @NotBlank String billRefNumber) {
-        
+
         log.info("Simulating M-Pesa C2B payment");
-        
+
         Map<String, String> response = mpesaService.simulateC2B(
                 phoneNumber, amount, billRefNumber);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -149,11 +149,11 @@ public class MpesaController {
     @GetMapping("/balance")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> getAccountBalance() {
-        
+
         log.info("Fetching M-Pesa account balance");
-        
+
         Map<String, Object> balance = mpesaService.getAccountBalance();
-        
+
         return ResponseEntity.ok(balance);
     }
 
@@ -167,12 +167,12 @@ public class MpesaController {
             @RequestParam @NotBlank String transactionId,
             @RequestParam @NotBlank String amount,
             @RequestParam(required = false) String remarks) {
-        
+
         log.info("Reversing M-Pesa transaction: {}", transactionId);
-        
+
         Map<String, String> response = mpesaService.reverseTransaction(
                 transactionId, amount, remarks);
-        
+
         return ResponseEntity.ok(response);
     }
 

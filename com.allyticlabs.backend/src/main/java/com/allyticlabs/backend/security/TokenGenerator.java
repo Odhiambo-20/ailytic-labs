@@ -14,15 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class TokenGenerator {
-    
+
     private final SecureRandom secureRandom;
     private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int DEFAULT_TOKEN_LENGTH = 32;
-    
+
     public TokenGenerator() {
         this.secureRandom = new SecureRandom();
     }
-    
+
     /**
      * Generate a cryptographically secure random token
      * @return Base64 encoded token
@@ -32,7 +32,7 @@ public class TokenGenerator {
         secureRandom.nextBytes(randomBytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
-    
+
     /**
      * Generate a secure token with specified length
      * @param length Length of random bytes
@@ -43,7 +43,7 @@ public class TokenGenerator {
         secureRandom.nextBytes(randomBytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
-    
+
     /**
      * Generate transaction ID with timestamp and randomness
      * Format: TXN-{timestamp}-{random}
@@ -54,7 +54,7 @@ public class TokenGenerator {
         String randomPart = generateAlphanumericToken(8);
         return String.format("TXN-%d-%s", timestamp, randomPart);
     }
-    
+
     /**
      * Generate payment reference number
      * Format: PAY-{timestamp}-{random}
@@ -65,7 +65,7 @@ public class TokenGenerator {
         String randomPart = generateAlphanumericToken(10);
         return String.format("PAY-%d-%s", timestamp, randomPart);
     }
-    
+
     /**
      * Generate QR code payment token with expiry
      * @param expiryMinutes Minutes until expiry
@@ -76,7 +76,7 @@ public class TokenGenerator {
         String randomToken = generateSecureToken(24);
         return String.format("%s:%d", randomToken, expiryTimestamp);
     }
-    
+
     /**
      * Generate M-Pesa transaction token
      * Format: MPX-{uuid}-{short-random}
@@ -87,7 +87,7 @@ public class TokenGenerator {
         String random = generateAlphanumericToken(6);
         return String.format("MPX-%s-%s", uuid, random);
     }
-    
+
     /**
      * Generate Stripe payment intent ID
      * Format: PI-{timestamp}-{random}
@@ -98,7 +98,7 @@ public class TokenGenerator {
         String randomPart = generateAlphanumericToken(16);
         return String.format("PI-%d-%s", timestamp, randomPart);
     }
-    
+
     /**
      * Generate API key for merchant integration
      * @return Secure API key
@@ -108,7 +108,7 @@ public class TokenGenerator {
         secureRandom.nextBytes(randomBytes);
         return "sk_live_" + Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
-    
+
     /**
      * Generate webhook secret for signature verification
      * @return Webhook secret
@@ -118,7 +118,7 @@ public class TokenGenerator {
         secureRandom.nextBytes(randomBytes);
         return "whsec_" + Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
-    
+
     /**
      * Generate alphanumeric token (uppercase letters and numbers only)
      * @param length Length of token
@@ -132,7 +132,7 @@ public class TokenGenerator {
         }
         return token.toString();
     }
-    
+
     /**
      * Generate one-time payment code
      * Format: 6-digit numeric code
@@ -142,7 +142,7 @@ public class TokenGenerator {
         int otp = secureRandom.nextInt(900000) + 100000; // 6-digit number
         return String.valueOf(otp);
     }
-    
+
     /**
      * Generate session token with embedded metadata
      * @param userId User identifier
@@ -152,18 +152,18 @@ public class TokenGenerator {
     public String generateSessionToken(String userId, String deviceId) {
         long timestamp = System.currentTimeMillis();
         String randomPart = generateSecureToken(16);
-        
+
         // Combine userId hash, deviceId hash, timestamp, and random
-        String metadata = String.format("%d:%s:%s:%s", 
-            timestamp, 
-            hashString(userId), 
-            hashString(deviceId), 
+        String metadata = String.format("%d:%s:%s:%s",
+            timestamp,
+            hashString(userId),
+            hashString(deviceId),
             randomPart
         );
-        
+
         return Base64.getUrlEncoder().withoutPadding().encodeToString(metadata.getBytes());
     }
-    
+
     /**
      * Generate idempotency key for preventing duplicate transactions
      * @return Idempotency key
@@ -171,7 +171,7 @@ public class TokenGenerator {
     public String generateIdempotencyKey() {
         return UUID.randomUUID().toString();
     }
-    
+
     /**
      * Generate merchant reference number
      * @param merchantId Merchant identifier
@@ -182,7 +182,7 @@ public class TokenGenerator {
         String random = generateAlphanumericToken(8);
         return String.format("MER-%s-%d-%s", merchantId, timestamp, random);
     }
-    
+
     /**
      * Generate QR code identifier
      * Format: QR-{timestamp}-{random}
@@ -193,7 +193,7 @@ public class TokenGenerator {
         String random = generateAlphanumericToken(12);
         return String.format("QR-%d-%s", timestamp, random);
     }
-    
+
     /**
      * Generate refund reference
      * @param originalTransactionId Original transaction ID
@@ -203,7 +203,7 @@ public class TokenGenerator {
         String random = generateAlphanumericToken(8);
         return String.format("REF-%s-%s", originalTransactionId, random);
     }
-    
+
     /**
      * Validate token format and expiry for QR payment tokens
      * @param token QR payment token
@@ -215,7 +215,7 @@ public class TokenGenerator {
             if (parts.length != 2) {
                 return false;
             }
-            
+
             long expiryTimestamp = Long.parseLong(parts[1]);
             return System.currentTimeMillis() < expiryTimestamp;
         } catch (Exception e) {
@@ -223,7 +223,7 @@ public class TokenGenerator {
             return false;
         }
     }
-    
+
     /**
      * Extract expiry timestamp from QR token
      * @param token QR payment token
@@ -240,7 +240,7 @@ public class TokenGenerator {
         }
         return 0;
     }
-    
+
     /**
      * Generate nonce for preventing replay attacks
      * @return Nonce value
@@ -249,14 +249,14 @@ public class TokenGenerator {
         byte[] nonceBytes = new byte[16];
         secureRandom.nextBytes(nonceBytes);
         long timestamp = System.currentTimeMillis();
-        
+
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES + nonceBytes.length);
         buffer.putLong(timestamp);
         buffer.put(nonceBytes);
-        
+
         return Base64.getUrlEncoder().withoutPadding().encodeToString(buffer.array());
     }
-    
+
     /**
      * Simple hash function for token generation
      * @param input Input string

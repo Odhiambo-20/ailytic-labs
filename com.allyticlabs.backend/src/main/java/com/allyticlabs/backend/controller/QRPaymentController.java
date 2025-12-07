@@ -39,17 +39,17 @@ public class QRPaymentController {
     public ResponseEntity<Map<String, Object>> generateQRCode(
             @Valid @RequestBody QRPaymentRequest qrRequest,
             HttpServletRequest request) {
-        
-        log.info("QR code generation request for amount: {} {}", 
+
+        log.info("QR code generation request for amount: {} {}",
                 qrRequest.getAmount(), qrRequest.getCurrency());
-        
+
         String ipAddress = getClientIpAddress(request);
         qrRequest.setIpAddress(ipAddress);
-        
+
         Map<String, Object> response = qrCodeService.generateQRCode(qrRequest);
-        
+
         log.info("QR code generated: {}", response.get("qrCodeToken"));
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -60,11 +60,11 @@ public class QRPaymentController {
     @GetMapping(value = "/{qrCodeToken}/image", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getQRCodeImage(
             @PathVariable @NotBlank String qrCodeToken) {
-        
+
         log.info("Fetching QR code image: {}", qrCodeToken);
-        
+
         byte[] qrImage = qrCodeService.getQRCodeImage(qrCodeToken);
-        
+
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
                 .body(qrImage);
@@ -79,17 +79,17 @@ public class QRPaymentController {
             @PathVariable @NotBlank String qrCodeToken,
             @RequestParam @NotBlank String totp,
             HttpServletRequest request) {
-        
+
         log.info("QR code scan request: {}", qrCodeToken);
-        
+
         String ipAddress = getClientIpAddress(request);
         String deviceFingerprint = request.getHeader("X-Device-Fingerprint");
-        
+
         Map<String, Object> paymentDetails = qrCodeService.scanQRCode(
                 qrCodeToken, totp, ipAddress, deviceFingerprint);
-        
+
         log.info("QR code scanned successfully");
-        
+
         return ResponseEntity.ok(paymentDetails);
     }
 
@@ -105,18 +105,18 @@ public class QRPaymentController {
             @RequestParam @NotBlank String paymentMethod,
             @RequestBody(required = false) Map<String, String> paymentDetails,
             HttpServletRequest request) {
-        
+
         log.info("Processing QR payment: {}", qrCodeToken);
-        
+
         String ipAddress = getClientIpAddress(request);
         String deviceFingerprint = request.getHeader("X-Device-Fingerprint");
-        
+
         PaymentResponse response = qrCodeService.processQRPayment(
-                qrCodeToken, totp, paymentMethod, paymentDetails, 
+                qrCodeToken, totp, paymentMethod, paymentDetails,
                 ipAddress, deviceFingerprint);
-        
+
         log.info("QR payment processed: {}", response.getPaymentId());
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -127,11 +127,11 @@ public class QRPaymentController {
     @GetMapping("/{qrCodeToken}/status")
     public ResponseEntity<Map<String, Object>> getQRPaymentStatus(
             @PathVariable @NotBlank String qrCodeToken) {
-        
+
         log.info("Checking QR payment status: {}", qrCodeToken);
-        
+
         Map<String, Object> status = qrCodeService.getQRPaymentStatus(qrCodeToken);
-        
+
         return ResponseEntity.ok(status);
     }
 
@@ -144,11 +144,11 @@ public class QRPaymentController {
     public ResponseEntity<Map<String, String>> cancelQRPayment(
             @PathVariable @NotBlank String qrCodeToken,
             @RequestParam(required = false) String reason) {
-        
+
         log.info("Cancelling QR payment: {}", qrCodeToken);
-        
+
         Map<String, String> response = qrCodeService.cancelQRPayment(qrCodeToken, reason);
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -160,11 +160,11 @@ public class QRPaymentController {
     public ResponseEntity<Map<String, Object>> validateQRCode(
             @PathVariable @NotBlank String qrCodeToken,
             @RequestParam @NotBlank String totp) {
-        
+
         log.info("Validating QR code: {}", qrCodeToken);
-        
+
         Map<String, Object> validation = qrCodeService.validateQRCode(qrCodeToken, totp);
-        
+
         return ResponseEntity.ok(validation);
     }
 
@@ -177,11 +177,11 @@ public class QRPaymentController {
     public ResponseEntity<Map<String, Object>> getMerchantQRCodes(
             @PathVariable @NotBlank String merchantId,
             @RequestParam(defaultValue = "10") int limit) {
-        
+
         log.info("Fetching QR codes for merchant: {}", merchantId);
-        
+
         Map<String, Object> qrCodes = qrCodeService.getMerchantQRCodes(merchantId, limit);
-        
+
         return ResponseEntity.ok(qrCodes);
     }
 

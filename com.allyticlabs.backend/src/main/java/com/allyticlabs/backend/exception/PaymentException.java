@@ -9,14 +9,14 @@ import java.time.Instant;
  */
 @Getter
 public class PaymentException extends RuntimeException {
-    
+
     private final String errorCode;
     private final String errorMessage;
     private final String transactionId;
     private final PaymentErrorType errorType;
     private final Instant timestamp;
     private final Object additionalData;
-    
+
     /**
      * Payment error types for categorization
      */
@@ -39,11 +39,11 @@ public class PaymentException extends RuntimeException {
         WEBHOOK_ERROR,              // Webhook processing error
         UNKNOWN_ERROR               // Unclassified error
     }
-    
+
     /**
      * Constructor with all parameters
      */
-    public PaymentException(String errorCode, String errorMessage, String transactionId, 
+    public PaymentException(String errorCode, String errorMessage, String transactionId,
                            PaymentErrorType errorType, Object additionalData, Throwable cause) {
         super(errorMessage, cause);
         this.errorCode = errorCode;
@@ -53,50 +53,50 @@ public class PaymentException extends RuntimeException {
         this.timestamp = Instant.now();
         this.additionalData = additionalData;
     }
-    
+
     /**
      * Constructor without additional data
      */
-    public PaymentException(String errorCode, String errorMessage, String transactionId, 
+    public PaymentException(String errorCode, String errorMessage, String transactionId,
                            PaymentErrorType errorType, Throwable cause) {
         this(errorCode, errorMessage, transactionId, errorType, null, cause);
     }
-    
+
     /**
      * Constructor without cause
      */
-    public PaymentException(String errorCode, String errorMessage, String transactionId, 
+    public PaymentException(String errorCode, String errorMessage, String transactionId,
                            PaymentErrorType errorType) {
         this(errorCode, errorMessage, transactionId, errorType, null, null);
     }
-    
+
     /**
      * Constructor with minimal parameters
      */
     public PaymentException(String errorMessage, PaymentErrorType errorType) {
         this(null, errorMessage, null, errorType, null, null);
     }
-    
+
     /**
      * Constructor with message only
      */
     public PaymentException(String errorMessage) {
         this(null, errorMessage, null, PaymentErrorType.UNKNOWN_ERROR, null, null);
     }
-    
+
     /**
      * Static factory methods for common payment errors
      */
-    
+
     public static PaymentException validationError(String message, String transactionId) {
         return new PaymentException(
-            "VALIDATION_ERROR", 
-            message, 
-            transactionId, 
+            "VALIDATION_ERROR",
+            message,
+            transactionId,
             PaymentErrorType.VALIDATION_ERROR
         );
     }
-    
+
     public static PaymentException insufficientFunds(String transactionId, Double amount) {
         return new PaymentException(
             "INSUFFICIENT_FUNDS",
@@ -107,7 +107,7 @@ public class PaymentException extends RuntimeException {
             null
         );
     }
-    
+
     public static PaymentException transactionDeclined(String transactionId, String reason) {
         return new PaymentException(
             "TRANSACTION_DECLINED",
@@ -118,7 +118,7 @@ public class PaymentException extends RuntimeException {
             null
         );
     }
-    
+
     public static PaymentException gatewayError(String gateway, String message, String transactionId) {
         return new PaymentException(
             "GATEWAY_ERROR",
@@ -127,7 +127,7 @@ public class PaymentException extends RuntimeException {
             PaymentErrorType.PAYMENT_GATEWAY_ERROR
         );
     }
-    
+
     public static PaymentException networkError(String transactionId, Throwable cause) {
         return new PaymentException(
             "NETWORK_ERROR",
@@ -137,7 +137,7 @@ public class PaymentException extends RuntimeException {
             cause
         );
     }
-    
+
     public static PaymentException timeoutError(String transactionId, int timeoutSeconds) {
         return new PaymentException(
             "TIMEOUT_ERROR",
@@ -148,7 +148,7 @@ public class PaymentException extends RuntimeException {
             null
         );
     }
-    
+
     public static PaymentException duplicateTransaction(String transactionId) {
         return new PaymentException(
             "DUPLICATE_TRANSACTION",
@@ -157,7 +157,7 @@ public class PaymentException extends RuntimeException {
             PaymentErrorType.DUPLICATE_TRANSACTION
         );
     }
-    
+
     public static PaymentException authenticationError(String message) {
         return new PaymentException(
             "AUTHENTICATION_ERROR",
@@ -166,7 +166,7 @@ public class PaymentException extends RuntimeException {
             PaymentErrorType.AUTHENTICATION_ERROR
         );
     }
-    
+
     public static PaymentException authorizationError(String message, String userId) {
         return new PaymentException(
             "AUTHORIZATION_ERROR",
@@ -177,7 +177,7 @@ public class PaymentException extends RuntimeException {
             null
         );
     }
-    
+
     public static PaymentException rateLimitExceeded(String identifier, int maxRequests) {
         return new PaymentException(
             "RATE_LIMIT_EXCEEDED",
@@ -188,7 +188,7 @@ public class PaymentException extends RuntimeException {
             null
         );
     }
-    
+
     public static PaymentException encryptionError(String message, Throwable cause) {
         return new PaymentException(
             "ENCRYPTION_ERROR",
@@ -198,7 +198,7 @@ public class PaymentException extends RuntimeException {
             cause
         );
     }
-    
+
     public static PaymentException configurationError(String message) {
         return new PaymentException(
             "CONFIGURATION_ERROR",
@@ -207,7 +207,7 @@ public class PaymentException extends RuntimeException {
             PaymentErrorType.CONFIGURATION_ERROR
         );
     }
-    
+
     public static PaymentException refundError(String transactionId, String reason) {
         return new PaymentException(
             "REFUND_ERROR",
@@ -216,7 +216,7 @@ public class PaymentException extends RuntimeException {
             PaymentErrorType.REFUND_ERROR
         );
     }
-    
+
     public static PaymentException webhookError(String message, String webhookId) {
         return new PaymentException(
             "WEBHOOK_ERROR",
@@ -225,7 +225,7 @@ public class PaymentException extends RuntimeException {
             PaymentErrorType.WEBHOOK_ERROR
         );
     }
-    
+
     public static PaymentException databaseError(String operation, Throwable cause) {
         return new PaymentException(
             "DATABASE_ERROR",
@@ -235,7 +235,7 @@ public class PaymentException extends RuntimeException {
             cause
         );
     }
-    
+
     /**
      * Check if error is retryable
      */
@@ -244,7 +244,7 @@ public class PaymentException extends RuntimeException {
                errorType == PaymentErrorType.TIMEOUT_ERROR ||
                errorType == PaymentErrorType.PAYMENT_GATEWAY_ERROR;
     }
-    
+
     /**
      * Check if error requires user action
      */
@@ -253,7 +253,7 @@ public class PaymentException extends RuntimeException {
                errorType == PaymentErrorType.AUTHENTICATION_ERROR ||
                errorType == PaymentErrorType.VALIDATION_ERROR;
     }
-    
+
     /**
      * Get user-friendly error message
      */
@@ -276,7 +276,7 @@ public class PaymentException extends RuntimeException {
                 return "Payment processing failed. Please contact support.";
         }
     }
-    
+
     /**
      * Convert to JSON-friendly error response
      */
@@ -290,7 +290,7 @@ public class PaymentException extends RuntimeException {
             timestamp.toString()
         );
     }
-    
+
     /**
      * Inner class for structured error response
      */
@@ -302,7 +302,7 @@ public class PaymentException extends RuntimeException {
         private final String transactionId;
         private final String errorType;
         private final String timestamp;
-        
+
         public ErrorResponse(String errorCode, String errorMessage, String userMessage,
                            String transactionId, String errorType, String timestamp) {
             this.errorCode = errorCode;
@@ -313,7 +313,7 @@ public class PaymentException extends RuntimeException {
             this.timestamp = timestamp;
         }
     }
-    
+
     @Override
     public String toString() {
         return String.format(

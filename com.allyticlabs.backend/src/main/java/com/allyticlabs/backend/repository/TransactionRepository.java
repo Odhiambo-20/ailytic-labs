@@ -30,7 +30,7 @@ public class TransactionRepository {
 
     @Autowired
     public TransactionRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.transactionTable = enhancedClient.table("PaymentTransactions", 
+        this.transactionTable = enhancedClient.table("PaymentTransactions",
                                                      TableSchema.fromBean(PaymentTransaction.class));
     }
 
@@ -57,7 +57,7 @@ public class TransactionRepository {
         Key key = Key.builder()
                 .partitionValue(transactionId)
                 .build();
-        
+
         PaymentTransaction transaction = transactionTable.getItem(key);
         return Optional.ofNullable(transaction);
     }
@@ -70,11 +70,11 @@ public class TransactionRepository {
     public List<PaymentTransaction> findByPaymentId(String paymentId) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(paymentId).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return transactionTable.index("PaymentIdIndex")
                 .query(queryRequest)
                 .stream()
@@ -90,11 +90,11 @@ public class TransactionRepository {
     public List<PaymentTransaction> findByUserId(String userId) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(userId).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return transactionTable.index("UserIdIndex")
                 .query(queryRequest)
                 .stream()
@@ -110,11 +110,11 @@ public class TransactionRepository {
     public List<PaymentTransaction> findByPaymentMethod(PaymentMethod paymentMethod) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(paymentMethod.name()).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return transactionTable.index("PaymentMethodIndex")
                 .query(queryRequest)
                 .stream()
@@ -130,11 +130,11 @@ public class TransactionRepository {
     public List<PaymentTransaction> findByStatus(PaymentStatus status) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(status.name()).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return transactionTable.index("StatusIndex")
                 .query(queryRequest)
                 .stream()
@@ -151,11 +151,11 @@ public class TransactionRepository {
     public Optional<PaymentTransaction> findByExternalReference(String externalReference) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(externalReference).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return transactionTable.index("ExternalReferenceIndex")
                 .query(queryRequest)
                 .stream()
@@ -173,8 +173,8 @@ public class TransactionRepository {
         return findAll().stream()
                 .filter(transaction -> {
                     Instant createdAt = transaction.getCreatedAt();
-                    return createdAt != null && 
-                           !createdAt.isBefore(startDate) && 
+                    return createdAt != null &&
+                           !createdAt.isBefore(startDate) &&
                            !createdAt.isAfter(endDate);
                 })
                 .collect(Collectors.toList());
@@ -191,8 +191,8 @@ public class TransactionRepository {
         return findByUserId(userId).stream()
                 .filter(transaction -> {
                     Instant createdAt = transaction.getCreatedAt();
-                    return createdAt != null && 
-                           !createdAt.isBefore(startDate) && 
+                    return createdAt != null &&
+                           !createdAt.isBefore(startDate) &&
                            !createdAt.isAfter(endDate);
                 })
                 .collect(Collectors.toList());
@@ -222,10 +222,10 @@ public class TransactionRepository {
      * @return Updated transaction
      */
     public Optional<PaymentTransaction> updateTransactionStatus(
-            String transactionId, 
-            PaymentStatus status, 
+            String transactionId,
+            PaymentStatus status,
             String errorMessage) {
-        
+
         Optional<PaymentTransaction> transactionOpt = findById(transactionId);
         if (transactionOpt.isPresent()) {
             PaymentTransaction transaction = transactionOpt.get();
@@ -258,15 +258,15 @@ public class TransactionRepository {
      * @return Total amount
      */
     public double calculateTotalAmountByMethodAndDateRange(
-            PaymentMethod paymentMethod, 
-            Instant startDate, 
+            PaymentMethod paymentMethod,
+            Instant startDate,
             Instant endDate) {
-        
+
         return findByPaymentMethod(paymentMethod).stream()
                 .filter(transaction -> {
                     Instant createdAt = transaction.getCreatedAt();
-                    return createdAt != null && 
-                           !createdAt.isBefore(startDate) && 
+                    return createdAt != null &&
+                           !createdAt.isBefore(startDate) &&
                            !createdAt.isAfter(endDate);
                 })
                 .filter(transaction -> transaction.getStatus() == PaymentStatus.SUCCESS)
@@ -306,7 +306,7 @@ public class TransactionRepository {
         Key key = Key.builder()
                 .partitionValue(transactionId)
                 .build();
-        
+
         PaymentTransaction deletedTransaction = transactionTable.deleteItem(key);
         return deletedTransaction != null;
     }

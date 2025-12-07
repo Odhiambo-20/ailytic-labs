@@ -9,12 +9,12 @@ import java.time.Instant;
  */
 @Getter
 public class InvalidQRCodeException extends PaymentException {
-    
+
     private final String qrCodeId;
     private final QRErrorReason errorReason;
     private final Instant qrExpiryTime;
     private final String scannedData;
-    
+
     /**
      * Specific reasons for QR code validation failure
      */
@@ -35,12 +35,12 @@ public class InvalidQRCodeException extends PaymentException {
         GENERATION_ERROR,           // Error during QR code generation
         PAYMENT_LIMIT_EXCEEDED      // Payment amount exceeds QR code limit
     }
-    
+
     /**
      * Constructor with all parameters
      */
-    public InvalidQRCodeException(String qrCodeId, QRErrorReason errorReason, 
-                                 String message, Instant qrExpiryTime, 
+    public InvalidQRCodeException(String qrCodeId, QRErrorReason errorReason,
+                                 String message, Instant qrExpiryTime,
                                  String scannedData, Throwable cause) {
         super(
             "QR_CODE_ERROR",
@@ -54,26 +54,26 @@ public class InvalidQRCodeException extends PaymentException {
         this.qrExpiryTime = qrExpiryTime;
         this.scannedData = maskSensitiveQRData(scannedData);
     }
-    
+
     /**
      * Constructor without cause
      */
-    public InvalidQRCodeException(String qrCodeId, QRErrorReason errorReason, 
+    public InvalidQRCodeException(String qrCodeId, QRErrorReason errorReason,
                                  String message, Instant qrExpiryTime, String scannedData) {
         this(qrCodeId, errorReason, message, qrExpiryTime, scannedData, null);
     }
-    
+
     /**
      * Constructor with minimal parameters
      */
     public InvalidQRCodeException(String qrCodeId, QRErrorReason errorReason, String message) {
         this(qrCodeId, errorReason, message, null, null, null);
     }
-    
+
     /**
      * Static factory methods for common QR code errors
      */
-    
+
     public static InvalidQRCodeException expired(String qrCodeId, Instant expiryTime) {
         long secondsExpired = (Instant.now().toEpochMilli() - expiryTime.toEpochMilli()) / 1000;
         return new InvalidQRCodeException(
@@ -84,7 +84,7 @@ public class InvalidQRCodeException extends PaymentException {
             null
         );
     }
-    
+
     public static InvalidQRCodeException expiredWithMinutes(String qrCodeId, Instant expiryTime) {
         long minutesExpired = (Instant.now().toEpochMilli() - expiryTime.toEpochMilli()) / (1000 * 60);
         return new InvalidQRCodeException(
@@ -95,7 +95,7 @@ public class InvalidQRCodeException extends PaymentException {
             null
         );
     }
-    
+
     public static InvalidQRCodeException invalidFormat(String qrCodeId, String scannedData) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -105,7 +105,7 @@ public class InvalidQRCodeException extends PaymentException {
             scannedData
         );
     }
-    
+
     public static InvalidQRCodeException invalidSignature(String qrCodeId, String scannedData) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -115,7 +115,7 @@ public class InvalidQRCodeException extends PaymentException {
             scannedData
         );
     }
-    
+
     public static InvalidQRCodeException alreadyUsed(String qrCodeId, Instant usedTime) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -125,7 +125,7 @@ public class InvalidQRCodeException extends PaymentException {
             null
         );
     }
-    
+
     public static InvalidQRCodeException notFound(String qrCodeId) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -133,27 +133,27 @@ public class InvalidQRCodeException extends PaymentException {
             String.format("QR code '%s' not found or has been deleted", qrCodeId)
         );
     }
-    
-    public static InvalidQRCodeException amountMismatch(String qrCodeId, Double expectedAmount, 
+
+    public static InvalidQRCodeException amountMismatch(String qrCodeId, Double expectedAmount,
                                                        Double actualAmount) {
         return new InvalidQRCodeException(
             qrCodeId,
             QRErrorReason.AMOUNT_MISMATCH,
-            String.format("Amount mismatch - QR Code Amount: %.2f, Payment Amount: %.2f", 
+            String.format("Amount mismatch - QR Code Amount: %.2f, Payment Amount: %.2f",
                 expectedAmount, actualAmount)
         );
     }
-    
-    public static InvalidQRCodeException merchantMismatch(String qrCodeId, String expectedMerchant, 
+
+    public static InvalidQRCodeException merchantMismatch(String qrCodeId, String expectedMerchant,
                                                          String actualMerchant) {
         return new InvalidQRCodeException(
             qrCodeId,
             QRErrorReason.MERCHANT_MISMATCH,
-            String.format("Merchant mismatch - Expected: %s, Actual: %s", 
+            String.format("Merchant mismatch - Expected: %s, Actual: %s",
                 expectedMerchant, actualMerchant)
         );
     }
-    
+
     public static InvalidQRCodeException tampered(String qrCodeId, String reason) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -161,8 +161,8 @@ public class InvalidQRCodeException extends PaymentException {
             "QR code data integrity check failed: " + reason + ". Do not use this QR code."
         );
     }
-    
-    public static InvalidQRCodeException malformedData(String qrCodeId, String scannedData, 
+
+    public static InvalidQRCodeException malformedData(String qrCodeId, String scannedData,
                                                       String reason) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -172,7 +172,7 @@ public class InvalidQRCodeException extends PaymentException {
             scannedData
         );
     }
-    
+
     public static InvalidQRCodeException insufficientData(String qrCodeId, String missingFields) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -180,7 +180,7 @@ public class InvalidQRCodeException extends PaymentException {
             "QR code missing required fields: " + missingFields
         );
     }
-    
+
     public static InvalidQRCodeException decryptionFailed(String qrCodeId, Throwable cause) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -191,7 +191,7 @@ public class InvalidQRCodeException extends PaymentException {
             cause
         );
     }
-    
+
     public static InvalidQRCodeException unsupportedVersion(String qrCodeId, String version) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -199,7 +199,7 @@ public class InvalidQRCodeException extends PaymentException {
             String.format("QR code version '%s' is not supported by this system", version)
         );
     }
-    
+
     public static InvalidQRCodeException scanningError(String message, Throwable cause) {
         return new InvalidQRCodeException(
             null,
@@ -210,7 +210,7 @@ public class InvalidQRCodeException extends PaymentException {
             cause
         );
     }
-    
+
     public static InvalidQRCodeException generationError(String message, Throwable cause) {
         return new InvalidQRCodeException(
             null,
@@ -221,9 +221,9 @@ public class InvalidQRCodeException extends PaymentException {
             cause
         );
     }
-    
-    public static InvalidQRCodeException paymentLimitExceeded(String qrCodeId, 
-                                                             Double amount, 
+
+    public static InvalidQRCodeException paymentLimitExceeded(String qrCodeId,
+                                                             Double amount,
                                                              Double maxLimit) {
         return new InvalidQRCodeException(
             qrCodeId,
@@ -231,7 +231,7 @@ public class InvalidQRCodeException extends PaymentException {
             String.format("Payment amount %.2f exceeds QR code limit of %.2f", amount, maxLimit)
         );
     }
-    
+
     /**
      * Check if QR code can be regenerated
      */
@@ -240,7 +240,7 @@ public class InvalidQRCodeException extends PaymentException {
                errorReason == QRErrorReason.NOT_FOUND ||
                errorReason == QRErrorReason.ALREADY_USED;
     }
-    
+
     /**
      * Check if this is a security-related error
      */
@@ -251,7 +251,7 @@ public class InvalidQRCodeException extends PaymentException {
                errorReason == QRErrorReason.MERCHANT_MISMATCH ||
                errorReason == QRErrorReason.AMOUNT_MISMATCH;
     }
-    
+
     /**
      * Check if error should be logged as suspicious activity
      */
@@ -260,7 +260,7 @@ public class InvalidQRCodeException extends PaymentException {
                errorReason == QRErrorReason.INVALID_SIGNATURE ||
                errorReason == QRErrorReason.MERCHANT_MISMATCH;
     }
-    
+
     /**
      * Get recommended action for the user
      */
@@ -297,7 +297,7 @@ public class InvalidQRCodeException extends PaymentException {
                 return "QR code is invalid. Please generate a new one.";
         }
     }
-    
+
     /**
      * Get user-friendly error message
      */
@@ -335,7 +335,7 @@ public class InvalidQRCodeException extends PaymentException {
                 return "QR code is invalid";
         }
     }
-    
+
     /**
      * Get severity level of the error
      */
@@ -345,21 +345,21 @@ public class InvalidQRCodeException extends PaymentException {
         } else if (errorReason == QRErrorReason.PAYMENT_LIMIT_EXCEEDED ||
                    errorReason == QRErrorReason.ALREADY_USED) {
             return ErrorSeverity.HIGH;
-        } else if (errorReason == QRErrorReason.EXPIRED || 
+        } else if (errorReason == QRErrorReason.EXPIRED ||
                    errorReason == QRErrorReason.NOT_FOUND) {
             return ErrorSeverity.MEDIUM;
         } else {
             return ErrorSeverity.LOW;
         }
     }
-    
+
     public enum ErrorSeverity {
         LOW,        // Format or scanning errors
         MEDIUM,     // Expired or not found
         HIGH,       // Already used or limit exceeded
         CRITICAL    // Security-related errors
     }
-    
+
     /**
      * Get time until QR expiry (in seconds), or negative if already expired
      */
@@ -369,15 +369,15 @@ public class InvalidQRCodeException extends PaymentException {
         }
         return (qrExpiryTime.toEpochMilli() - Instant.now().toEpochMilli()) / 1000;
     }
-    
+
     /**
      * Check if QR code is expired
      */
     public boolean isExpired() {
-        return errorReason == QRErrorReason.EXPIRED || 
+        return errorReason == QRErrorReason.EXPIRED ||
                (qrExpiryTime != null && Instant.now().isAfter(qrExpiryTime));
     }
-    
+
     /**
      * Mask sensitive QR data for logging
      */
@@ -388,7 +388,7 @@ public class InvalidQRCodeException extends PaymentException {
         // Show first 4 and last 4 characters only
         return data.substring(0, 4) + "****" + data.substring(data.length() - 4);
     }
-    
+
     /**
      * Get detailed error information for logging
      */
@@ -405,7 +405,7 @@ public class InvalidQRCodeException extends PaymentException {
         info.append(String.format("Message: %s", getErrorMessage()));
         return info.toString();
     }
-    
+
     @Override
     public String toString() {
         return String.format(

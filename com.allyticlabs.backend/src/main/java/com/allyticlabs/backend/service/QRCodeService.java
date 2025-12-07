@@ -44,16 +44,16 @@ public class QRCodeService {
     @Transactional
     public Map<String, Object> generateQRCode(QRPaymentRequest request) {
         log.info("Generating QR code for amount: {} {}", request.getAmount(), request.getCurrency());
-        
+
         try {
             // Generate unique token and TOTP secret
             String qrCodeToken = UUID.randomUUID().toString();
             String totpSecret = tokenGenerator.generateTOTPSecret();
             String totp = tokenGenerator.generateTOTP(totpSecret);
-            
+
             // Calculate expiry (default 15 minutes)
             long expiryTimestamp = Instant.now().plusSeconds(request.getExpiryMinutes() * 60).toEpochMilli();
-            
+
             // Create QR payment data
             Map<String, Object> qrData = new HashMap<>();
             qrData.put("token", qrCodeToken);
@@ -63,14 +63,14 @@ public class QRCodeService {
             qrData.put("description", request.getDescription());
             qrData.put("timestamp", Instant.now().toEpochMilli());
             qrData.put("totp", totp);
-            
+
             // Encrypt QR data
             String encryptedQRData = encryptionService.encrypt(objectMapper.writeValueAsString(qrData));
-            
+
             // Generate QR code image
             byte[] qrCodeImage = qrCodeGenerator.generateQRCode(encryptedQRData, 300, 300);
             String qrCodeImageBase64 = java.util.Base64.getEncoder().encodeToString(qrCodeImage);
-            
+
             // Save QR payment record
             QRPayment qrPayment = QRPayment.builder()
                     .qrCodeToken(qrCodeToken)
@@ -92,11 +92,11 @@ public class QRCodeService {
                     .ipAddress(request.getIpAddress())
                     .createdAt(Instant.now().toString())
                     .build();
-            
+
             qrPaymentRepository.save(qrPayment);
-            
+
             log.info("QR code generated successfully: {}", qrCodeToken);
-            
+
             return Map.of(
                     "qrCodeToken", qrCodeToken,
                     "qrCodeImage", qrCodeImageBase64,
@@ -107,7 +107,7 @@ public class QRCodeService {
                     "currency", request.getCurrency(),
                     "merchantName", request.getMerchantName()
             );
-            
+
         } catch (Exception e) {
             log.error("Error generating QR code", e);
             throw new PaymentException("Failed to generate QR code: " + e.getMessage());
@@ -119,14 +119,14 @@ public class QRCodeService {
      */
     public byte[] getQRCodeImage(String qrCodeToken) {
         log.info("Fetching QR code image: {}", qrCodeToken);
-        
+
         QRPayment qrPayment = qrPaymentRepository.findByQrCodeToken(qrCodeToken)
                 .orElseThrow(() -> new InvalidQRCodeException("QR code not found"));
-        
+
         if (qrPayment.isExpired()) {
             throw new InvalidQRCodeException("QR code has expired");
         }
-        
+
         return java.util.Base64.getDecoder().decode(qrPayment.getQrCodeImage());
     }
 
@@ -134,25 +134,25 @@ public class QRCodeService {
      * Scan QR code and retrieve payment details
      */
     @Transactional
-    public Map<String, Object> scanQRCode(String qrCodeToken, String totp, 
+    public Map<String, Object> scanQRCode(String qrCodeToken, String totp,
                                           String ipAddress, String deviceFingerprint) {
         log.info("Scanning QR code: {}", qrCodeToken);
-        
+
         QRPayment qrPayment = qrPaymentRepository.findByQrCodeToken(qrCodeToken)
                 .orElseThrow(() -> new InvalidQRCodeException("QR code not found"));
-        
+
         // Validate QR code
         validateQRCodeInternal(qrPayment, totp);
-        
+
         // Update scan count
         qrPayment.setScanCount(qrPayment.getScanCount() + 1);
         qrPayment.setScannedAt(Instant.now().toString());
         qrPayment.setIpAddress(ipAddress);
         qrPayment.setDeviceFingerprint(deviceFingerprint);
         qrPayment.setUpdatedAt(Instant.now().toString());
-        
+
         qrPaymentRepository.save(qrPayment);
-        
+
         // Return payment details
         return Map.of(
                 "qrCodeToken", qrCodeToken,
@@ -171,32 +171,32 @@ public class QRCodeService {
      */
     @Transactional
     public PaymentResponse processQRPayment(String qrCodeToken, String totp, String paymentMethod,
-                                           Map<String, String> paymentDetails, 
+                                           Map<String, String> paymentDetails,
                                            String ipAddress, String deviceFingerprint) {
         log.info("Processing QR payment: {}", qrCodeToken);
-        
+
         QRPayment qrPayment = qrPaymentRepository.findByQrCodeToken(qrCodeToken)
                 .orElseThrow(() -> new InvalidQRCodeException("QR code not found"));
-        
+
         // Validate QR code
         validateQRCodeInternal(qrPayment, totp);
-        
+
         // Check if already used
         if (qrPayment.isUsed() && qrPayment.getSingleUse()) {
             throw new InvalidQRCodeException("QR code has already been used");
         }
-        
+
         // Update QR payment status
         qrPayment.setStatus(PaymentStatus.PROCESSING);
         qrPayment.setUsedAt(Instant.now().toString());
         qrPayment.setUpdatedAt(Instant.now().toString());
         qrPaymentRepository.save(qrPayment);
-        
+
         // Process payment based on method
         PaymentResponse response;
         try {
             String amount = encryptionService.decrypt(qrPayment.getAmount());
-            
+
             if ("MPESA".equalsIgnoreCase(paymentMethod)) {
                 // Implement M-Pesa payment
                 response = processMpesaQRPayment(qrPayment, paymentDetails, amount);
@@ -206,13 +206,13 @@ public class QRCodeService {
             } else {
                 throw new PaymentException("Unsupported payment method: " + paymentMethod);
             }
-            
+
             // Update QR payment on success
             qrPayment.setStatus(PaymentStatus.COMPLETED);
             qrPaymentRepository.save(qrPayment);
-            
+
             return response;
-            
+
         } catch (Exception e) {
             log.error("Error processing QR payment", e);
             qrPayment.setStatus(PaymentStatus.FAILED);
@@ -227,7 +227,7 @@ public class QRCodeService {
     public Map<String, Object> getQRPaymentStatus(String qrCodeToken) {
         QRPayment qrPayment = qrPaymentRepository.findByQrCodeToken(qrCodeToken)
                 .orElseThrow(() -> new InvalidQRCodeException("QR code not found"));
-        
+
         return Map.of(
                 "qrCodeToken", qrCodeToken,
                 "paymentId", qrPayment.getPaymentId(),
@@ -246,15 +246,15 @@ public class QRCodeService {
     public Map<String, String> cancelQRPayment(String qrCodeToken, String reason) {
         QRPayment qrPayment = qrPaymentRepository.findByQrCodeToken(qrCodeToken)
                 .orElseThrow(() -> new InvalidQRCodeException("QR code not found"));
-        
+
         if (qrPayment.isUsed()) {
             throw new PaymentException("Cannot cancel used QR code");
         }
-        
+
         qrPayment.setStatus(PaymentStatus.CANCELLED);
         qrPayment.setUpdatedAt(Instant.now().toString());
         qrPaymentRepository.save(qrPayment);
-        
+
         return Map.of(
                 "qrCodeToken", qrCodeToken,
                 "status", "cancelled",
@@ -268,7 +268,7 @@ public class QRCodeService {
     public Map<String, Object> validateQRCode(String qrCodeToken, String totp) {
         QRPayment qrPayment = qrPaymentRepository.findByQrCodeToken(qrCodeToken)
                 .orElseThrow(() -> new InvalidQRCodeException("QR code not found"));
-        
+
         try {
             validateQRCodeInternal(qrPayment, totp);
             return Map.of(
@@ -288,7 +288,7 @@ public class QRCodeService {
      */
     public Map<String, Object> getMerchantQRCodes(String merchantId, int limit) {
         List<QRPayment> qrPayments = qrPaymentRepository.findByMerchantId(merchantId, limit);
-        
+
         List<Map<String, Object>> qrCodes = qrPayments.stream()
                 .map(qr -> Map.of(
                         "qrCodeToken", qr.getQrCodeToken(),
@@ -300,7 +300,7 @@ public class QRCodeService {
                         "createdAt", qr.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
-        
+
         return Map.of(
                 "merchantId", merchantId,
                 "qrCodes", qrCodes,
@@ -316,16 +316,16 @@ public class QRCodeService {
         if (qrPayment.isExpired()) {
             throw new InvalidQRCodeException("QR code has expired");
         }
-        
+
         // Check scan limit
         if (qrPayment.getScanCount() >= qrPayment.getMaxScans()) {
             throw new InvalidQRCodeException("QR code scan limit exceeded");
         }
-        
+
         // Validate TOTP
         String totpSecret = encryptionService.decrypt(qrPayment.getTotpSecret());
         boolean isValidTOTP = tokenGenerator.validateTOTP(totpSecret, totp);
-        
+
         if (!isValidTOTP) {
             throw new InvalidQRCodeException("Invalid or expired TOTP");
         }

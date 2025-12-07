@@ -55,7 +55,7 @@ public class PaymentRepository {
         Key key = Key.builder()
                 .partitionValue(paymentId)
                 .build();
-        
+
         Payment payment = paymentTable.getItem(key);
         return Optional.ofNullable(payment);
     }
@@ -69,11 +69,11 @@ public class PaymentRepository {
     public List<Payment> findByUserId(String userId) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(userId).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return paymentTable.index("UserIdIndex")
                 .query(queryRequest)
                 .stream()
@@ -89,11 +89,11 @@ public class PaymentRepository {
     public List<Payment> findByStatus(PaymentStatus status) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(status.name()).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return paymentTable.index("StatusIndex")
                 .query(queryRequest)
                 .stream()
@@ -124,8 +124,8 @@ public class PaymentRepository {
         return findByUserId(userId).stream()
                 .filter(payment -> {
                     Instant createdAt = payment.getCreatedAt();
-                    return createdAt != null && 
-                           !createdAt.isBefore(startDate) && 
+                    return createdAt != null &&
+                           !createdAt.isBefore(startDate) &&
                            !createdAt.isAfter(endDate);
                 })
                 .collect(Collectors.toList());
@@ -139,11 +139,11 @@ public class PaymentRepository {
     public Optional<Payment> findByExternalTransactionId(String externalTransactionId) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(externalTransactionId).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return paymentTable.index("ExternalTransactionIdIndex")
                 .query(queryRequest)
                 .stream()
@@ -177,7 +177,7 @@ public class PaymentRepository {
         Key key = Key.builder()
                 .partitionValue(paymentId)
                 .build();
-        
+
         Payment deletedPayment = paymentTable.deleteItem(key);
         return deletedPayment != null;
     }

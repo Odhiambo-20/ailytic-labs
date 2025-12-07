@@ -37,50 +37,50 @@ public class SecurityConfig {
                 .requestMatchers("/api/robots", "/api/robots/**").permitAll()
                 .requestMatchers("/api/drones", "/api/drones/**").permitAll()
                 .requestMatchers("/api/solar-panels", "/api/solar-panels/**").permitAll()
-                
+
                 // Admin-only endpoints for GET requests to view submissions
                 .requestMatchers("/api/contact/**").hasRole("ADMIN")
                 .requestMatchers("/api/newsletter/**").hasRole("ADMIN")
-                
+
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )
             .httpBasic(basic -> {});
-        
+
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         // Parse and set allowed origins from application properties
         List<String> origins = Arrays.asList(allowedOrigins.split(","));
         configuration.setAllowedOrigins(origins);
-        
+
         // Log CORS configuration for debugging
         System.out.println("CORS Configuration - Allowed Origins: " + origins);
-        
+
         // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
-            "GET", 
-            "POST", 
-            "PUT", 
-            "DELETE", 
-            "OPTIONS", 
-            "HEAD", 
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS",
+            "HEAD",
             "PATCH"
         ));
-        
+
         // Allow all headers
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        
+
         // Allow credentials (cookies, authorization headers)
         configuration.setAllowCredentials(true);
-        
+
         // Cache preflight response for 1 hour (3600 seconds)
         configuration.setMaxAge(3600L);
-        
+
         // Expose headers that frontend can access
         configuration.setExposedHeaders(Arrays.asList(
             "Authorization",
@@ -93,10 +93,10 @@ public class SecurityConfig {
             "Access-Control-Allow-Origin",
             "Access-Control-Allow-Credentials"
         ));
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
+
         return source;
     }
 
@@ -107,7 +107,7 @@ public class SecurityConfig {
             .password(passwordEncoder().encode("admin123"))
             .roles("ADMIN")
             .build();
-        
+
         return new InMemoryUserDetailsManager(admin);
     }
 

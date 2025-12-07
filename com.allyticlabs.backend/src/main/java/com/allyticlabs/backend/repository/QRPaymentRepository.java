@@ -30,7 +30,7 @@ public class QRPaymentRepository {
 
     @Autowired
     public QRPaymentRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.qrPaymentTable = enhancedClient.table("QRPayments", 
+        this.qrPaymentTable = enhancedClient.table("QRPayments",
                                                     TableSchema.fromBean(QRPayment.class));
     }
 
@@ -60,7 +60,7 @@ public class QRPaymentRepository {
         Key key = Key.builder()
                 .partitionValue(qrPaymentId)
                 .build();
-        
+
         QRPayment qrPayment = qrPaymentTable.getItem(key);
         return Optional.ofNullable(qrPayment);
     }
@@ -74,11 +74,11 @@ public class QRPaymentRepository {
     public Optional<QRPayment> findByQRCode(String qrCode) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(qrCode).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return qrPaymentTable.index("QRCodeIndex")
                 .query(queryRequest)
                 .stream()
@@ -94,24 +94,24 @@ public class QRPaymentRepository {
      */
     public Optional<QRPayment> findValidQRCode(String qrCode) {
         Optional<QRPayment> qrPaymentOpt = findByQRCode(qrCode);
-        
+
         if (qrPaymentOpt.isPresent()) {
             QRPayment qrPayment = qrPaymentOpt.get();
-            
+
             // Check if QR code has expired
-            if (qrPayment.getExpiresAt() != null && 
+            if (qrPayment.getExpiresAt() != null &&
                 Instant.now().isAfter(qrPayment.getExpiresAt())) {
                 return Optional.empty();
             }
-            
+
             // Check if QR code has already been used
             if (qrPayment.isUsed()) {
                 return Optional.empty();
             }
-            
+
             return qrPaymentOpt;
         }
-        
+
         return Optional.empty();
     }
 
@@ -123,11 +123,11 @@ public class QRPaymentRepository {
     public List<QRPayment> findByMerchantId(String merchantId) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(merchantId).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return qrPaymentTable.index("MerchantIdIndex")
                 .query(queryRequest)
                 .stream()
@@ -143,11 +143,11 @@ public class QRPaymentRepository {
     public List<QRPayment> findByCustomerId(String customerId) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(customerId).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return qrPaymentTable.index("CustomerIdIndex")
                 .query(queryRequest)
                 .stream()
@@ -163,11 +163,11 @@ public class QRPaymentRepository {
     public List<QRPayment> findByStatus(PaymentStatus status) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(status.name()).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return qrPaymentTable.index("StatusIndex")
                 .query(queryRequest)
                 .stream()
@@ -183,11 +183,11 @@ public class QRPaymentRepository {
     public Optional<QRPayment> findByPaymentId(String paymentId) {
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(paymentId).build());
-        
+
         QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
                 .queryConditional(queryConditional)
                 .build();
-        
+
         return qrPaymentTable.index("PaymentIdIndex")
                 .query(queryRequest)
                 .stream()
@@ -215,7 +215,7 @@ public class QRPaymentRepository {
     public List<QRPayment> findUnusedByMerchantId(String merchantId) {
         return findByMerchantId(merchantId).stream()
                 .filter(qr -> !qr.isUsed())
-                .filter(qr -> qr.getExpiresAt() == null || 
+                .filter(qr -> qr.getExpiresAt() == null ||
                              Instant.now().isBefore(qr.getExpiresAt()))
                 .collect(Collectors.toList());
     }
@@ -228,23 +228,23 @@ public class QRPaymentRepository {
      */
     public Optional<QRPayment> markAsUsed(String qrCode, String paymentId) {
         Optional<QRPayment> qrPaymentOpt = findByQRCode(qrCode);
-        
+
         if (qrPaymentOpt.isPresent()) {
             QRPayment qrPayment = qrPaymentOpt.get();
-            
+
             // Double-check it hasn't been used already
             if (qrPayment.isUsed()) {
                 return Optional.empty();
             }
-            
+
             qrPayment.setUsed(true);
             qrPayment.setPaymentId(paymentId);
             qrPayment.setUsedAt(Instant.now());
             qrPayment.setUpdatedAt(Instant.now());
-            
+
             return Optional.of(save(qrPayment));
         }
-        
+
         return Optional.empty();
     }
 
@@ -256,14 +256,14 @@ public class QRPaymentRepository {
      */
     public Optional<QRPayment> updateStatus(String qrPaymentId, PaymentStatus status) {
         Optional<QRPayment> qrPaymentOpt = findById(qrPaymentId);
-        
+
         if (qrPaymentOpt.isPresent()) {
             QRPayment qrPayment = qrPaymentOpt.get();
             qrPayment.setStatus(status);
             qrPayment.setUpdatedAt(Instant.now());
             return Optional.of(save(qrPayment));
         }
-        
+
         return Optional.empty();
     }
 
@@ -275,15 +275,15 @@ public class QRPaymentRepository {
      * @return List of QR payments within date range
      */
     public List<QRPayment> findByMerchantIdAndDateRange(
-            String merchantId, 
-            Instant startDate, 
+            String merchantId,
+            Instant startDate,
             Instant endDate) {
-        
+
         return findByMerchantId(merchantId).stream()
                 .filter(qr -> {
                     Instant createdAt = qr.getCreatedAt();
-                    return createdAt != null && 
-                           !createdAt.isBefore(startDate) && 
+                    return createdAt != null &&
+                           !createdAt.isBefore(startDate) &&
                            !createdAt.isAfter(endDate);
                 })
                 .collect(Collectors.toList());
@@ -297,10 +297,10 @@ public class QRPaymentRepository {
      * @return Total amount
      */
     public double calculateTotalAmountByMerchantAndDateRange(
-            String merchantId, 
-            Instant startDate, 
+            String merchantId,
+            Instant startDate,
             Instant endDate) {
-        
+
         return findByMerchantIdAndDateRange(merchantId, startDate, endDate).stream()
                 .filter(qr -> qr.getStatus() == PaymentStatus.SUCCESS)
                 .mapToDouble(QRPayment::getAmount)
@@ -342,7 +342,7 @@ public class QRPaymentRepository {
         Key key = Key.builder()
                 .partitionValue(qrPaymentId)
                 .build();
-        
+
         QRPayment deletedQRPayment = qrPaymentTable.deleteItem(key);
         return deletedQRPayment != null;
     }
@@ -354,13 +354,13 @@ public class QRPaymentRepository {
     public int deleteExpiredQRCodes() {
         List<QRPayment> expiredQRCodes = findExpiredQRCodes();
         int count = 0;
-        
+
         for (QRPayment qrPayment : expiredQRCodes) {
             if (deleteById(qrPayment.getQrPaymentId())) {
                 count++;
             }
         }
-        
+
         return count;
     }
 
@@ -411,21 +411,21 @@ public class QRPaymentRepository {
      */
     public Optional<QRPayment> extendExpiration(String qrPaymentId, int additionalMinutes) {
         Optional<QRPayment> qrPaymentOpt = findById(qrPaymentId);
-        
+
         if (qrPaymentOpt.isPresent()) {
             QRPayment qrPayment = qrPaymentOpt.get();
             Instant currentExpiry = qrPayment.getExpiresAt();
-            
+
             if (currentExpiry != null) {
                 qrPayment.setExpiresAt(currentExpiry.plusSeconds(additionalMinutes * 60));
             } else {
                 qrPayment.setExpiresAt(Instant.now().plusSeconds(additionalMinutes * 60));
             }
-            
+
             qrPayment.setUpdatedAt(Instant.now());
             return Optional.of(save(qrPayment));
         }
-        
+
         return Optional.empty();
     }
 }

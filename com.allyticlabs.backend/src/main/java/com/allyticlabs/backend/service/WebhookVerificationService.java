@@ -44,7 +44,7 @@ public class WebhookVerificationService {
      */
     public boolean verifyStripeSignature(String payload, String signature) {
         log.info("Verifying Stripe webhook signature");
-        
+
         try {
             return hmacValidator.validateStripeSignature(payload, signature, stripeWebhookSecret);
         } catch (Exception e) {
@@ -59,9 +59,9 @@ public class WebhookVerificationService {
     @Transactional
     public void processStripeWebhook(String payload, String ipAddress, Map<String, String> headers) {
         log.info("Processing Stripe webhook");
-        
+
         String webhookId = UUID.randomUUID().toString();
-        
+
         try {
             // Log webhook
             Webhook webhook = Webhook.builder()
@@ -75,18 +75,18 @@ public class WebhookVerificationService {
                     .headers(objectMapper.writeValueAsString(headers))
                     .createdAt(Instant.now().toString())
                     .build();
-            
+
             webhookRepository.save(webhook);
-            
+
             // Process webhook event
             stripeService.processWebhookEvent(payload, headers.get("Stripe-Signature"));
-            
+
             // Update webhook status
             webhook.setProcessed(true);
             webhook.setProcessingStatus("SUCCESS");
             webhook.setProcessedAt(Instant.now().toString());
             webhookRepository.save(webhook);
-            
+
         } catch (Exception e) {
             log.error("Error processing Stripe webhook", e);
             updateWebhookStatus(webhookId, "FAILED", e.getMessage());
@@ -99,7 +99,7 @@ public class WebhookVerificationService {
      */
     public boolean validateMpesaTransaction(MpesaCallbackRequest request, String ipAddress) {
         log.info("Validating M-Pesa transaction");
-        
+
         try {
             // Implement M-Pesa specific validation logic
             // Check IP whitelist, verify transaction details, etc.
@@ -114,12 +114,12 @@ public class WebhookVerificationService {
      * Process M-Pesa confirmation
      */
     @Transactional
-    public void processMpesaConfirmation(MpesaCallbackRequest request, 
+    public void processMpesaConfirmation(MpesaCallbackRequest request,
                                          String ipAddress, Map<String, String> headers) {
         log.info("Processing M-Pesa confirmation");
-        
+
         String webhookId = UUID.randomUUID().toString();
-        
+
         try {
             // Log webhook
             Webhook webhook = Webhook.builder()
@@ -134,18 +134,18 @@ public class WebhookVerificationService {
                     .headers(objectMapper.writeValueAsString(headers))
                     .createdAt(Instant.now().toString())
                     .build();
-            
+
             webhookRepository.save(webhook);
-            
+
             // Process M-Pesa callback
             mpesaService.processSTKCallback(request, ipAddress, headers.get("User-Agent"));
-            
+
             // Update webhook status
             webhook.setProcessed(true);
             webhook.setProcessingStatus("SUCCESS");
             webhook.setProcessedAt(Instant.now().toString());
             webhookRepository.save(webhook);
-            
+
         } catch (Exception e) {
             log.error("Error processing M-Pesa confirmation", e);
             updateWebhookStatus(webhookId, "FAILED", e.getMessage());
@@ -159,9 +159,9 @@ public class WebhookVerificationService {
     @Transactional
     public void processMpesaTimeout(MpesaCallbackRequest request, String ipAddress) {
         log.info("Processing M-Pesa timeout");
-        
+
         String webhookId = UUID.randomUUID().toString();
-        
+
         try {
             Webhook webhook = Webhook.builder()
                     .webhookId(webhookId)
@@ -175,9 +175,9 @@ public class WebhookVerificationService {
                     .ipAddress(ipAddress)
                     .createdAt(Instant.now().toString())
                     .build();
-            
+
             webhookRepository.save(webhook);
-            
+
         } catch (Exception e) {
             log.error("Error processing M-Pesa timeout", e);
         }
@@ -187,7 +187,7 @@ public class WebhookVerificationService {
      * Process M-Pesa result
      */
     @Transactional
-    public void processMpesaResult(MpesaCallbackRequest request, 
+    public void processMpesaResult(MpesaCallbackRequest request,
                                    String ipAddress, Map<String, String> headers) {
         log.info("Processing M-Pesa result");
         processMpesaConfirmation(request, ipAddress, headers);
@@ -198,13 +198,13 @@ public class WebhookVerificationService {
      */
     public Map<String, Object> getWebhookLogs(String provider, int limit) {
         List<Webhook> webhooks;
-        
+
         if (provider != null && !provider.isEmpty()) {
             webhooks = webhookRepository.findByProvider(provider, limit);
         } else {
             webhooks = webhookRepository.findAll(limit);
         }
-        
+
         List<Map<String, Object>> logs = webhooks.stream()
                 .map(w -> Map.of(
                         "webhookId", w.getWebhookId(),
@@ -216,7 +216,7 @@ public class WebhookVerificationService {
                         "createdAt", w.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
-        
+
         return Map.of(
                 "webhooks", logs,
                 "total", logs.size()
@@ -230,14 +230,14 @@ public class WebhookVerificationService {
     public void retryWebhook(String webhookId) {
         Webhook webhook = webhookRepository.findById(webhookId)
                 .orElseThrow(() -> new PaymentException("Webhook not found"));
-        
+
         if (webhook.getProcessed() && "SUCCESS".equals(webhook.getProcessingStatus())) {
             throw new PaymentException("Webhook already processed successfully");
         }
-        
+
         webhook.setRetryCount(webhook.getRetryCount() != null ? webhook.getRetryCount() + 1 : 1);
         webhookRepository.save(webhook);
-        
+
         // Retry processing based on provider
         // Implementation depends on webhook type
         log.info("Webhook retry initiated: {}", webhookId);
@@ -258,3 +258,5 @@ public class WebhookVerificationService {
             log.error("Error updating webhook status", e);
         }
     }
+
+}

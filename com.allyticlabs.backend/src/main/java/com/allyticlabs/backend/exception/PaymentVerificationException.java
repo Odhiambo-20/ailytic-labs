@@ -9,14 +9,14 @@ import java.time.Instant;
  */
 @Getter
 public class PaymentVerificationException extends PaymentException {
-    
+
     private final String paymentId;
     private final String providerId;
     private final VerificationErrorReason verificationReason;
     private final String expectedValue;
     private final String actualValue;
     private final String webhookId;
-    
+
     /**
      * Specific reasons for payment verification failure
      */
@@ -40,13 +40,13 @@ public class PaymentVerificationException extends PaymentException {
         TIMEOUT,                    // Verification timeout
         UNKNOWN_TRANSACTION         // Transaction not found for verification
     }
-    
+
     /**
      * Constructor with all parameters
      */
-    public PaymentVerificationException(String paymentId, String providerId, 
+    public PaymentVerificationException(String paymentId, String providerId,
                                        VerificationErrorReason verificationReason,
-                                       String message, String expectedValue, 
+                                       String message, String expectedValue,
                                        String actualValue, String webhookId, Throwable cause) {
         super(
             "VERIFICATION_FAILED",
@@ -62,32 +62,32 @@ public class PaymentVerificationException extends PaymentException {
         this.actualValue = actualValue;
         this.webhookId = webhookId;
     }
-    
+
     /**
      * Constructor without cause
      */
     public PaymentVerificationException(String paymentId, String providerId,
                                        VerificationErrorReason verificationReason,
                                        String message, String expectedValue, String actualValue) {
-        this(paymentId, providerId, verificationReason, message, 
+        this(paymentId, providerId, verificationReason, message,
              expectedValue, actualValue, null, null);
     }
-    
+
     /**
      * Constructor with minimal parameters
      */
-    public PaymentVerificationException(String paymentId, VerificationErrorReason verificationReason, 
+    public PaymentVerificationException(String paymentId, VerificationErrorReason verificationReason,
                                        String message) {
         this(paymentId, null, verificationReason, message, null, null, null, null);
     }
-    
+
     /**
      * Static factory methods for common verification errors
      */
-    
-    public static PaymentVerificationException signatureMismatch(String webhookId, 
+
+    public static PaymentVerificationException signatureMismatch(String webhookId,
                                                                 String providerId,
-                                                                String expectedSignature, 
+                                                                String expectedSignature,
                                                                 String actualSignature) {
         return new PaymentVerificationException(
             null,
@@ -100,8 +100,8 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
-    public static PaymentVerificationException invalidTimestamp(String webhookId, 
+
+    public static PaymentVerificationException invalidTimestamp(String webhookId,
                                                                String providerId,
                                                                long timestamp) {
         long currentTime = Instant.now().toEpochMilli();
@@ -117,8 +117,8 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
-    public static PaymentVerificationException replayAttack(String webhookId, 
+
+    public static PaymentVerificationException replayAttack(String webhookId,
                                                            String providerId,
                                                            String nonce) {
         return new PaymentVerificationException(
@@ -132,7 +132,7 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
+
     public static PaymentVerificationException invalidProvider(String providerId) {
         return new PaymentVerificationException(
             null,
@@ -143,8 +143,8 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
-    public static PaymentVerificationException statusMismatch(String paymentId, 
+
+    public static PaymentVerificationException statusMismatch(String paymentId,
                                                              String expectedStatus,
                                                              String actualStatus) {
         return new PaymentVerificationException(
@@ -156,7 +156,7 @@ public class PaymentVerificationException extends PaymentException {
             actualStatus
         );
     }
-    
+
     public static PaymentVerificationException amountMismatch(String paymentId,
                                                              Double expectedAmount,
                                                              Double actualAmount) {
@@ -170,7 +170,7 @@ public class PaymentVerificationException extends PaymentException {
             String.valueOf(actualAmount)
         );
     }
-    
+
     public static PaymentVerificationException currencyMismatch(String paymentId,
                                                                String expectedCurrency,
                                                                String actualCurrency) {
@@ -183,7 +183,7 @@ public class PaymentVerificationException extends PaymentException {
             actualCurrency
         );
     }
-    
+
     public static PaymentVerificationException merchantMismatch(String paymentId,
                                                                String expectedMerchantId,
                                                                String actualMerchantId) {
@@ -196,7 +196,7 @@ public class PaymentVerificationException extends PaymentException {
             actualMerchantId
         );
     }
-    
+
     public static PaymentVerificationException missingSignature(String webhookId, String providerId) {
         return new PaymentVerificationException(
             null,
@@ -209,8 +209,8 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
-    public static PaymentVerificationException missingParameters(String webhookId, 
+
+    public static PaymentVerificationException missingParameters(String webhookId,
                                                                 String providerId,
                                                                 String missingParams) {
         return new PaymentVerificationException(
@@ -224,7 +224,7 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
+
     public static PaymentVerificationException checksumFailed(String paymentId,
                                                              String expectedChecksum,
                                                              String actualChecksum) {
@@ -237,7 +237,7 @@ public class PaymentVerificationException extends PaymentException {
             actualChecksum
         );
     }
-    
+
     public static PaymentVerificationException hashMismatch(String paymentId,
                                                            String expectedHash,
                                                            String actualHash) {
@@ -250,8 +250,8 @@ public class PaymentVerificationException extends PaymentException {
             actualHash
         );
     }
-    
-    public static PaymentVerificationException tokenExpired(String paymentId, 
+
+    public static PaymentVerificationException tokenExpired(String paymentId,
                                                            Instant expiryTime) {
         return new PaymentVerificationException(
             paymentId,
@@ -262,7 +262,7 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
+
     public static PaymentVerificationException tokenInvalid(String paymentId, String reason) {
         return new PaymentVerificationException(
             paymentId,
@@ -271,7 +271,7 @@ public class PaymentVerificationException extends PaymentException {
             "Verification token is invalid: " + reason
         );
     }
-    
+
     public static PaymentVerificationException providerError(String paymentId,
                                                             String providerId,
                                                             String errorMessage,
@@ -287,8 +287,8 @@ public class PaymentVerificationException extends PaymentException {
             cause
         );
     }
-    
-    public static PaymentVerificationException timeout(String paymentId, 
+
+    public static PaymentVerificationException timeout(String paymentId,
                                                       String providerId,
                                                       int timeoutSeconds) {
         return new PaymentVerificationException(
@@ -300,7 +300,7 @@ public class PaymentVerificationException extends PaymentException {
             null
         );
     }
-    
+
     public static PaymentVerificationException unknownTransaction(String paymentId) {
         return new PaymentVerificationException(
             paymentId,
@@ -309,7 +309,7 @@ public class PaymentVerificationException extends PaymentException {
             "Transaction not found or does not exist"
         );
     }
-    
+
     /**
      * Check if this is a security-related verification error
      */
@@ -320,15 +320,15 @@ public class PaymentVerificationException extends PaymentException {
                verificationReason == VerificationErrorReason.CHECKSUM_FAILED ||
                verificationReason == VerificationErrorReason.MERCHANT_MISMATCH;
     }
-    
+
     /**
      * Check if this error should trigger an alert
      */
     public boolean shouldAlert() {
-        return isSecurityError() || 
+        return isSecurityError() ||
                verificationReason == VerificationErrorReason.AMOUNT_MISMATCH;
     }
-    
+
     /**
      * Check if verification can be retried
      */
@@ -336,7 +336,7 @@ public class PaymentVerificationException extends PaymentException {
         return verificationReason == VerificationErrorReason.TIMEOUT ||
                verificationReason == VerificationErrorReason.PROVIDER_ERROR;
     }
-    
+
     /**
      * Get severity level of the verification error
      */
@@ -354,14 +354,14 @@ public class PaymentVerificationException extends PaymentException {
             return VerificationSeverity.LOW;
         }
     }
-    
+
     public enum VerificationSeverity {
         LOW,        // Minor validation issues
         MEDIUM,     // Missing or invalid data
         HIGH,       // Payment data mismatch
         CRITICAL    // Security violations
     }
-    
+
     /**
      * Get recommended action based on error type
      */
@@ -396,7 +396,7 @@ public class PaymentVerificationException extends PaymentException {
                 return "Investigate and contact payment provider if needed";
         }
     }
-    
+
     /**
      * Get user-friendly error message
      */
@@ -427,7 +427,7 @@ public class PaymentVerificationException extends PaymentException {
                 return "Payment verification failed. Please contact support.";
         }
     }
-    
+
     @Override
     public String toString() {
         return String.format(

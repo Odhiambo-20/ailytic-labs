@@ -44,22 +44,22 @@ public class PaymentService {
     @Transactional
     public PaymentResponse initiatePayment(PaymentRequest request) {
         log.info("Initiating payment for amount: {} {}", request.getAmount(), request.getCurrency());
-        
+
         // Validate payment request
         validationService.validatePaymentRequest(request);
-        
+
         // Generate unique payment ID
         String paymentId = generatePaymentId();
-        String idempotencyKey = request.getIdempotencyKey() != null 
-                ? request.getIdempotencyKey() 
+        String idempotencyKey = request.getIdempotencyKey() != null
+                ? request.getIdempotencyKey()
                 : UUID.randomUUID().toString();
-        
+
         // Check for duplicate payment
         if (isDuplicatePayment(idempotencyKey)) {
             log.warn("Duplicate payment detected: {}", idempotencyKey);
             return getPaymentByIdempotencyKey(idempotencyKey);
         }
-        
+
         // Create payment entity
         Payment payment = Payment.builder()
                 .paymentId(paymentId)
@@ -80,19 +80,19 @@ public class PaymentService {
                 .metadata(request.getMetadata())
                 .createdAt(Instant.now().toString())
                 .build();
-        
+
         // Generate transaction hash
         payment.setTransactionHash(generateTransactionHash(payment));
-        
+
         // Save payment
         paymentRepository.save(payment);
-        
+
         // Log transaction
         logTransaction(paymentId, "INITIATED", "Payment initiated", request.getIpAddress());
-        
+
         // Route to appropriate payment provider
         PaymentResponse response = routePayment(payment, request);
-        
+
         log.info("Payment initiated successfully: {}", paymentId);
         return response;
     }
@@ -102,32 +102,32 @@ public class PaymentService {
      */
     private PaymentResponse routePayment(Payment payment, PaymentRequest request) {
         PaymentMethod method = payment.getPaymentMethod();
-        
+
         try {
             String credentials = mpesaConfig.getConsumerKey() + ":" + mpesaConfig.getConsumerSecret();
             String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
-            
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Basic " + encodedCredentials);
-            
+
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            
+
             ResponseEntity<String> response = restTemplate.exchange(
                     mpesaConfig.getOauthUrl(),
                     HttpMethod.GET,
                     entity,
                     String.class
             );
-            
+
             JsonNode responseBody = objectMapper.readTree(response.getBody());
             accessToken = responseBody.get("access_token").asText();
             int expiresIn = responseBody.get("expires_in").asInt();
             tokenExpiry = Instant.now().plusSeconds(expiresIn - 60); // Refresh 60s before expiry
-            
+
             log.info("M-Pesa access token obtained");
             return accessToken;
-            
+
         } catch (Exception e) {
             log.error("Error getting M-Pesa access token", e);
             throw new PaymentException("Failed to get access token: " + e.getMessage());
