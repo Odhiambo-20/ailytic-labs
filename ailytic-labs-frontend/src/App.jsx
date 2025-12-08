@@ -10,6 +10,7 @@ import RobotsCatalog from './pages/RobotsCatalog';
 import Order from './pages/Order';
 import Demo from './pages/Demo';
 import Login from './pages/login';
+import Signup from './pages/signup';
 
 import LatestModels from './pages/LatestModels';
 
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/order" element={<Order />} />
         <Route path="/demo" element={<Demo />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </div>
   );

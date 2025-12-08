@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight, Zap, Cpu, Plane, Sun, Users, Target, Globe, ArrowRight, Menu, X, User } from 'lucide-react';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   return (
     <div>
@@ -11,6 +13,7 @@ function Navbar() {
       <nav className="fixed top-0 w-full z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Logo */}
             <div className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
@@ -29,13 +32,12 @@ function Navbar() {
               <Link to="/contact" className="bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 rounded-lg hover:shadow-lg transition-all text-white">
                 Contact Us
               </Link>
-            </div>
-
-            {/* Right side icons - Desktop */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Link to="/login" className="text-gray-300 hover:text-white transition-colors">
-                <User className="w-6 h-6" />
-              </Link>
+              {/* Login Icon - Only on Home Page */}
+              {isHomePage && (
+                <Link to="/login" className="text-gray-300 hover:text-white transition-colors ml-4">
+                  <User className="w-6 h-6" />
+                </Link>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -57,7 +59,9 @@ function Navbar() {
               <Link to="/drones" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Drones</Link>
               <Link to="/solarpanels" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Solarpanels</Link>
               <Link to="/contact" className="block py-2 text-blue-400 hover:text-blue-300" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
-              <Link to="/login" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Login</Link>
+              {isHomePage && (
+                <Link to="/login" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Login</Link>
+              )}
             </div>
           </div>
         )}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Zap, ChevronLeft, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import robotVideo from '../assets/robot.mp4';
 import robot1Video from '../assets/robot1.mp4';
 import solarpanelsVideo from '../assets/solar panels.mp4';
@@ -10,7 +11,6 @@ import SolarEnergy from '../assets/solar energy.mp4';
 
 const Home = () => {
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
@@ -126,49 +126,8 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white overflow-hidden">
-      <nav className="fixed top-0 w-full z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Allytic Labs
-              </span>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-8">
-              <button onClick={() => navigate('/')} className="text-gray-300 hover:text-white transition-colors">Home</button>
-              <button onClick={() => navigate('/robots')} className="text-gray-300 hover:text-white transition-colors">Robots</button>
-              <button onClick={() => navigate('/drones')} className="text-gray-300 hover:text-white transition-colors">Drones</button>
-              <button onClick={() => navigate('/solarpanels')} className="text-gray-300 hover:text-white transition-colors">Solar</button>
-              <button onClick={() => navigate('/contact')} className="bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 rounded-lg hover:shadow-lg transition-all">
-                Contact Us
-              </button>
-            </div>
-
-            <button 
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        {isMenuOpen && (
-          <div className="md:hidden bg-gray-800 border-t border-gray-700">
-            <div className="px-4 py-2 space-y-2">
-              <button onClick={() => { navigate('/'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Home</button>
-              <button onClick={() => { navigate('/robots'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Robots</button>
-              <button onClick={() => { navigate('/drones'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Drones</button>
-              <button onClick={() => { navigate('/solarpanels'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-gray-300 hover:text-white">Solar</button>
-              <button onClick={() => { navigate('/contact'); setIsMenuOpen(false); }} className="block w-full text-left py-2 text-blue-400 hover:text-blue-300">Contact Us</button>
-            </div>
-          </div>
-        )}
-      </nav>
+      {/* Use the Navbar component instead of inline navbar */}
+      <Navbar />
 
       <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden pt-16">
         <div className="absolute inset-0 w-full h-full">
