@@ -1,8 +1,3 @@
-
-
-// ============================================================================
-// File: service/MpesaService.java
-// ============================================================================
 package com.allyticlabs.backend.service;
 
 import com.allyticlabs.backend.config.MpesaConfig;
@@ -26,7 +21,6 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -43,24 +37,19 @@ public class MpesaService {
     private String accessToken;
     private Instant tokenExpiry;
 
-    /**
-     * Initiate M-Pesa STK Push
-     */
     @Transactional
     public PaymentResponse initiateSTKPush(PaymentRequest request) {
         log.info("Initiating M-Pesa STK Push for phone: {}", maskPhone(request.getPhoneNumber()));
 
         try {
-            // Get OAuth access token
             String token = getAccessToken();
 
-            // Prepare STK Push request
             Map<String, Object> stkRequest = new HashMap<>();
             stkRequest.put("BusinessShortCode", mpesaConfig.getShortCode());
             stkRequest.put("Password", generatePassword());
             stkRequest.put("Timestamp", getTimestamp());
             stkRequest.put("TransactionType", "CustomerPayBillOnline");
-            stkRequest.put("Amount", request.getAmount());
+            stkRequest.put("Amount", request.getAmount().toString());
             stkRequest.put("PartyA", formatPhoneNumber(request.getPhoneNumber()));
             stkRequest.put("PartyB", mpesaConfig.getShortCode());
             stkRequest.put("PhoneNumber", formatPhoneNumber(request.getPhoneNumber()));
@@ -68,7 +57,6 @@ public class MpesaService {
             stkRequest.put("AccountReference", request.getMerchantId());
             stkRequest.put("TransactionDesc", request.getDescription());
 
-            // Send STK Push request
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(token);
@@ -82,7 +70,6 @@ public class MpesaService {
                     String.class
             );
 
-            // Parse response
             JsonNode responseBody = objectMapper.readTree(response.getBody());
             String checkoutRequestId = responseBody.get("CheckoutRequestID").asText();
             String merchantRequestId = responseBody.get("MerchantRequestID").asText();
@@ -93,20 +80,19 @@ public class MpesaService {
                         responseBody.get("ResponseDescription").asText());
             }
 
-            // Create M-Pesa payment record
             MpesaPayment mpesaPayment = MpesaPayment.builder()
                     .mpesaTransactionId(checkoutRequestId)
-                    .timestamp(Instant.now().toEpochMilli())
                     .paymentId(request.getPaymentId())
                     .checkoutRequestId(checkoutRequestId)
                     .merchantRequestId(merchantRequestId)
                     .phoneNumber(encryptionService.encrypt(request.getPhoneNumber()))
-                    .amount(encryptionService.encrypt(request.getAmount()))
+                    .amount(request.getAmount().doubleValue())
                     .accountReference(request.getMerchantId())
                     .transactionDesc(request.getDescription())
-                    .status(PaymentStatus.PROCESSING)
-                    .createdAt(Instant.now().toString())
+                    .status(PaymentStatus.PROCESSING.name())
                     .build();
+
+            mpesaPayment.setCreatedAt(Instant.now());
 
             mpesaPaymentRepository.save(mpesaPayment);
 
@@ -125,52 +111,50 @@ public class MpesaService {
         }
     }
 
-    /**
-     * Process M-Pesa STK callback
-     */
     @Transactional
     public void processSTKCallback(MpesaCallbackRequest callback, String ipAddress, String userAgent) {
         log.info("Processing M-Pesa callback");
 
         try {
             String checkoutRequestId = callback.getCheckoutRequestId();
-            String resultCode = callback.getResultCode();
+            String resultCode = String.valueOf(callback.getResultCode());
             String resultDesc = callback.getResultDesc();
 
             MpesaPayment mpesaPayment = mpesaPaymentRepository.findByCheckoutRequestId(checkoutRequestId)
                     .orElseThrow(() -> new PaymentException("M-Pesa payment not found: " + checkoutRequestId));
 
             if ("0".equals(resultCode)) {
-                // Payment successful
-                mpesaPayment.setStatus(PaymentStatus.COMPLETED);
+                mpesaPayment.setStatus(PaymentStatus.SUCCESS);
                 mpesaPayment.setResultCode(resultCode);
                 mpesaPayment.setResultDesc(resultDesc);
                 mpesaPayment.setMpesaReceiptNumber(callback.getMpesaReceiptNumber());
-                mpesaPayment.setTransactionDate(callback.getTransactionDate());
+                
+                if (callback.getTransactionDate() != null) {
+                    mpesaPayment.setTransactionDate(callback.getTransactionDate());
+                }
+                
                 mpesaPayment.setCallbackPayload(objectMapper.writeValueAsString(callback));
-                mpesaPayment.setUpdatedAt(Instant.now().toString());
+                mpesaPayment.setUpdatedAt(Instant.now());
 
                 mpesaPaymentRepository.save(mpesaPayment);
 
-                // Update main payment record
-                paymentService.updatePaymentStatus(
+                paymentService.completePayment(
                         mpesaPayment.getPaymentId(),
-                        PaymentStatus.COMPLETED,
+                        PaymentStatus.SUCCESS,
                         "M-Pesa payment completed: " + callback.getMpesaReceiptNumber()
                 );
 
                 log.info("M-Pesa payment completed: {}", callback.getMpesaReceiptNumber());
 
             } else {
-                // Payment failed
                 mpesaPayment.setStatus(PaymentStatus.FAILED);
                 mpesaPayment.setResultCode(resultCode);
                 mpesaPayment.setResultDesc(resultDesc);
-                mpesaPayment.setUpdatedAt(Instant.now().toString());
+                mpesaPayment.setUpdatedAt(Instant.now());
 
                 mpesaPaymentRepository.save(mpesaPayment);
 
-                paymentService.updatePaymentStatus(
+                paymentService.completePayment(
                         mpesaPayment.getPaymentId(),
                         PaymentStatus.FAILED,
                         "M-Pesa payment failed: " + resultDesc
@@ -185,9 +169,6 @@ public class MpesaService {
         }
     }
 
-    /**
-     * Query M-Pesa transaction status
-     */
     public Map<String, Object> queryTransactionStatus(String checkoutRequestId) {
         log.info("Querying M-Pesa transaction status: {}", checkoutRequestId);
 
@@ -207,7 +188,7 @@ public class MpesaService {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(queryRequest, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getQueryUrl(),
+                    mpesaConfig.getStkPushQueryUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -227,9 +208,6 @@ public class MpesaService {
         }
     }
 
-    /**
-     * Register C2B URLs
-     */
     public Map<String, String> registerC2BUrls(String shortCode, String validationUrl, String confirmationUrl) {
         log.info("Registering M-Pesa C2B URLs");
 
@@ -249,7 +227,7 @@ public class MpesaService {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(registerRequest, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getRegisterUrlEndpoint(),
+                    mpesaConfig.getC2bRegisterUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -263,9 +241,6 @@ public class MpesaService {
         }
     }
 
-    /**
-     * Simulate C2B payment (for testing)
-     */
     public Map<String, String> simulateC2B(String phoneNumber, String amount, String billRefNumber) {
         log.info("Simulating M-Pesa C2B payment");
 
@@ -286,7 +261,7 @@ public class MpesaService {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(simulateRequest, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getSimulateUrl(),
+                    mpesaConfig.getC2bSimulateUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -300,9 +275,6 @@ public class MpesaService {
         }
     }
 
-    /**
-     * Get account balance
-     */
     public Map<String, Object> getAccountBalance() {
         log.info("Fetching M-Pesa account balance");
 
@@ -326,7 +298,7 @@ public class MpesaService {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(balanceRequest, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getBalanceUrl(),
+                    mpesaConfig.getAccountBalanceUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -346,9 +318,6 @@ public class MpesaService {
         }
     }
 
-    /**
-     * Reverse transaction
-     */
     public Map<String, String> reverseTransaction(String transactionId, String amount, String remarks) {
         log.info("Reversing M-Pesa transaction: {}", transactionId);
 
@@ -389,18 +358,67 @@ public class MpesaService {
         }
     }
 
-    /**
-     * Get OAuth access token
-     */
     private String getAccessToken() {
         if (accessToken != null && tokenExpiry != null && Instant.now().isBefore(tokenExpiry)) {
             return accessToken;
         }
 
         try {
+            String credentials = mpesaConfig.getConsumerKey() + ":" + mpesaConfig.getConsumerSecret();
+            String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Basic " + encodedCredentials);
+
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    mpesaConfig.getOauthUrl(),
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+
+            JsonNode responseBody = objectMapper.readTree(response.getBody());
+            accessToken = responseBody.get("access_token").asText();
+            int expiresIn = responseBody.get("expires_in").asInt();
+            tokenExpiry = Instant.now().plusSeconds(expiresIn - 60);
+
+            log.info("M-Pesa access token obtained");
+            return accessToken;
+
         } catch (Exception e) {
             log.error("Error getting access token", e);
             throw new PaymentException("Failed to get access token: " + e.getMessage());
         }
+    }
+
+    private String generatePassword() {
+        String timestamp = getTimestamp();
+        String data = mpesaConfig.getShortCode() + mpesaConfig.getPassKey() + timestamp;
+        return Base64.getEncoder().encodeToString(data.getBytes());
+    }
+
+    private String getTimestamp() {
+        return java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+                .withZone(java.time.ZoneId.of("Africa/Nairobi"))
+                .format(Instant.now());
+    }
+
+    private String formatPhoneNumber(String phone) {
+        phone = phone.trim().replaceAll("[^0-9]", "");
+        if (phone.startsWith("0")) {
+            return "254" + phone.substring(1);
+        }
+        if (!phone.startsWith("254")) {
+            return "254" + phone;
+        }
+        return phone;
+    }
+
+    private String maskPhone(String phone) {
+        if (phone == null || phone.length() < 4) return "****";
+        return "****" + phone.substring(phone.length() - 4);
     }
 }

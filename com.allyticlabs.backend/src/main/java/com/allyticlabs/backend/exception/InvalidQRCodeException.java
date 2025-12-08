@@ -33,7 +33,9 @@ public class InvalidQRCodeException extends PaymentException {
         UNSUPPORTED_VERSION,        // QR code version not supported
         SCANNING_ERROR,             // Error during QR code scanning
         GENERATION_ERROR,           // Error during QR code generation
-        PAYMENT_LIMIT_EXCEEDED      // Payment amount exceeds QR code limit
+        PAYMENT_LIMIT_EXCEEDED,     // Payment amount exceeds QR code limit
+        SCAN_LIMIT_EXCEEDED,        // QR code scan limit exceeded (ADDED)
+        INVALID_TOTP                // TOTP validation failed (ADDED)
     }
 
     /**
@@ -232,6 +234,23 @@ public class InvalidQRCodeException extends PaymentException {
         );
     }
 
+    // NEW METHODS FOR ADDED ENUM VALUES
+    public static InvalidQRCodeException scanLimitExceeded(String qrCodeId, int scanCount, int maxScans) {
+        return new InvalidQRCodeException(
+            qrCodeId,
+            QRErrorReason.SCAN_LIMIT_EXCEEDED,
+            String.format("QR code scan limit exceeded: %d/%d scans used", scanCount, maxScans)
+        );
+    }
+
+    public static InvalidQRCodeException invalidTotp(String qrCodeId, String message) {
+        return new InvalidQRCodeException(
+            qrCodeId,
+            QRErrorReason.INVALID_TOTP,
+            "TOTP validation failed: " + message
+        );
+    }
+
     /**
      * Check if QR code can be regenerated
      */
@@ -249,7 +268,8 @@ public class InvalidQRCodeException extends PaymentException {
                errorReason == QRErrorReason.TAMPERED ||
                errorReason == QRErrorReason.DECRYPTION_FAILED ||
                errorReason == QRErrorReason.MERCHANT_MISMATCH ||
-               errorReason == QRErrorReason.AMOUNT_MISMATCH;
+               errorReason == QRErrorReason.AMOUNT_MISMATCH ||
+               errorReason == QRErrorReason.INVALID_TOTP;
     }
 
     /**
@@ -293,6 +313,10 @@ public class InvalidQRCodeException extends PaymentException {
                 return "Payment amount exceeds QR code limit. Please request a QR code with a higher limit.";
             case GENERATION_ERROR:
                 return "Failed to generate QR code. Please try again or contact support.";
+            case SCAN_LIMIT_EXCEEDED:
+                return "QR code has been scanned too many times. Please request a new QR code.";
+            case INVALID_TOTP:
+                return "Time-based validation failed. Please try scanning again or request a new QR code.";
             default:
                 return "QR code is invalid. Please generate a new one.";
         }
@@ -331,6 +355,10 @@ public class InvalidQRCodeException extends PaymentException {
                 return "Failed to generate QR code";
             case PAYMENT_LIMIT_EXCEEDED:
                 return "Payment amount exceeds limit";
+            case SCAN_LIMIT_EXCEEDED:
+                return "Scan limit exceeded";
+            case INVALID_TOTP:
+                return "Time validation failed";
             default:
                 return "QR code is invalid";
         }
@@ -343,7 +371,8 @@ public class InvalidQRCodeException extends PaymentException {
         if (isSecurityError()) {
             return ErrorSeverity.CRITICAL;
         } else if (errorReason == QRErrorReason.PAYMENT_LIMIT_EXCEEDED ||
-                   errorReason == QRErrorReason.ALREADY_USED) {
+                   errorReason == QRErrorReason.ALREADY_USED ||
+                   errorReason == QRErrorReason.SCAN_LIMIT_EXCEEDED) {
             return ErrorSeverity.HIGH;
         } else if (errorReason == QRErrorReason.EXPIRED ||
                    errorReason == QRErrorReason.NOT_FOUND) {

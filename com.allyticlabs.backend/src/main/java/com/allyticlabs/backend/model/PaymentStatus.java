@@ -1,15 +1,16 @@
 package com.allyticlabs.backend.model;
 
+/**
+ * Enum representing different payment statuses
+ */
 public enum PaymentStatus {
-    PENDING("Payment initiated, awaiting confirmation"),
+    PENDING("Payment is pending"),
     PROCESSING("Payment is being processed"),
-    COMPLETED("Payment completed successfully"),
-    SUCCESS("Payment successful"),  // Alias for COMPLETED
+    SUCCESS("Payment completed successfully"),
     FAILED("Payment failed"),
-    CANCELLED("Payment cancelled by user"),
-    REFUNDED("Payment refunded"),
-    EXPIRED("Payment session expired"),
-    VERIFIED("Payment verified and settled");
+    CANCELLED("Payment was cancelled"),
+    REFUNDED("Payment was refunded"),
+    EXPIRED("Payment has expired");
 
     private final String description;
 
@@ -21,12 +22,19 @@ public enum PaymentStatus {
         return description;
     }
 
-    public boolean isSuccessful() {
-        return this == COMPLETED || this == SUCCESS || this == VERIFIED;
+    public boolean isTerminalStatus() {
+        return this == SUCCESS || this == FAILED || this == CANCELLED || this == REFUNDED || this == EXPIRED;
     }
 
-    public boolean isFinal() {
-        return this == COMPLETED || this == SUCCESS || this == FAILED ||
-               this == CANCELLED || this == REFUNDED || this == VERIFIED;
+    public boolean isSuccessful() {
+        return this == SUCCESS;
+    }
+
+    public boolean canBeRefunded() {
+        return this == SUCCESS;
+    }
+
+    public boolean canBeCancelled() {
+        return this == PENDING || this == PROCESSING;
     }
 }

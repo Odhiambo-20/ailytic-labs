@@ -1,6 +1,3 @@
-// ============================================================================
-// File: controller/PaymentController.java
-// ============================================================================
 package com.allyticlabs.backend.controller;
 
 import com.allyticlabs.backend.dto.PaymentRequest;
@@ -170,12 +167,12 @@ public class PaymentController {
     @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
     public ResponseEntity<PaymentResponse> refundPayment(
             @PathVariable @NotBlank String paymentId,
-            @RequestParam(required = false) String amount,
             @RequestParam(required = false) String reason) {
 
         log.info("Processing refund for payment: {}", paymentId);
 
-        PaymentResponse response = paymentService.refundPayment(paymentId, amount, reason);
+        // FIXED: Removed amount parameter - PaymentService.refundPayment only takes paymentId and reason
+        PaymentResponse response = paymentService.refundPayment(paymentId, reason);
 
         return ResponseEntity.ok(response);
     }

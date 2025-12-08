@@ -1,4 +1,4 @@
-package com.payment.config;
+package com.allyticlabs.backend.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,6 +35,8 @@ public class MpesaConfig {
     private String stkQueryUrl;
     private String b2cUrl;
     private String c2bRegisterUrl;
+    private String c2bSimulateUrl; // ADDED
+    private String reversalUrl; // ADDED
     private String transactionStatusUrl;
     private String accountBalanceUrl;
 
@@ -76,6 +78,14 @@ public class MpesaConfig {
     public String generatePassword(String timestamp) {
         String rawPassword = shortCode + passkey + timestamp;
         return Base64.getEncoder().encodeToString(rawPassword.getBytes());
+    }
+
+    /**
+     * Get passkey for STK Push (ADDED METHOD)
+     * @return Passkey
+     */
+    public String getPassKey() {
+        return this.passkey;
     }
 
     /**
@@ -162,11 +172,35 @@ public class MpesaConfig {
     }
 
     /**
+     * Get full STK Query URL (ADDED METHOD)
+     * @return Complete STK Query endpoint URL
+     */
+    public String getStkPushQueryUrl() {
+        return getBaseUrl() + (stkQueryUrl != null ? stkQueryUrl : "/mpesa/stkpushquery/v1/query");
+    }
+
+    /**
      * Get full STK Query URL
      * @return Complete STK Query endpoint URL
      */
     public String getFullStkQueryUrl() {
         return getBaseUrl() + (stkQueryUrl != null ? stkQueryUrl : "/mpesa/stkpushquery/v1/query");
+    }
+
+    /**
+     * Get full C2B Simulate URL (ADDED METHOD)
+     * @return Complete C2B Simulate endpoint URL
+     */
+    public String getC2bSimulateUrl() {
+        return getBaseUrl() + (c2bSimulateUrl != null ? c2bSimulateUrl : "/mpesa/c2b/v1/simulate");
+    }
+
+    /**
+     * Get full Reversal URL (ADDED METHOD)
+     * @return Complete Reversal endpoint URL
+     */
+    public String getReversalUrl() {
+        return getBaseUrl() + (reversalUrl != null ? reversalUrl : "/mpesa/reversal/v1/request");
     }
 
     /**

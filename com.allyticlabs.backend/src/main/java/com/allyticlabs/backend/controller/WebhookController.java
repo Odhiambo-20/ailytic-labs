@@ -1,11 +1,9 @@
-// ============================================================================
-// File: controller/WebhookController.java
-// ============================================================================
 package com.allyticlabs.backend.controller;
 
 import com.allyticlabs.backend.dto.MpesaCallbackRequest;
-import com.allyticlabs.backend.dto.StripeWebhookEvent;
 import com.allyticlabs.backend.service.WebhookVerificationService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,9 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/webhooks")
@@ -24,6 +20,7 @@ import java.util.Map;
 public class WebhookController {
 
     private final WebhookVerificationService webhookVerificationService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Stripe webhook endpoint
@@ -37,7 +34,6 @@ public class WebhookController {
 
         log.info("Stripe webhook received");
 
-        String ipAddress = getClientIpAddress(request);
         Map<String, String> headers = extractHeaders(request);
 
         try {
@@ -51,9 +47,14 @@ public class WebhookController {
                         .body(Map.of("error", "Invalid signature"));
             }
 
-            // Process webhook
+            // Parse the JSON payload to extract event details
+            JsonNode eventJson = objectMapper.readTree(payload);
+            String eventId = eventJson.path("id").asText();
+            String eventType = eventJson.path("type").asText();
+
+            // Process webhook with correct parameters
             webhookVerificationService.processStripeWebhook(
-                    payload, ipAddress, headers);
+                    eventId, eventType, headers);
 
             log.info("Stripe webhook processed successfully");
 
@@ -73,16 +74,15 @@ public class WebhookController {
     @PostMapping("/mpesa/validation")
     public ResponseEntity<Map<String, String>> validateMpesaTransaction(
             @RequestBody MpesaCallbackRequest validationRequest,
+            @RequestHeader(value = "X-Signature", required = false) String signature,
             HttpServletRequest request) {
 
         log.info("M-Pesa validation request received");
 
-        String ipAddress = getClientIpAddress(request);
-
         try {
-            // Validate the transaction
+            // Validate the transaction with signature
             boolean isValid = webhookVerificationService.validateMpesaTransaction(
-                    validationRequest, ipAddress);
+                    validationRequest, signature);
 
             if (isValid) {
                 return ResponseEntity.ok(Map.of(
@@ -116,13 +116,15 @@ public class WebhookController {
 
         log.info("M-Pesa confirmation request received");
 
-        String ipAddress = getClientIpAddress(request);
         Map<String, String> headers = extractHeaders(request);
 
         try {
-            // Process confirmation
+            // Extract transaction ID from request
+            String transactionId = extractMpesaTransactionId(confirmationRequest);
+
+            // Process confirmation with correct parameters
             webhookVerificationService.processMpesaConfirmation(
-                    confirmationRequest, ipAddress, headers);
+                    confirmationRequest, transactionId, headers);
 
             log.info("M-Pesa confirmation processed successfully");
 
@@ -151,10 +153,11 @@ public class WebhookController {
 
         log.info("M-Pesa timeout request received");
 
-        String ipAddress = getClientIpAddress(request);
-
         try {
-            webhookVerificationService.processMpesaTimeout(timeoutRequest, ipAddress);
+            // Extract transaction ID from request
+            String transactionId = extractMpesaTransactionId(timeoutRequest);
+
+            webhookVerificationService.processMpesaTimeout(timeoutRequest, transactionId);
 
             return ResponseEntity.ok(Map.of(
                     "ResultCode", "0",
@@ -181,12 +184,14 @@ public class WebhookController {
 
         log.info("M-Pesa result request received");
 
-        String ipAddress = getClientIpAddress(request);
         Map<String, String> headers = extractHeaders(request);
 
         try {
+            // Extract transaction ID from request
+            String transactionId = extractMpesaTransactionId(resultRequest);
+
             webhookVerificationService.processMpesaResult(
-                    resultRequest, ipAddress, headers);
+                    resultRequest, transactionId, headers);
 
             log.info("M-Pesa result processed successfully");
 
@@ -221,14 +226,15 @@ public class WebhookController {
      * GET /api/v1/webhooks/logs
      */
     @GetMapping("/logs")
-    public ResponseEntity<Map<String, Object>> getWebhookLogs(
-            @RequestParam(required = false) String provider,
+    public ResponseEntity<List<Map<String, Object>>> getWebhookLogs(
+            @RequestParam(required = false) String transactionId,
             @RequestParam(defaultValue = "20") int limit) {
 
         log.info("Fetching webhook logs");
 
-        Map<String, Object> logs = webhookVerificationService.getWebhookLogs(
-                provider, limit);
+        // Service returns List<Map<String, Object>>
+        List<Map<String, Object>> logs = webhookVerificationService.getWebhookLogs(
+                transactionId, limit);
 
         return ResponseEntity.ok(logs);
     }
@@ -285,5 +291,29 @@ public class WebhookController {
         }
 
         return headers;
+    }
+
+    /**
+     * Extract transaction ID from M-Pesa callback request
+     * Priority: CheckoutRequestID > TransID > MpesaReceiptNumber > generated UUID
+     */
+    private String extractMpesaTransactionId(MpesaCallbackRequest request) {
+        // For STK Push callbacks, use CheckoutRequestID
+        if (request.getCheckoutRequestId() != null) {
+            return request.getCheckoutRequestId();
+        }
+        
+        // For C2B callbacks, use TransID
+        if (request.getTransId() != null) {
+            return request.getTransId();
+        }
+        
+        // For confirmed transactions, use MpesaReceiptNumber
+        if (request.getMpesaReceiptNumber() != null) {
+            return request.getMpesaReceiptNumber();
+        }
+        
+        // Fallback to generating a unique ID if not present
+        return UUID.randomUUID().toString();
     }
 }

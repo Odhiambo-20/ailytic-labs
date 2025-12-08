@@ -1,21 +1,16 @@
-package com.payment.repository;
+package com.allyticlabs.backend.repository;
 
-import com.payment.model.Payment;
-import com.payment.model.PaymentStatus;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.allyticlabs.backend.model.Payment;
+import com.allyticlabs.backend.model.PaymentStatus;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,14 +18,11 @@ import java.util.stream.Collectors;
  * Handles CRUD operations and complex queries for payment records
  */
 @Repository
+@RequiredArgsConstructor
+@Slf4j
 public class PaymentRepository {
 
-    private final DynamoDbTable<Payment> paymentTable;
-
-    @Autowired
-    public PaymentRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.paymentTable = enhancedClient.table("Payments", TableSchema.fromBean(Payment.class));
-    }
+    private final DynamoDBMapper dynamoDBMapper;
 
     /**
      * Save or update a payment record
@@ -42,7 +34,7 @@ public class PaymentRepository {
             payment.setCreatedAt(Instant.now());
         }
         payment.setUpdatedAt(Instant.now());
-        paymentTable.putItem(payment);
+        dynamoDBMapper.save(payment);
         return payment;
     }
 
@@ -52,33 +44,78 @@ public class PaymentRepository {
      * @return Optional containing payment if found
      */
     public Optional<Payment> findById(String paymentId) {
-        Key key = Key.builder()
-                .partitionValue(paymentId)
-                .build();
-
-        Payment payment = paymentTable.getItem(key);
-        return Optional.ofNullable(payment);
+        try {
+            Payment payment = dynamoDBMapper.load(Payment.class, paymentId);
+            return Optional.ofNullable(payment);
+        } catch (Exception e) {
+            log.error("Error finding payment by ID: {}", paymentId, e);
+            return Optional.empty();
+        }
     }
 
     /**
      * Find all payments by user ID
-     * Uses GSI (Global Secondary Index) for efficient querying
      * @param userId User identifier
      * @return List of payments for the user
      */
     public List<Payment> findByUserId(String userId) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(userId).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":userId", new AttributeValue().withS(userId));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("userId = :userId")
+                    .withExpressionAttributeValues(eav);
 
-        return paymentTable.index("UserIdIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .collect(Collectors.toList());
+            return dynamoDBMapper.scan(Payment.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding payments by userId: {}", userId, e);
+            return List.of();
+        }
+    }
+
+    /**
+     * Find all payments by merchant ID
+     * @param merchantId Merchant identifier
+     * @return List of payments for the merchant
+     */
+    public List<Payment> findByMerchantId(String merchantId) {
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":merchantId", new AttributeValue().withS(merchantId));
+
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("merchantId = :merchantId")
+                    .withExpressionAttributeValues(eav);
+
+            return dynamoDBMapper.scan(Payment.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding payments by merchantId: {}", merchantId, e);
+            return List.of();
+        }
+    }
+
+    /**
+     * Find payment by idempotency key
+     * @param idempotencyKey Idempotency key
+     * @return Optional containing payment if found
+     */
+    public Optional<Payment> findByIdempotencyKey(String idempotencyKey) {
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":idempotencyKey", new AttributeValue().withS(idempotencyKey));
+
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("idempotencyKey = :idempotencyKey")
+                    .withExpressionAttributeValues(eav)
+                    .withLimit(1);
+
+            List<Payment> results = dynamoDBMapper.scan(Payment.class, scanExpression);
+            return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        } catch (Exception e) {
+            log.error("Error finding payment by idempotencyKey: {}", idempotencyKey, e);
+            return Optional.empty();
+        }
     }
 
     /**
@@ -87,18 +124,20 @@ public class PaymentRepository {
      * @return List of payments with specified status
      */
     public List<Payment> findByStatus(PaymentStatus status) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(status.name()).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":status", new AttributeValue().withS(status.name()));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("#status = :status")
+                    .withExpressionAttributeNames(Map.of("#status", "status"))
+                    .withExpressionAttributeValues(eav);
 
-        return paymentTable.index("StatusIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .collect(Collectors.toList());
+            return dynamoDBMapper.scan(Payment.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding payments by status: {}", status, e);
+            return List.of();
+        }
     }
 
     /**
@@ -132,23 +171,44 @@ public class PaymentRepository {
     }
 
     /**
+     * Find payments within a date range for a merchant
+     * @param merchantId Merchant identifier
+     * @param startDate Start of date range
+     * @param endDate End of date range
+     * @return List of payments within date range
+     */
+    public List<Payment> findByMerchantIdAndDateRange(String merchantId, Instant startDate, Instant endDate) {
+        return findByMerchantId(merchantId).stream()
+                .filter(payment -> {
+                    Instant createdAt = payment.getCreatedAt();
+                    return createdAt != null &&
+                           !createdAt.isBefore(startDate) &&
+                           !createdAt.isAfter(endDate);
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Find payment by external transaction ID (Mpesa/Stripe)
      * @param externalTransactionId External transaction identifier
      * @return Optional containing payment if found
      */
     public Optional<Payment> findByExternalTransactionId(String externalTransactionId) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(externalTransactionId).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":externalTransactionId", new AttributeValue().withS(externalTransactionId));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("externalTransactionId = :externalTransactionId")
+                    .withExpressionAttributeValues(eav)
+                    .withLimit(1);
 
-        return paymentTable.index("ExternalTransactionIdIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .findFirst();
+            List<Payment> results = dynamoDBMapper.scan(Payment.class, scanExpression);
+            return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        } catch (Exception e) {
+            log.error("Error finding payment by externalTransactionId: {}", externalTransactionId, e);
+            return Optional.empty();
+        }
     }
 
     /**
@@ -174,12 +234,18 @@ public class PaymentRepository {
      * @return true if deleted, false if not found
      */
     public boolean deleteById(String paymentId) {
-        Key key = Key.builder()
-                .partitionValue(paymentId)
-                .build();
-
-        Payment deletedPayment = paymentTable.deleteItem(key);
-        return deletedPayment != null;
+        try {
+            Payment payment = dynamoDBMapper.load(Payment.class, paymentId);
+            if (payment != null) {
+                dynamoDBMapper.delete(payment);
+                log.debug("Deleted payment: {}", paymentId);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            log.error("Error deleting payment: {}", paymentId, e);
+            return false;
+        }
     }
 
     /**
@@ -200,7 +266,14 @@ public class PaymentRepository {
     public List<Payment> findRecentPaymentsByUserId(String userId, int limit) {
         List<Payment> allPayments = findByUserId(userId);
         return allPayments.stream()
-                .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
+                .sorted((p1, p2) -> {
+                    Instant c1 = p1.getCreatedAt();
+                    Instant c2 = p2.getCreatedAt();
+                    if (c1 == null && c2 == null) return 0;
+                    if (c1 == null) return 1;
+                    if (c2 == null) return -1;
+                    return c2.compareTo(c1);
+                })
                 .limit(limit)
                 .collect(Collectors.toList());
     }
@@ -223,9 +296,13 @@ public class PaymentRepository {
      * @return List of all payments
      */
     public List<Payment> findAll() {
-        List<Payment> payments = new ArrayList<>();
-        paymentTable.scan().items().forEach(payments::add);
-        return payments;
+        try {
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+            return dynamoDBMapper.scan(Payment.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding all payments", e);
+            return List.of();
+        }
     }
 
     /**

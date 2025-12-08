@@ -1,17 +1,12 @@
-
-
-// ============================================================================
-// File: service/PaymentValidationService.java
-// ============================================================================
 package com.allyticlabs.backend.service;
 
 import com.allyticlabs.backend.dto.PaymentRequest;
 import com.allyticlabs.backend.exception.PaymentException;
-import com.allyticlabs.backend.util.PaymentValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 @Service
@@ -25,14 +20,10 @@ public class PaymentValidationService {
     private static final double MIN_AMOUNT = 1.0;
     private static final double MAX_AMOUNT = 1000000.0;
 
-    /**
-     * Validate payment request
-     */
     public void validatePaymentRequest(PaymentRequest request) {
         log.debug("Validating payment request");
 
-        // Validate required fields
-        if (request.getAmount() == null || request.getAmount().isEmpty()) {
+        if (request.getAmount() == null) {
             throw new PaymentException("Amount is required");
         }
 
@@ -44,20 +35,16 @@ public class PaymentValidationService {
             throw new PaymentException("Payment method is required");
         }
 
-        // Validate amount
-        validateAmount(request.getAmount(), request.getCurrency());
+        validateAmount(request.getAmount().toString(), request.getCurrency());
 
-        // Validate email if provided
         if (request.getCustomerEmail() != null && !request.getCustomerEmail().isEmpty()) {
             validateEmail(request.getCustomerEmail());
         }
 
-        // Validate phone if provided (especially for M-Pesa)
         if (request.getPhoneNumber() != null && !request.getPhoneNumber().isEmpty()) {
             validatePhoneNumber(request.getPhoneNumber());
         }
 
-        // Validate merchant ID
         if (request.getMerchantId() == null || request.getMerchantId().isEmpty()) {
             throw new PaymentException("Merchant ID is required");
         }
@@ -65,9 +52,6 @@ public class PaymentValidationService {
         log.debug("Payment request validation successful");
     }
 
-    /**
-     * Validate amount
-     */
     public void validateAmount(String amountStr, String currency) {
         try {
             double amount = Double.parseDouble(amountStr);
@@ -82,7 +66,6 @@ public class PaymentValidationService {
                         String.format("Amount cannot exceed %.2f %s", MAX_AMOUNT, currency));
             }
 
-            // Check decimal places (max 2)
             String[] parts = amountStr.split("\\.");
             if (parts.length > 1 && parts[1].length() > 2) {
                 throw new PaymentException("Amount cannot have more than 2 decimal places");
@@ -93,9 +76,6 @@ public class PaymentValidationService {
         }
     }
 
-    /**
-     * Validate email address
-     */
     public void validateEmail(String email) {
         if (email == null || email.isEmpty()) {
             return;
@@ -106,15 +86,11 @@ public class PaymentValidationService {
         }
     }
 
-    /**
-     * Validate phone number
-     */
     public void validatePhoneNumber(String phone) {
         if (phone == null || phone.isEmpty()) {
             return;
         }
 
-        // Remove all non-digit characters
         String digits = phone.replaceAll("[^0-9]", "");
 
         if (!PHONE_PATTERN.matcher(digits).matches()) {
@@ -122,15 +98,11 @@ public class PaymentValidationService {
         }
     }
 
-    /**
-     * Validate currency code
-     */
     public void validateCurrency(String currency) {
         if (currency == null || currency.length() != 3) {
             throw new PaymentException("Invalid currency code");
         }
 
-        // Check if currency is supported
         String[] supportedCurrencies = {"KES", "USD", "EUR", "GBP"};
         boolean isSupported = false;
         for (String supported : supportedCurrencies) {
@@ -145,9 +117,6 @@ public class PaymentValidationService {
         }
     }
 
-    /**
-     * Validate idempotency key
-     */
     public void validateIdempotencyKey(String key) {
         if (key != null && key.length() > 255) {
             throw new PaymentException("Idempotency key too long (max 255 characters)");

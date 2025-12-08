@@ -1,4 +1,5 @@
-package com.payment.config;
+
+package com.allyticlabs.backend.config;
 
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;

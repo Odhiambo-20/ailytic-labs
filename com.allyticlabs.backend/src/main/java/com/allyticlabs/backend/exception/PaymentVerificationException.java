@@ -140,6 +140,8 @@ public class PaymentVerificationException extends PaymentException {
             VerificationErrorReason.INVALID_PROVIDER,
             String.format("Payment provider '%s' is not recognized or not configured", providerId),
             null,
+            null,
+            null,
             null
         );
     }
@@ -153,7 +155,9 @@ public class PaymentVerificationException extends PaymentException {
             VerificationErrorReason.STATUS_MISMATCH,
             "Payment status verification failed",
             expectedStatus,
-            actualStatus
+            actualStatus,
+            null,
+            null
         );
     }
 
@@ -167,7 +171,9 @@ public class PaymentVerificationException extends PaymentException {
             String.format("Payment amount verification failed. Expected: %.2f, Actual: %.2f",
                 expectedAmount, actualAmount),
             String.valueOf(expectedAmount),
-            String.valueOf(actualAmount)
+            String.valueOf(actualAmount),
+            null,
+            null
         );
     }
 
@@ -180,7 +186,9 @@ public class PaymentVerificationException extends PaymentException {
             VerificationErrorReason.CURRENCY_MISMATCH,
             "Currency verification failed",
             expectedCurrency,
-            actualCurrency
+            actualCurrency,
+            null,
+            null
         );
     }
 
@@ -193,7 +201,9 @@ public class PaymentVerificationException extends PaymentException {
             VerificationErrorReason.MERCHANT_MISMATCH,
             "Merchant ID verification failed",
             expectedMerchantId,
-            actualMerchantId
+            actualMerchantId,
+            null,
+            null
         );
     }
 
@@ -234,7 +244,9 @@ public class PaymentVerificationException extends PaymentException {
             VerificationErrorReason.CHECKSUM_FAILED,
             "Checksum verification failed - data may be corrupted",
             expectedChecksum,
-            actualChecksum
+            actualChecksum,
+            null,
+            null
         );
     }
 
@@ -247,7 +259,9 @@ public class PaymentVerificationException extends PaymentException {
             VerificationErrorReason.HASH_MISMATCH,
             "Hash verification failed - possible data tampering",
             expectedHash,
-            actualHash
+            actualHash,
+            null,
+            null
         );
     }
 
@@ -255,18 +269,14 @@ public class PaymentVerificationException extends PaymentException {
                                                            Instant expiryTime) {
         return new PaymentVerificationException(
             paymentId,
-            null,
             VerificationErrorReason.TOKEN_EXPIRED,
-            String.format("Verification token expired at %s", expiryTime),
-            null,
-            null
+            String.format("Verification token expired at %s", expiryTime)
         );
     }
 
     public static PaymentVerificationException tokenInvalid(String paymentId, String reason) {
         return new PaymentVerificationException(
             paymentId,
-            null,
             VerificationErrorReason.TOKEN_INVALID,
             "Verification token is invalid: " + reason
         );
@@ -297,6 +307,8 @@ public class PaymentVerificationException extends PaymentException {
             VerificationErrorReason.TIMEOUT,
             String.format("Verification timeout after %d seconds", timeoutSeconds),
             null,
+            null,
+            null,
             null
         );
     }
@@ -304,7 +316,6 @@ public class PaymentVerificationException extends PaymentException {
     public static PaymentVerificationException unknownTransaction(String paymentId) {
         return new PaymentVerificationException(
             paymentId,
-            null,
             VerificationErrorReason.UNKNOWN_TRANSACTION,
             "Transaction not found or does not exist"
         );

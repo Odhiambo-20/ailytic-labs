@@ -1,22 +1,17 @@
-package com.payment.repository;
+package com.allyticlabs.backend.repository;
 
-import com.payment.model.PaymentTransaction;
-import com.payment.model.PaymentMethod;
-import com.payment.model.PaymentStatus;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.allyticlabs.backend.model.PaymentTransaction;
+import com.allyticlabs.backend.model.PaymentMethod;
+import com.allyticlabs.backend.model.PaymentStatus;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
-import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,15 +19,11 @@ import java.util.stream.Collectors;
  * Handles transaction history, audit trails, and reconciliation
  */
 @Repository
+@RequiredArgsConstructor
+@Slf4j
 public class TransactionRepository {
 
-    private final DynamoDbTable<PaymentTransaction> transactionTable;
-
-    @Autowired
-    public TransactionRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.transactionTable = enhancedClient.table("PaymentTransactions",
-                                                     TableSchema.fromBean(PaymentTransaction.class));
-    }
+    private final DynamoDBMapper dynamoDBMapper;
 
     /**
      * Save or update a transaction record
@@ -44,7 +35,7 @@ public class TransactionRepository {
             transaction.setCreatedAt(Instant.now());
         }
         transaction.setUpdatedAt(Instant.now());
-        transactionTable.putItem(transaction);
+        dynamoDBMapper.save(transaction);
         return transaction;
     }
 
@@ -54,12 +45,13 @@ public class TransactionRepository {
      * @return Optional containing transaction if found
      */
     public Optional<PaymentTransaction> findById(String transactionId) {
-        Key key = Key.builder()
-                .partitionValue(transactionId)
-                .build();
-
-        PaymentTransaction transaction = transactionTable.getItem(key);
-        return Optional.ofNullable(transaction);
+        try {
+            PaymentTransaction transaction = dynamoDBMapper.load(PaymentTransaction.class, transactionId);
+            return Optional.ofNullable(transaction);
+        } catch (Exception e) {
+            log.error("Error finding transaction by ID: {}", transactionId, e);
+            return Optional.empty();
+        }
     }
 
     /**
@@ -68,18 +60,19 @@ public class TransactionRepository {
      * @return List of transactions for the payment
      */
     public List<PaymentTransaction> findByPaymentId(String paymentId) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(paymentId).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":paymentId", new AttributeValue().withS(paymentId));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("paymentId = :paymentId")
+                    .withExpressionAttributeValues(eav);
 
-        return transactionTable.index("PaymentIdIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .collect(Collectors.toList());
+            return dynamoDBMapper.scan(PaymentTransaction.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding transactions by paymentId: {}", paymentId, e);
+            return List.of();
+        }
     }
 
     /**
@@ -88,18 +81,19 @@ public class TransactionRepository {
      * @return List of transactions for the user
      */
     public List<PaymentTransaction> findByUserId(String userId) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(userId).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":userId", new AttributeValue().withS(userId));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("userId = :userId")
+                    .withExpressionAttributeValues(eav);
 
-        return transactionTable.index("UserIdIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .collect(Collectors.toList());
+            return dynamoDBMapper.scan(PaymentTransaction.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding transactions by userId: {}", userId, e);
+            return List.of();
+        }
     }
 
     /**
@@ -108,18 +102,19 @@ public class TransactionRepository {
      * @return List of transactions using specified payment method
      */
     public List<PaymentTransaction> findByPaymentMethod(PaymentMethod paymentMethod) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(paymentMethod.name()).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":method", new AttributeValue().withS(paymentMethod.name()));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("method = :method")
+                    .withExpressionAttributeValues(eav);
 
-        return transactionTable.index("PaymentMethodIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .collect(Collectors.toList());
+            return dynamoDBMapper.scan(PaymentTransaction.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding transactions by paymentMethod: {}", paymentMethod, e);
+            return List.of();
+        }
     }
 
     /**
@@ -128,18 +123,20 @@ public class TransactionRepository {
      * @return List of transactions with specified status
      */
     public List<PaymentTransaction> findByStatus(PaymentStatus status) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(status.name()).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":status", new AttributeValue().withS(status.name()));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("#status = :status")
+                    .withExpressionAttributeNames(Map.of("#status", "status"))
+                    .withExpressionAttributeValues(eav);
 
-        return transactionTable.index("StatusIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .collect(Collectors.toList());
+            return dynamoDBMapper.scan(PaymentTransaction.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding transactions by status: {}", status, e);
+            return List.of();
+        }
     }
 
     /**
@@ -149,33 +146,39 @@ public class TransactionRepository {
      * @return Optional containing transaction if found
      */
     public Optional<PaymentTransaction> findByExternalReference(String externalReference) {
-        QueryConditional queryConditional = QueryConditional
-                .keyEqualTo(Key.builder().partitionValue(externalReference).build());
+        try {
+            Map<String, AttributeValue> eav = new HashMap<>();
+            eav.put(":transactionId", new AttributeValue().withS(externalReference));
 
-        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                .queryConditional(queryConditional)
-                .build();
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterExpression("transactionId = :transactionId")
+                    .withExpressionAttributeValues(eav)
+                    .withLimit(1);
 
-        return transactionTable.index("ExternalReferenceIndex")
-                .query(queryRequest)
-                .stream()
-                .flatMap(page -> page.items().stream())
-                .findFirst();
+            List<PaymentTransaction> results = dynamoDBMapper.scan(PaymentTransaction.class, scanExpression);
+            return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        } catch (Exception e) {
+            log.error("Error finding transaction by externalReference: {}", externalReference, e);
+            return Optional.empty();
+        }
     }
 
     /**
      * Find transactions within a date range
-     * @param startDate Start of date range
-     * @param endDate End of date range
+     * @param startDate Start of date range (ISO-8601 format)
+     * @param endDate End of date range (ISO-8601 format)
      * @return List of transactions within date range
      */
-    public List<PaymentTransaction> findByDateRange(Instant startDate, Instant endDate) {
+    public List<PaymentTransaction> findByDateRange(String startDate, String endDate) {
+        Instant start = Instant.parse(startDate);
+        Instant end = Instant.parse(endDate);
+        
         return findAll().stream()
                 .filter(transaction -> {
-                    Instant createdAt = transaction.getCreatedAt();
+                    Instant createdAt = transaction.getCreatedAtInstant();
                     return createdAt != null &&
-                           !createdAt.isBefore(startDate) &&
-                           !createdAt.isAfter(endDate);
+                           !createdAt.isBefore(start) &&
+                           !createdAt.isAfter(end);
                 })
                 .collect(Collectors.toList());
     }
@@ -183,17 +186,20 @@ public class TransactionRepository {
     /**
      * Find transactions by user ID within a date range
      * @param userId User identifier
-     * @param startDate Start of date range
-     * @param endDate End of date range
+     * @param startDate Start of date range (ISO-8601 format)
+     * @param endDate End of date range (ISO-8601 format)
      * @return List of transactions within date range
      */
-    public List<PaymentTransaction> findByUserIdAndDateRange(String userId, Instant startDate, Instant endDate) {
+    public List<PaymentTransaction> findByUserIdAndDateRange(String userId, String startDate, String endDate) {
+        Instant start = Instant.parse(startDate);
+        Instant end = Instant.parse(endDate);
+        
         return findByUserId(userId).stream()
                 .filter(transaction -> {
-                    Instant createdAt = transaction.getCreatedAt();
+                    Instant createdAt = transaction.getCreatedAtInstant();
                     return createdAt != null &&
-                           !createdAt.isBefore(startDate) &&
-                           !createdAt.isAfter(endDate);
+                           !createdAt.isBefore(start) &&
+                           !createdAt.isAfter(end);
                 })
                 .collect(Collectors.toList());
     }
@@ -253,21 +259,24 @@ public class TransactionRepository {
     /**
      * Calculate total transaction amount by payment method
      * @param paymentMethod Payment method
-     * @param startDate Start of date range
-     * @param endDate End of date range
+     * @param startDate Start of date range (ISO-8601 format)
+     * @param endDate End of date range (ISO-8601 format)
      * @return Total amount
      */
     public double calculateTotalAmountByMethodAndDateRange(
             PaymentMethod paymentMethod,
-            Instant startDate,
-            Instant endDate) {
+            String startDate,
+            String endDate) {
+
+        Instant start = Instant.parse(startDate);
+        Instant end = Instant.parse(endDate);
 
         return findByPaymentMethod(paymentMethod).stream()
                 .filter(transaction -> {
-                    Instant createdAt = transaction.getCreatedAt();
+                    Instant createdAt = transaction.getCreatedAtInstant();
                     return createdAt != null &&
-                           !createdAt.isBefore(startDate) &&
-                           !createdAt.isAfter(endDate);
+                           !createdAt.isBefore(start) &&
+                           !createdAt.isAfter(end);
                 })
                 .filter(transaction -> transaction.getStatus() == PaymentStatus.SUCCESS)
                 .mapToDouble(PaymentTransaction::getAmount)
@@ -292,7 +301,14 @@ public class TransactionRepository {
     public List<PaymentTransaction> findRecentTransactionsByUserId(String userId, int limit) {
         List<PaymentTransaction> transactions = findByUserId(userId);
         return transactions.stream()
-                .sorted((t1, t2) -> t2.getCreatedAt().compareTo(t1.getCreatedAt()))
+                .sorted((t1, t2) -> {
+                    Instant c1 = t1.getCreatedAtInstant();
+                    Instant c2 = t2.getCreatedAtInstant();
+                    if (c1 == null && c2 == null) return 0;
+                    if (c1 == null) return 1;
+                    if (c2 == null) return -1;
+                    return c2.compareTo(c1);
+                })
                 .limit(limit)
                 .collect(Collectors.toList());
     }
@@ -303,12 +319,18 @@ public class TransactionRepository {
      * @return true if deleted, false if not found
      */
     public boolean deleteById(String transactionId) {
-        Key key = Key.builder()
-                .partitionValue(transactionId)
-                .build();
-
-        PaymentTransaction deletedTransaction = transactionTable.deleteItem(key);
-        return deletedTransaction != null;
+        try {
+            PaymentTransaction transaction = dynamoDBMapper.load(PaymentTransaction.class, transactionId);
+            if (transaction != null) {
+                dynamoDBMapper.delete(transaction);
+                log.debug("Deleted transaction: {}", transactionId);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            log.error("Error deleting transaction: {}", transactionId, e);
+            return false;
+        }
     }
 
     /**
@@ -334,9 +356,13 @@ public class TransactionRepository {
      * @return List of all transactions
      */
     public List<PaymentTransaction> findAll() {
-        List<PaymentTransaction> transactions = new ArrayList<>();
-        transactionTable.scan().items().forEach(transactions::add);
-        return transactions;
+        try {
+            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+            return dynamoDBMapper.scan(PaymentTransaction.class, scanExpression);
+        } catch (Exception e) {
+            log.error("Error finding all transactions", e);
+            return List.of();
+        }
     }
 
     /**
