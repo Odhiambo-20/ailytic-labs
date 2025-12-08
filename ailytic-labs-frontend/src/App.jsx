@@ -9,6 +9,7 @@ import Contact from './pages/contact';
 import RobotsCatalog from './pages/RobotsCatalog';
 import Order from './pages/Order';
 import Demo from './pages/Demo';
+import Login from './pages/login';
 
 import LatestModels from './pages/LatestModels';
 
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/latest-models" element={<LatestModels />} />
         <Route path="/order" element={<Order />} />
         <Route path="/demo" element={<Demo />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </div>
   );
