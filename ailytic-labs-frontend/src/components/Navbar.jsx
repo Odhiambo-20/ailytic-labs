@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Zap, Cpu, Plane, Sun, Users, Target, Globe, ArrowRight, Menu, X } from 'lucide-react';
+import { ChevronRight, Zap, Cpu, Plane, Sun, Users, Target, Globe, ArrowRight, Menu, X, User } from 'lucide-react';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,6 +31,13 @@ function Navbar() {
               </Link>
             </div>
 
+            {/* Right side icons - Desktop */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Link to="/login" className="text-gray-300 hover:text-white transition-colors">
+                <User className="w-6 h-6" />
+              </Link>
+            </div>
+
             {/* Mobile menu button */}
             <button 
               className="md:hidden text-white"
@@ -48,7 +55,9 @@ function Navbar() {
               <Link to="/" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Home</Link>
               <Link to="/robots" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Robots</Link>
               <Link to="/drones" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Drones</Link>
+              <Link to="/solarpanels" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Solarpanels</Link>
               <Link to="/contact" className="block py-2 text-blue-400 hover:text-blue-300" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
+              <Link to="/login" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Login</Link>
             </div>
           </div>
         )}
