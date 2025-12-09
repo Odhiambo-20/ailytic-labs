@@ -127,7 +127,7 @@ public class StripeService {
 
             PaymentStatus newStatus = convertStripeStatusToPaymentStatus(intent.getStatus());
             stripePayment.setStatus(newStatus);
-            
+
             if (newStatus == PaymentStatus.SUCCESS) {
                 paymentService.completePayment(
                         stripePayment.getPaymentId(),

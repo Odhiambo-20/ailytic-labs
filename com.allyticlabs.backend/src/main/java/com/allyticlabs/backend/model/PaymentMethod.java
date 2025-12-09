@@ -26,14 +26,14 @@ public enum PaymentMethod {
         if (method == null) {
             return CARD;
         }
-        
+
         for (PaymentMethod pm : PaymentMethod.values()) {
-            if (pm.name().equalsIgnoreCase(method) || 
+            if (pm.name().equalsIgnoreCase(method) ||
                 pm.displayName.equalsIgnoreCase(method)) {
                 return pm;
             }
         }
-        
+
         return CARD; // Default fallback
     }
 }

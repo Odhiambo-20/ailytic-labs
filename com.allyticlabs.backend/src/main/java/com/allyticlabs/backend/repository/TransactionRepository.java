@@ -172,7 +172,7 @@ public class TransactionRepository {
     public List<PaymentTransaction> findByDateRange(String startDate, String endDate) {
         Instant start = Instant.parse(startDate);
         Instant end = Instant.parse(endDate);
-        
+
         return findAll().stream()
                 .filter(transaction -> {
                     Instant createdAt = transaction.getCreatedAtInstant();
@@ -193,7 +193,7 @@ public class TransactionRepository {
     public List<PaymentTransaction> findByUserIdAndDateRange(String userId, String startDate, String endDate) {
         Instant start = Instant.parse(startDate);
         Instant end = Instant.parse(endDate);
-        
+
         return findByUserId(userId).stream()
                 .filter(transaction -> {
                     Instant createdAt = transaction.getCreatedAtInstant();

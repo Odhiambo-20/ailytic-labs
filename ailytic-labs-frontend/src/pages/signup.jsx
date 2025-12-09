@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 
+// API Configuration
+const API_BASE_URL = 'http://localhost:8080/api/v1/auth';
+
 function SignUp() {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -12,6 +15,8 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +29,10 @@ function SignUp() {
         ...prev,
         [name]: ''
       }));
+    }
+    // Clear API error when user starts typing
+    if (apiError) {
+      setApiError('');
     }
   };
 
@@ -60,13 +69,78 @@ function SignUp() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log('Account created:', formData);
-      alert('Account created successfully! Redirecting to login page...');
-      
-      // Navigate to login page after successful signup
-      window.location.href = '/login';
+  const handleSubmit = async () => {
+    // Clear previous API error
+    setApiError('');
+
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Make API call to register endpoint
+      const response = await fetch(`${API_BASE_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Registration successful
+        console.log('Registration successful:', data);
+
+        // Store tokens in localStorage
+        if (data.accessToken) {
+          localStorage.setItem('accessToken', data.accessToken);
+        }
+        if (data.refreshToken) {
+          localStorage.setItem('refreshToken', data.refreshToken);
+        }
+
+        // Store user info
+        if (data.userId) {
+          localStorage.setItem('userId', data.userId);
+        }
+        if (data.email) {
+          localStorage.setItem('userEmail', data.email);
+        }
+
+
+        // Redirect to dashboard or home page
+        window.location.href = '/login'; // Change to your desired route
+      } else {
+        // Handle API errors
+        if (data.message) {
+          setApiError(data.message);
+        } else if (data.errors) {
+          // Handle validation errors from backend
+          const backendErrors = {};
+          Object.keys(data.errors).forEach(key => {
+            backendErrors[key] = data.errors[key];
+          });
+          setErrors(backendErrors);
+        } else {
+          setApiError('Registration failed. Please try again.');
+        }
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setApiError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,6 +158,14 @@ function SignUp() {
             Create Account
           </h1>
 
+          {/* API Error Message */}
+          {apiError && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+              <p className="text-red-700 text-sm">{apiError}</p>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div>
               <label htmlFor="firstName" className="flex items-center text-sm font-medium text-gray-700 mb-2">
@@ -98,9 +180,10 @@ function SignUp() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
+                disabled={isLoading}
                 className={`w-full px-4 py-3 rounded-md border ${
                   errors.firstName ? 'border-red-500' : 'border-gray-300'
-                } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
                 placeholder="Enter your first name"
               />
               {errors.firstName && (
@@ -121,9 +204,10 @@ function SignUp() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
+                disabled={isLoading}
                 className={`w-full px-4 py-3 rounded-md border ${
                   errors.lastName ? 'border-red-500' : 'border-gray-300'
-                } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
                 placeholder="Enter your last name"
               />
               {errors.lastName && (
@@ -144,9 +228,10 @@ function SignUp() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                disabled={isLoading}
                 className={`w-full px-4 py-3 rounded-md border ${
                   errors.email ? 'border-red-500' : 'border-gray-300'
-                } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
                 placeholder="Enter your email"
               />
               {errors.email && (
@@ -168,15 +253,17 @@ function SignUp() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
+                  disabled={isLoading}
                   className={`w-full px-4 py-3 pr-12 rounded-md border ${
                     errors.password ? 'border-red-500' : 'border-gray-300'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
                   placeholder="Create a password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  disabled={isLoading}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -204,15 +291,17 @@ function SignUp() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  disabled={isLoading}
                   className={`w-full px-4 py-3 pr-12 rounded-md border ${
                     errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
                   placeholder="Confirm your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  disabled={isLoading}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed"
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -228,9 +317,20 @@ function SignUp() {
 
             <button
               onClick={handleSubmit}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md transition-colors duration-200 mt-6"
+              disabled={isLoading}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md transition-colors duration-200 mt-6 disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              Create Account
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Creating Account...
+                </>
+              ) : (
+                'Create Account'
+              )}
             </button>
 
             <div className="relative my-6">
@@ -244,7 +344,8 @@ function SignUp() {
 
             <button
               onClick={() => window.location.href = '/login'}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-md border border-gray-300 transition-colors duration-200"
+              disabled={isLoading}
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-md border border-gray-300 transition-colors duration-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
               Sign In
             </button>

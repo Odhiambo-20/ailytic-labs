@@ -38,7 +38,7 @@ public class WebhookVerificationService {
         try {
             Mac sha256Hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(
-                stripeWebhookSecret.getBytes(StandardCharsets.UTF_8), 
+                stripeWebhookSecret.getBytes(StandardCharsets.UTF_8),
                 "HmacSHA256"
             );
             sha256Hmac.init(secretKey);
@@ -56,7 +56,7 @@ public class WebhookVerificationService {
     /**
      * Process Stripe webhook
      */
-    public Map<String, Object> processStripeWebhook(String eventId, String eventType, 
+    public Map<String, Object> processStripeWebhook(String eventId, String eventType,
                                                      Map<String, String> metadata) {
         log.info("Processing Stripe webhook: {} - {}", eventId, eventType);
 
@@ -102,7 +102,7 @@ public class WebhookVerificationService {
     /**
      * Process M-Pesa confirmation callback
      */
-    public Map<String, Object> processMpesaConfirmation(MpesaCallbackRequest request, 
+    public Map<String, Object> processMpesaConfirmation(MpesaCallbackRequest request,
                                                         String transactionId,
                                                         Map<String, String> metadata) {
         log.info("Processing M-Pesa confirmation: {}", transactionId);
@@ -165,15 +165,15 @@ public class WebhookVerificationService {
 
         // This is a placeholder - in production, you'd fetch from database
         List<Map<String, Object>> logs = new ArrayList<>();
-        
+
         Map<String, Object> log = new HashMap<>();
         log.put("transactionId", transactionId);
         log.put("timestamp", System.currentTimeMillis());
         log.put("status", "processed");
         log.put("provider", "mpesa");
-        
+
         logs.add(log);
-        
+
         return logs;
     }
 
@@ -205,7 +205,7 @@ public class WebhookVerificationService {
         try {
             Mac sha256Hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(
-                mpesaWebhookSecret.getBytes(StandardCharsets.UTF_8), 
+                mpesaWebhookSecret.getBytes(StandardCharsets.UTF_8),
                 "HmacSHA256"
             );
             sha256Hmac.init(secretKey);

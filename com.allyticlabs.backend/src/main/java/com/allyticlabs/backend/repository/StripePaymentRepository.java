@@ -61,7 +61,7 @@ public class StripePaymentRepository {
                     .withLimit(1);
 
             List<StripePayment> results = dynamoDBMapper.scan(StripePayment.class, scanExpression);
-            
+
             return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
         } catch (Exception e) {
             log.error("Error finding Stripe payment by paymentIntentId: {}", paymentIntentId, e);
@@ -83,7 +83,7 @@ public class StripePaymentRepository {
                     .withLimit(1);
 
             List<StripePayment> results = dynamoDBMapper.scan(StripePayment.class, scanExpression);
-            
+
             return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
         } catch (Exception e) {
             log.error("Error finding Stripe payment by stripePaymentIntentId: {}", stripePaymentIntentId, e);

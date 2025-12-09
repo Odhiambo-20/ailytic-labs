@@ -128,11 +128,11 @@ public class MpesaService {
                 mpesaPayment.setResultCode(resultCode);
                 mpesaPayment.setResultDesc(resultDesc);
                 mpesaPayment.setMpesaReceiptNumber(callback.getMpesaReceiptNumber());
-                
+
                 if (callback.getTransactionDate() != null) {
                     mpesaPayment.setTransactionDate(callback.getTransactionDate());
                 }
-                
+
                 mpesaPayment.setCallbackPayload(objectMapper.writeValueAsString(callback));
                 mpesaPayment.setUpdatedAt(Instant.now());
 

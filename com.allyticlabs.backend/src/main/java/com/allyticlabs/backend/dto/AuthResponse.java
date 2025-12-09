@@ -12,16 +12,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthResponse {
-    
+
     private String accessToken;
     private String refreshToken;
     private String tokenType = "Bearer";
     private Long expiresIn; // in seconds
-    
+
     private String userId;
     private String username;
     private String email;
     private List<String> roles;
-    
+
     private String message;
 }

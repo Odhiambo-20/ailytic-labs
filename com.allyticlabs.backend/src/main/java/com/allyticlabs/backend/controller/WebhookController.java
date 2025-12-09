@@ -302,17 +302,17 @@ public class WebhookController {
         if (request.getCheckoutRequestId() != null) {
             return request.getCheckoutRequestId();
         }
-        
+
         // For C2B callbacks, use TransID
         if (request.getTransId() != null) {
             return request.getTransId();
         }
-        
+
         // For confirmed transactions, use MpesaReceiptNumber
         if (request.getMpesaReceiptNumber() != null) {
             return request.getMpesaReceiptNumber();
         }
-        
+
         // Fallback to generating a unique ID if not present
         return UUID.randomUUID().toString();
     }

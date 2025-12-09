@@ -1,18 +1,23 @@
 package com.allyticlabs.backend.config;
 
+import com.allyticlabs.backend.security.CustomOAuth2UserService;
+import com.allyticlabs.backend.security.CustomUserDetailsService;
+import com.allyticlabs.backend.security.OAuth2AuthenticationFailureHandler;
+import com.allyticlabs.backend.security.OAuth2AuthenticationSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -24,7 +29,13 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomUserDetailsService userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Value("${cors.allowed.origins:http://localhost:5174,http://localhost:5173,http://localhost:3000}")
     private String allowedOrigins;
@@ -34,7 +45,7 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain paymentSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/api/webhooks/**", "/api/payments/**", "/api/mpesa/**", 
+            .securityMatcher("/api/webhooks/**", "/api/payments/**", "/api/mpesa/**",
                            "/api/stripe/**", "/api/qr/**")
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers(
@@ -67,23 +78,56 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // General application endpoints (Order 2 - lower priority)
+    // Authentication endpoints (Order 2)
     @Bean
     @Order(2)
+    public SecurityFilterChain authSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/api/v1/auth/**", "/oauth2/**", "/login/oauth2/**")
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(authorization -> authorization
+                    .baseUri("/oauth2/authorize")
+                )
+                .redirectionEndpoint(redirection -> redirection
+                    .baseUri("/login/oauth2/code/*")
+                )
+                .userInfoEndpoint(userInfo -> userInfo
+                    .userService(customOAuth2UserService)
+                )
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
+            );
+
+        return http.build();
+    }
+
+    // General application endpoints (Order 3 - lowest priority)
+    @Bean
+    @Order(3)
     public SecurityFilterChain generalSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/**") // Match all remaining paths
+            .securityMatcher("/**")
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints - No authentication required
+                // Public endpoints
                 .requestMatchers("/api/contact", "/api/newsletter").permitAll()
                 .requestMatchers("/api/robots", "/api/robots/**").permitAll()
                 .requestMatchers("/api/drones", "/api/drones/**").permitAll()
                 .requestMatchers("/api/solar-panels", "/api/solar-panels/**").permitAll()
                 .requestMatchers("/api/health", "/api/status").permitAll()
 
-                // Admin-only endpoints for GET requests to view submissions
+                // Admin-only endpoints
                 .requestMatchers("/api/contact/**").hasRole("ADMIN")
                 .requestMatchers("/api/newsletter/**").hasRole("ADMIN")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -100,28 +144,19 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Combine allowed origins from both configs
         List<String> origins = Arrays.asList(allowedOrigins.split(","));
         configuration.setAllowedOrigins(origins);
 
-        // Log CORS configuration for debugging
         System.out.println("CORS Configuration - Allowed Origins: " + origins);
 
-        // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
             "GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"
         ));
 
-        // Allow all headers
         configuration.setAllowedHeaders(Arrays.asList("*"));
-
-        // Allow credentials (cookies, authorization headers)
         configuration.setAllowCredentials(true);
-
-        // Cache preflight response for 1 hour (3600 seconds)
         configuration.setMaxAge(3600L);
 
-        // Expose headers that frontend can access
         configuration.setExposedHeaders(Arrays.asList(
             "Authorization",
             "Content-Type",
@@ -141,14 +176,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails admin = User.builder()
-            .username("admin")
-            .password(passwordEncoder().encode("admin123"))
-            .roles("ADMIN")
-            .build();
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
-        return new InMemoryUserDetailsManager(admin);
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean

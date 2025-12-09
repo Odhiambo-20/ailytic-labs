@@ -253,7 +253,7 @@ public class PaymentService {
             throw new PaymentException("Can only refund successful payments");
         }
 
-        if (payment.getPaymentMethod() == PaymentMethod.STRIPE || 
+        if (payment.getPaymentMethod() == PaymentMethod.STRIPE ||
             payment.getPaymentMethod() == PaymentMethod.CARD) {
             payment.setStatus(PaymentStatus.REFUNDED);
             payment.setUpdatedAt(Instant.now());
@@ -291,7 +291,7 @@ public class PaymentService {
     private String calculateTransactionHash(Payment payment) {
         try {
             Instant createdAt = payment.getCreatedAt();
-            String data = payment.getId() + payment.getAmount() + payment.getCurrency() + 
+            String data = payment.getId() + payment.getAmount() + payment.getCurrency() +
                          payment.getMerchantId() + (createdAt != null ? createdAt.toString() : "");
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(data.getBytes());
@@ -310,7 +310,7 @@ public class PaymentService {
                     .transactionType(eventType)
                     .metadata(message)
                     .build();
-            
+
             transaction.setCreatedAt(Instant.now());
 
             transactionRepository.save(transaction);
@@ -322,7 +322,7 @@ public class PaymentService {
     public Map<String, Object> getPaymentStatistics(String merchantId, String startDate, String endDate) {
         Instant startInstant = startDate != null ? Instant.parse(startDate) : Instant.now().minusSeconds(30 * 24 * 3600);
         Instant endInstant = endDate != null ? Instant.parse(endDate) : Instant.now();
-        
+
         List<Payment> payments = paymentRepository.findByMerchantIdAndDateRange(merchantId, startInstant, endInstant);
 
         long totalCount = payments.size();

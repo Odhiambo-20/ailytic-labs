@@ -36,7 +36,7 @@ public class QRPaymentRepository {
                 qrPayment.setExpiresAt(Instant.now().plusSeconds(DEFAULT_QR_EXPIRY_MINUTES * 60));
             }
             qrPayment.setUpdatedAt(Instant.now());
-            
+
             dynamoDBMapper.save(qrPayment);
             log.debug("Saved QR payment: {}", qrPayment.getId());
             return qrPayment;

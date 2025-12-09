@@ -61,7 +61,7 @@ public class MpesaPaymentRepository {
                     .withLimit(1);
 
             List<MpesaPayment> results = dynamoDBMapper.scan(MpesaPayment.class, scanExpression);
-            
+
             return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
         } catch (Exception e) {
             log.error("Error finding M-Pesa payment by checkoutRequestId: {}", checkoutRequestId, e);
