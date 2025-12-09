@@ -2,6 +2,7 @@ package com.allyticlabs.backend.config;
 
 import com.allyticlabs.backend.security.CustomOAuth2UserService;
 import com.allyticlabs.backend.security.CustomUserDetailsService;
+import com.allyticlabs.backend.security.JwtAuthenticationFilter;
 import com.allyticlabs.backend.security.OAuth2AuthenticationFailureHandler;
 import com.allyticlabs.backend.security.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +14,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,6 +32,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -36,6 +40,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Value("${cors.allowed.origins:http://localhost:5174,http://localhost:5173,http://localhost:3000}")
     private String allowedOrigins;
@@ -45,12 +50,12 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain paymentSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/api/webhooks/**", "/api/payments/**", "/api/mpesa/**",
-                           "/api/stripe/**", "/api/qr/**")
+            .securityMatcher("/api/webhooks/**", "/api/v1/payments/**", "/api/payments/**")
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers(
                     "/api/webhooks/**",
-                    "/api/payments/callback/**"
+                    "/api/v1/payments/mpesa/callback",
+                    "/api/payments/mpesa/callback"
                 )
             )
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -59,13 +64,13 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/webhooks/**").permitAll()
-                .requestMatchers("/api/payments/callback/**").permitAll()
-                .requestMatchers("/api/qr/generate").authenticated()
+                .requestMatchers("/api/v1/payments/mpesa/callback").permitAll()
+                .requestMatchers("/api/payments/mpesa/callback").permitAll()
+                .requestMatchers("/api/v1/payments/**").authenticated()
                 .requestMatchers("/api/payments/**").authenticated()
-                .requestMatchers("/api/mpesa/**").authenticated()
-                .requestMatchers("/api/stripe/**").authenticated()
                 .anyRequest().authenticated()
             )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp
                     .policyDirectives("default-src 'self'; frame-ancestors 'none'; form-action 'self'")
@@ -90,10 +95,11 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/api/v1/auth/health").permitAll()
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .anyRequest().authenticated()
             )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(authorization -> authorization
                     .baseUri("/oauth2/authorize")
@@ -135,6 +141,7 @@ public class SecurityConfig {
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic(basic -> {});
 
         return http.build();
