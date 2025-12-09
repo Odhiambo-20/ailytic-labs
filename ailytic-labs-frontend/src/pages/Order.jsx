@@ -26,7 +26,7 @@ function Order() {
     expiryDate: '',
     cvv: '',
     shippingMethod: 'standard',
-    paymentMethod: 'stripe' // 'stripe', 'mpesa', or 'qr'
+    paymentMethod: 'mpesa' // Default to M-Pesa for easier testing
   });
 
   const shippingCosts = {
@@ -49,6 +49,61 @@ function Order() {
       navigate('/robots');
     }
   }, [location, navigate]);
+
+  // ============================================================================
+  // AUTHENTICATION HELPERS
+  // ============================================================================
+
+  /**
+   * Get JWT token from localStorage
+   * Returns null if no token found (user not logged in)
+   */
+  const getAuthToken = () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.error('No access token found. User needs to login.');
+      setPaymentError('Please login first to make a payment');
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        navigate('/login', { state: { returnTo: location.pathname } });
+      }, 2000);
+      
+      return null;
+    }
+    return token;
+  };
+
+  /**
+   * Get current user ID from localStorage
+   * Returns null if no user ID found
+   */
+  const getUserId = () => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      console.error('No user ID found. User session may have expired.');
+      setPaymentError('User session expired. Please login again');
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        navigate('/login', { state: { returnTo: location.pathname } });
+      }, 2000);
+      
+      return null;
+    }
+    return userId;
+  };
+
+  /**
+   * Generate unique idempotency key to prevent duplicate payments
+   */
+  const generateIdempotencyKey = () => {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+  // ============================================================================
+  // MAP AND GEOCODING
+  // ============================================================================
 
   const geocodeAddress = async () => {
     const { address, city, state, zipCode } = formData;
@@ -98,6 +153,10 @@ function Order() {
     geocodeAddress();
   };
 
+  // ============================================================================
+  // FORM HANDLING
+  // ============================================================================
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -138,21 +197,36 @@ function Order() {
     };
   };
 
-  // Get authentication token (you'll need to implement your auth system)
-  const getAuthToken = () => {
-    // TODO: Replace with your actual authentication token retrieval
-    return localStorage.getItem('authToken') || 'dummy-token-for-testing';
-  };
+  // ============================================================================
+  // PAYMENT PROCESSING
+  // ============================================================================
 
-  // Process Stripe Payment
+  /**
+   * Process Stripe Payment
+   */
   const processStripePayment = async (totals) => {
     try {
+      const token = getAuthToken();
+      const userId = getUserId();
+      
+      if (!token || !userId) {
+        throw new Error('Authentication required');
+      }
+
+      // Build payment request with all required fields
       const paymentRequest = {
-        amount: parseFloat(totals.total),
-        currency: 'USD',
+        userId: userId,                           // REQUIRED
+        amount: parseFloat(totals.total),         // REQUIRED
+        currency: 'USD',                          // REQUIRED
+        paymentMethod: 'STRIPE',                  // REQUIRED - Must match enum
         description: `Purchase of ${robot.name}`,
+        merchantId: 'MERCHANT-001',
+        merchantName: 'Allytic Labs',
+        orderId: `ORDER-${Date.now()}`,
         customerEmail: formData.email,
-        customerName: formData.fullName,
+        customerPhone: formData.phone,
+        idempotencyKey: generateIdempotencyKey(), // REQUIRED - Prevents duplicates
+        timestamp: Date.now(),
         metadata: {
           productName: robot.name,
           productType: robot.type,
@@ -161,26 +235,36 @@ function Order() {
         }
       };
 
-      // Create Payment Intent
+      console.log('Sending Stripe payment request:', paymentRequest);
+
       const response = await fetch(`${API_BASE_URL}/payments/stripe/create-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(paymentRequest)
       });
 
+      // Check if response is OK
       if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        
+        // If response is not JSON, throw error
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Non-JSON response received:', text);
+          throw new Error(`Server error: ${response.status} - Please check if you are logged in`);
+        }
+        
+        // Parse JSON error response
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Payment failed');
+        throw new Error(errorData.message || errorData.error || 'Payment failed');
       }
 
       const paymentResponse = await response.json();
       console.log('Stripe Payment Intent created:', paymentResponse);
 
-      // In a real implementation, you would use Stripe.js to confirm the payment
-      // For this demo, we'll simulate confirmation
       setPaymentId(paymentResponse.paymentId);
       return paymentResponse;
     } catch (error) {
@@ -189,44 +273,91 @@ function Order() {
     }
   };
 
-  // Process M-Pesa Payment
+  /**
+   * Process M-Pesa Payment
+   */
   const processMpesaPayment = async (totals) => {
     try {
+      const token = getAuthToken();
+      const userId = getUserId();
+      
+      if (!token || !userId) {
+        throw new Error('Authentication required');
+      }
+
       // Format phone number for M-Pesa (should be 254XXXXXXXXX format)
       let phoneNumber = formData.phone.replace(/\D/g, '');
       
-      // If phone starts with 0, replace with country code
+      // Convert Kenya phone format to international format
       if (phoneNumber.startsWith('0')) {
         phoneNumber = '254' + phoneNumber.substring(1);
+      } else if (phoneNumber.startsWith('7') || phoneNumber.startsWith('1')) {
+        phoneNumber = '254' + phoneNumber;
       } else if (!phoneNumber.startsWith('254')) {
         phoneNumber = '254' + phoneNumber;
       }
 
+      // Validate phone number length (should be 12 digits: 254 + 9 digits)
+      if (phoneNumber.length !== 12) {
+        throw new Error('Invalid phone number. Please enter a valid Kenyan mobile number (e.g., 0712345678)');
+      }
+
+      console.log('Formatted phone number:', phoneNumber);
+
+      // Build payment request with all required fields
       const paymentRequest = {
-        phoneNumber: phoneNumber,
-        amount: parseFloat(totals.total),
-        accountReference: `ORDER-${Date.now()}`,
-        transactionDesc: `Purchase of ${robot.name}`,
+        userId: userId,                           // REQUIRED
+        amount: parseFloat(totals.total),         // REQUIRED
+        currency: 'KES',                          // REQUIRED - M-Pesa uses KES
+        paymentMethod: 'MPESA',                   // REQUIRED - Must match enum
+        phoneNumber: phoneNumber,                 // For M-Pesa STK Push
+        description: `Purchase of ${robot.name}`,
+        merchantId: 'MERCHANT-001',
+        merchantName: 'Allytic Labs',
+        orderId: `ORDER-${Date.now()}`,
+        customerEmail: formData.email,
+        customerPhone: phoneNumber,
+        idempotencyKey: generateIdempotencyKey(), // REQUIRED - Prevents duplicates
+        timestamp: Date.now(),
         metadata: {
           productName: robot.name,
           productType: robot.type,
-          customerEmail: formData.email,
+          shippingMethod: formData.shippingMethod,
           shippingAddress: `${formData.address}, ${formData.city}, ${formData.state} ${formData.zipCode}`
         }
       };
+
+      console.log('Sending M-Pesa payment request:', paymentRequest);
 
       const response = await fetch(`${API_BASE_URL}/payments/mpesa/stkpush`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(paymentRequest)
       });
 
+      // Check if response is OK
       if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        
+        // If response is not JSON, throw error with details
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Non-JSON response received:', text);
+          
+          // Check if it's an authentication error
+          if (response.status === 401 || response.status === 403) {
+            throw new Error('Authentication failed. Please login again.');
+          }
+          
+          throw new Error(`Server error: ${response.status} - ${text.substring(0, 100)}`);
+        }
+        
+        // Parse JSON error response
         const errorData = await response.json();
-        throw new Error(errorData.message || 'M-Pesa payment failed');
+        throw new Error(errorData.message || errorData.error || 'M-Pesa payment failed');
       }
 
       const paymentResponse = await response.json();
@@ -240,15 +371,28 @@ function Order() {
     }
   };
 
-  // Process QR Payment
+  /**
+   * Process QR Payment
+   */
   const processQRPayment = async (totals) => {
     try {
-      const qrRequest = {
+      const token = getAuthToken();
+      const userId = getUserId();
+      
+      if (!token || !userId) {
+        throw new Error('Authentication required');
+      }
+
+      const paymentRequest = {
+        userId: userId,
         amount: parseFloat(totals.total),
         currency: 'USD',
-        merchantId: 'MERCHANT-001', // Replace with actual merchant ID
+        paymentMethod: 'QR_CODE',
         description: `Purchase of ${robot.name}`,
-        expiryMinutes: 15,
+        merchantId: 'MERCHANT-001',
+        customerEmail: formData.email,
+        idempotencyKey: generateIdempotencyKey(),
+        timestamp: Date.now(),
         metadata: {
           productName: robot.name,
           customerEmail: formData.email,
@@ -260,12 +404,20 @@ function Order() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(qrRequest)
+        body: JSON.stringify(paymentRequest)
       });
 
       if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Non-JSON response received:', text);
+          throw new Error(`Server error: ${response.status}`);
+        }
+        
         const errorData = await response.json();
         throw new Error(errorData.message || 'QR code generation failed');
       }
@@ -281,12 +433,23 @@ function Order() {
     }
   };
 
+  /**
+   * Handle form submission
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
     setPaymentError(null);
 
     try {
+      // Validate authentication first
+      const token = getAuthToken();
+      const userId = getUserId();
+      
+      if (!token || !userId) {
+        return; // Error handling done in helper functions
+      }
+
       const totals = calculateTotal();
 
       // Process payment based on selected method
@@ -321,6 +484,10 @@ function Order() {
       setIsProcessing(false);
     }
   };
+
+  // ============================================================================
+  // RENDER
+  // ============================================================================
 
   if (!robot) {
     return (
@@ -634,10 +801,10 @@ function Order() {
                           value={formData.phone}
                           onChange={handleInputChange}
                           className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                          placeholder={formData.paymentMethod === 'mpesa' ? '254712345678' : '+1 (555) 123-4567'}
+                          placeholder={formData.paymentMethod === 'mpesa' ? '0712345678' : '+1 (555) 123-4567'}
                         />
                         {formData.paymentMethod === 'mpesa' && (
-                          <p className="text-xs text-gray-500 mt-1">Enter M-Pesa number (e.g., 254712345678)</p>
+                          <p className="text-xs text-gray-500 mt-1">Enter M-Pesa number (e.g., 0712345678)</p>
                         )}
                       </div>
                     </div>
@@ -840,7 +1007,7 @@ function Order() {
                         <div>
                           <h3 className="font-bold text-green-900 mb-2">M-Pesa Payment Instructions</h3>
                           <ol className="text-sm text-green-800 space-y-2 list-decimal list-inside">
-                            <li>Click "Complete Order" below</li>
+                            <li>Click "Send M-Pesa Prompt" below</li>
                             <li>You'll receive an STK push notification on your phone</li>
                             <li>Enter your M-Pesa PIN to complete the payment</li>
                             <li>You'll receive a confirmation SMS from M-Pesa</li>
