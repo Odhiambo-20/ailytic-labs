@@ -4,7 +4,7 @@ src/main/java/com/allyticlabs/backend/config/DynamoDBConfig.java 2025-12-09T06:5
 src/main/java/com/allyticlabs/backend/config/MpesaConfig.java 2025-12-09T06:52:34.729909802Z
 src/main/java/com/allyticlabs/backend/config/PaymentSecurityConfig.java 2025-12-09T06:52:34.725910125Z
 src/main/java/com/allyticlabs/backend/config/QRCodeConfig.java 2025-12-08T07:17:54.424547860Z
-src/main/java/com/allyticlabs/backend/config/SecurityConfig.java 2025-12-09T06:52:34.729909802Z
+src/main/java/com/allyticlabs/backend/config/SecurityConfig.java 2025-12-09T21:26:09.086617205Z
 src/main/java/com/allyticlabs/backend/config/StripeConfig.java 2025-12-09T06:52:34.725910125Z
 src/main/java/com/allyticlabs/backend/controller/AuthController.java 2025-12-09T06:52:34.693912710Z
 src/main/java/com/allyticlabs/backend/controller/ContactController.java 2025-12-07T21:26:33.400575473Z
@@ -69,6 +69,7 @@ src/main/java/com/allyticlabs/backend/security/CustomUserDetailsService.java 202
 src/main/java/com/allyticlabs/backend/security/GoogleOAuth2UserInfo.java 2025-12-09T06:52:34.745908510Z
 src/main/java/com/allyticlabs/backend/security/HMACValidator.java 2025-12-07T21:26:33.408575445Z
 src/main/java/com/allyticlabs/backend/security/HMACValidatorTest.java 2025-12-07T21:26:33.408575445Z
+src/main/java/com/allyticlabs/backend/security/JwtAuthenticationFilter.java 2025-12-09T20:20:17.828703384Z
 src/main/java/com/allyticlabs/backend/security/OAuth2AuthenticationFailureHandler.java 2025-12-09T06:52:34.745908510Z
 src/main/java/com/allyticlabs/backend/security/OAuth2AuthenticationSuccessHandler.java 2025-12-09T06:52:34.745908510Z
 src/main/java/com/allyticlabs/backend/security/OAuth2UserInfo.java 2025-12-09T06:52:34.749908187Z
