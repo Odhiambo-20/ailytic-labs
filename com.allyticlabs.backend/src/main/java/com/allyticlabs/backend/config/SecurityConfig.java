@@ -43,7 +43,7 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Value("${cors.allowed.origins=https://allyticlabs-frontend.vercel.app,https://allytic-labs-frontend-git-main-victor-odhiambos-projects.vercel.app,https://allytic-labs-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000
+    @Value("${cors.allowed.origins=https://allyticlabs-frontend.vercel.app,https://allytic-labs-frontend-git-main-victor-odhiambos-projects.vercel.app,https://allytic-labs-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000")
     private String allowedOrigins;
 
     // Payment/Webhook endpoints (Order 1 - highest priority)
