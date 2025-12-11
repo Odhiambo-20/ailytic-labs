@@ -16,7 +16,7 @@ import java.io.IOException;
 @Slf4j
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Value("${app.oauth2.redirectUri:https://allyticlabs-frontend.vercel.app/login}")
+    @Value("${app.oauth2.redirectUri:http://localhost:5173/login}")
     private String redirectUri;
 
     @Override

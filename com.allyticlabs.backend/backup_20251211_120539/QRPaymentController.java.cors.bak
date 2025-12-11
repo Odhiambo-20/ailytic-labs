@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-@CrossOrigin(origins = "${app.cors.allowed.origins=https://allyticlabs-frontend.vercel.app,https://allytic-labs-frontend-git-main-victor-odhiambos-projects.vercel.app,https://allytic-labs-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class QRPaymentController {
 
     private final QRCodeService qrCodeService;
