@@ -87,8 +87,70 @@ tables_config = {
         'AttributeDefinitions': [
             {'AttributeName': 'id', 'AttributeType': 'S'}
         ]
+    },
+    'qr_payments': {
+        'KeySchema': [
+            {'AttributeName': 'id', 'KeyType': 'HASH'}
+        ],
+        'AttributeDefinitions': [
+            {'AttributeName': 'id', 'AttributeType': 'S'}
+        ]
+    },
+    'payments': {
+        'KeySchema': [
+            {'AttributeName': 'id', 'KeyType': 'HASH'}
+        ],
+        'AttributeDefinitions': [
+            {'AttributeName': 'id', 'AttributeType': 'S'}
+        ]
+    },
+    'mpesa_payments': {
+        'KeySchema': [
+            {'AttributeName': 'id', 'KeyType': 'HASH'}
+        ],
+        'AttributeDefinitions': [
+            {'AttributeName': 'id', 'AttributeType': 'S'}
+        ]
+    },
+    'payment_transactions': {
+        'KeySchema': [
+            {'AttributeName': 'id', 'KeyType': 'HASH'}
+        ],
+        'AttributeDefinitions': [
+            {'AttributeName': 'id', 'AttributeType': 'S'}
+        ]
+    },
+    'stripe_payments': {
+        'KeySchema': [
+            {'AttributeName': 'id', 'KeyType': 'HASH'}
+        ],
+        'AttributeDefinitions': [
+            {'AttributeName': 'id', 'AttributeType': 'S'}
+        ]
+    },
+    'WebhookLogs': {
+        'KeySchema': [
+            {'AttributeName': 'webhookId', 'KeyType': 'HASH'},
+            {'AttributeName': 'timestamp', 'KeyType': 'RANGE'}
+        ],
+        'AttributeDefinitions': [
+            {'AttributeName': 'webhookId', 'AttributeType': 'S'},
+            {'AttributeName': 'timestamp', 'AttributeType': 'N'},
+            {'AttributeName': 'paymentId', 'AttributeType': 'S'}
+        ],
+        'GlobalSecondaryIndexes': [
+            {
+                'IndexName': 'PaymentIdIndex',
+                'KeySchema': [
+                    {'AttributeName': 'paymentId', 'KeyType': 'HASH'}
+                ],
+                'Projection': {'ProjectionType': 'ALL'}
+            }
+        ]
     }
 }
+
+print("Starting DynamoDB table creation...\n")
 
 for table_name, config in tables_config.items():
     try:
@@ -106,9 +168,10 @@ for table_name, config in tables_config.items():
         response = dynamodb.create_table(**table_params)
         print(f"✓ Created table: {table_name}")
         
-        # Print GSI info for Users table
-        if table_name == 'Users':
-            print(f"  └─ With Global Secondary Indexes: email-index, username-index")
+        # Print GSI info if applicable
+        if 'GlobalSecondaryIndexes' in config:
+            gsi_names = [gsi['IndexName'] for gsi in config['GlobalSecondaryIndexes']]
+            print(f"  └─ With Global Secondary Indexes: {', '.join(gsi_names)}")
             
     except Exception as e:
         if 'ResourceInUseException' in str(e):
@@ -116,5 +179,23 @@ for table_name, config in tables_config.items():
         else:
             print(f"✗ Error creating {table_name}: {e}")
 
+print("\n" + "="*60)
+print("Summary of created tables:")
+print("="*60)
+print("Payment-related tables:")
+print("  • qr_payments")
+print("  • payments")
+print("  • mpesa_payments")
+print("  • payment_transactions")
+print("  • stripe_payments")
+print("  • WebhookLogs (with PaymentIdIndex GSI)")
+print("\nOther tables:")
+print("  • Users (with email-index, username-index GSIs)")
+print("  • Robots")
+print("  • Drones")
+print("  • SolarPanels")
+print("  • Contacts")
+print("  • Newsletters")
+print("="*60)
 print("\nAll done! Now run your application:")
 print("export $(grep -v '^#' .env | grep -v '^$' | xargs) && java -jar target/backend-1.0.0.jar")

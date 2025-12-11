@@ -15,6 +15,8 @@ import java.util.List;
 /**
  * Configuration class for M-Pesa STK Push and Payment Integration
  * Handles Daraja API configuration and authentication
+ *
+ * PRODUCTION READY - Uses full absolute URLs for all M-Pesa API endpoints
  */
 @Configuration
 @ConfigurationProperties(prefix = "mpesa")
@@ -24,21 +26,10 @@ public class MpesaConfig {
     // M-Pesa Daraja API Credentials
     private String consumerKey;
     private String consumerSecret;
-    private String passkey;
+    private String passKey;
     private String shortCode;
     private String initiatorName;
     private String initiatorPassword;
-
-    // API URLs
-    private String oauthUrl;
-    private String stkPushUrl;
-    private String stkQueryUrl;
-    private String b2cUrl;
-    private String c2bRegisterUrl;
-    private String c2bSimulateUrl; // ADDED
-    private String reversalUrl; // ADDED
-    private String transactionStatusUrl;
-    private String accountBalanceUrl;
 
     // Callback URLs
     private String callbackUrl;
@@ -48,7 +39,7 @@ public class MpesaConfig {
     private String confirmationUrl;
 
     // Configuration Settings
-    private String environment; // sandbox or production
+    private String environment = "sandbox"; // sandbox or production
     private int connectionTimeout = 30000; // 30 seconds
     private int readTimeout = 30000;
 
@@ -76,16 +67,8 @@ public class MpesaConfig {
      * @return Base64 encoded password
      */
     public String generatePassword(String timestamp) {
-        String rawPassword = shortCode + passkey + timestamp;
+        String rawPassword = shortCode + passKey + timestamp;
         return Base64.getEncoder().encodeToString(rawPassword.getBytes());
-    }
-
-    /**
-     * Get passkey for STK Push (ADDED METHOD)
-     * @return Passkey
-     */
-    public String getPassKey() {
-        return this.passkey;
     }
 
     /**
@@ -150,65 +133,81 @@ public class MpesaConfig {
     public boolean isConfigurationValid() {
         return consumerKey != null && !consumerKey.isEmpty() &&
                consumerSecret != null && !consumerSecret.isEmpty() &&
-               passkey != null && !passkey.isEmpty() &&
+               passKey != null && !passKey.isEmpty() &&
                shortCode != null && !shortCode.isEmpty() &&
                callbackUrl != null && !callbackUrl.isEmpty();
     }
 
     /**
-     * Get full OAuth URL
-     * @return Complete OAuth endpoint URL
+     * Get full OAuth URL - PRODUCTION READY
+     * @return Complete OAuth endpoint URL with grant_type parameter
      */
     public String getFullOauthUrl() {
-        return getBaseUrl() + (oauthUrl != null ? oauthUrl : "/oauth/v1/generate?grant_type=client_credentials");
+        return getBaseUrl() + "/oauth/v1/generate?grant_type=client_credentials";
     }
 
     /**
-     * Get full STK Push URL
+     * Get full STK Push URL - PRODUCTION READY
      * @return Complete STK Push endpoint URL
      */
     public String getFullStkPushUrl() {
-        return getBaseUrl() + (stkPushUrl != null ? stkPushUrl : "/mpesa/stkpush/v1/processrequest");
+        return getBaseUrl() + "/mpesa/stkpush/v1/processrequest";
     }
 
     /**
-     * Get full STK Query URL (ADDED METHOD)
-     * @return Complete STK Query endpoint URL
-     */
-    public String getStkPushQueryUrl() {
-        return getBaseUrl() + (stkQueryUrl != null ? stkQueryUrl : "/mpesa/stkpushquery/v1/query");
-    }
-
-    /**
-     * Get full STK Query URL
+     * Get full STK Query URL - PRODUCTION READY
      * @return Complete STK Query endpoint URL
      */
     public String getFullStkQueryUrl() {
-        return getBaseUrl() + (stkQueryUrl != null ? stkQueryUrl : "/mpesa/stkpushquery/v1/query");
+        return getBaseUrl() + "/mpesa/stkpushquery/v1/query";
     }
 
     /**
-     * Get full C2B Simulate URL (ADDED METHOD)
+     * Get full C2B Register URL - PRODUCTION READY
+     * @return Complete C2B Register endpoint URL
+     */
+    public String getFullC2BRegisterUrl() {
+        return getBaseUrl() + "/mpesa/c2b/v1/registerurl";
+    }
+
+    /**
+     * Get full C2B Simulate URL - PRODUCTION READY
      * @return Complete C2B Simulate endpoint URL
      */
-    public String getC2bSimulateUrl() {
-        return getBaseUrl() + (c2bSimulateUrl != null ? c2bSimulateUrl : "/mpesa/c2b/v1/simulate");
+    public String getFullC2BSimulateUrl() {
+        return getBaseUrl() + "/mpesa/c2b/v1/simulate";
     }
 
     /**
-     * Get full Reversal URL (ADDED METHOD)
+     * Get full B2C URL - PRODUCTION READY
+     * @return Complete B2C endpoint URL
+     */
+    public String getFullB2CUrl() {
+        return getBaseUrl() + "/mpesa/b2c/v1/paymentrequest";
+    }
+
+    /**
+     * Get full Reversal URL - PRODUCTION READY
      * @return Complete Reversal endpoint URL
      */
-    public String getReversalUrl() {
-        return getBaseUrl() + (reversalUrl != null ? reversalUrl : "/mpesa/reversal/v1/request");
+    public String getFullReversalUrl() {
+        return getBaseUrl() + "/mpesa/reversal/v1/request";
     }
 
     /**
-     * Get full Transaction Status URL
+     * Get full Transaction Status URL - PRODUCTION READY
      * @return Complete Transaction Status endpoint URL
      */
     public String getFullTransactionStatusUrl() {
-        return getBaseUrl() + (transactionStatusUrl != null ? transactionStatusUrl : "/mpesa/transactionstatus/v1/query");
+        return getBaseUrl() + "/mpesa/transactionstatus/v1/query";
+    }
+
+    /**
+     * Get full Account Balance URL - PRODUCTION READY
+     * @return Complete Account Balance endpoint URL
+     */
+    public String getFullAccountBalanceUrl() {
+        return getBaseUrl() + "/mpesa/accountbalance/v1/query";
     }
 
     /**
@@ -217,11 +216,31 @@ public class MpesaConfig {
      */
     public String getMaskedConfig() {
         return String.format(
-            "MpesaConfig[shortCode=%s, environment=%s, consumerKey=%s, callbackUrl=%s]",
+            "MpesaConfig[shortCode=%s, environment=%s, consumerKey=%s***, callbackUrl=%s, baseUrl=%s]",
             shortCode,
             environment,
-            consumerKey != null ? consumerKey.substring(0, Math.min(4, consumerKey.length())) + "***" : "null",
-            callbackUrl
+            consumerKey != null ? consumerKey.substring(0, Math.min(4, consumerKey.length())) : "null",
+            callbackUrl,
+            getBaseUrl()
         );
+    }
+
+    /**
+     * Log configuration on startup for debugging
+     */
+    public void logConfiguration() {
+        System.out.println("=".repeat(80));
+        System.out.println("M-PESA CONFIGURATION LOADED");
+        System.out.println("=".repeat(80));
+        System.out.println("Environment: " + environment);
+        System.out.println("Base URL: " + getBaseUrl());
+        System.out.println("Short Code: " + shortCode);
+        System.out.println("Consumer Key: " + (consumerKey != null ? consumerKey.substring(0, 4) + "***" : "NOT SET"));
+        System.out.println("PassKey: " + (passKey != null ? "***SET***" : "NOT SET"));
+        System.out.println("Callback URL: " + callbackUrl);
+        System.out.println("OAuth URL: " + getFullOauthUrl());
+        System.out.println("STK Push URL: " + getFullStkPushUrl());
+        System.out.println("Configuration Valid: " + isConfigurationValid());
+        System.out.println("=".repeat(80));
     }
 }

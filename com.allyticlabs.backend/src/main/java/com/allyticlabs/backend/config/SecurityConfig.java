@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -51,21 +52,20 @@ public class SecurityConfig {
     public SecurityFilterChain paymentSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .securityMatcher("/api/webhooks/**", "/api/v1/payments/**", "/api/payments/**")
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers(
-                    "/api/webhooks/**",
-                    "/api/v1/payments/mpesa/callback",
-                    "/api/payments/mpesa/callback"
-                )
-            )
+            // FIXED: Disable CSRF for payment endpoints (JWT-based API doesn't need CSRF protection)
+            .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
+                // Allow OPTIONS requests for CORS preflight
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // Public webhook endpoints
                 .requestMatchers("/api/webhooks/**").permitAll()
                 .requestMatchers("/api/v1/payments/mpesa/callback").permitAll()
                 .requestMatchers("/api/payments/mpesa/callback").permitAll()
+                // Authenticated payment endpoints
                 .requestMatchers("/api/v1/payments/**").authenticated()
                 .requestMatchers("/api/payments/**").authenticated()
                 .anyRequest().authenticated()

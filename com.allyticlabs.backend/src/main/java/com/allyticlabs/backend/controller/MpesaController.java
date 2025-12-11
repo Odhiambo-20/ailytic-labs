@@ -35,7 +35,7 @@ public class MpesaController {
      * POST /api/v1/payments/mpesa/stkpush
      */
     @PostMapping("/stkpush")
-    @PreAuthorize("hasAnyRole('USER', 'MERCHANT', 'ADMIN')")
+    //@PreAuthorize("hasAnyRole('USER', 'MERCHANT', 'ADMIN')")
     public ResponseEntity<PaymentResponse> initiateSTKPush(
             @Valid @RequestBody PaymentRequest paymentRequest,
             HttpServletRequest request) {

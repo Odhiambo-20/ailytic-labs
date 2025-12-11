@@ -4,6 +4,7 @@
 /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/config/QRCodeConfig.java
 /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/controller/MpesaControllerTest.java
 /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/repository/StripePaymentRepository.java
+/home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/JwtAuthenticationFilter.java
 /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/security/TokenGenerator.java
 /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/model/Contact.java
 /home/victor/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend/src/main/java/com/allyticlabs/backend/service/DroneService.java

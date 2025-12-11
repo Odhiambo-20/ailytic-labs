@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 
-//const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 const Login = () => {
@@ -66,9 +65,16 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Store tokens securely
+        // FIXED: Store tokens and user data to match Order.jsx expectations
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
+        
+        // Store individual fields that Order.jsx needs
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('username', data.username);
+        
+        // Also store complete user object for other components
         localStorage.setItem('user', JSON.stringify({
           userId: data.userId,
           email: data.email,
@@ -76,11 +82,18 @@ const Login = () => {
           roles: data.roles
         }));
 
-        // Show success message
+        // Log success
         console.log('Login successful:', data.message);
+        console.log('Stored tokens:', {
+          accessToken: data.accessToken ? 'Yes' : 'No',
+          userId: data.userId,
+          email: data.email
+        });
         
-        // Redirect to home page
-        window.location.href = '/';
+        // Redirect to home page or return URL
+        const returnTo = localStorage.getItem('returnTo') || '/';
+        localStorage.removeItem('returnTo'); // Clear return URL
+        window.location.href = returnTo;
       } else {
         // Handle error response
         setErrors({ 
@@ -90,7 +103,7 @@ const Login = () => {
     } catch (error) {
       console.error('Login error:', error);
       setErrors({ 
-        password: 'Unable to connect to server. Please try again later.' 
+        password: 'Unable to connect to server. Please check your internet connection.' 
       });
     } finally {
       setLoading(false);
@@ -98,9 +111,12 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
+    // Store return URL before OAuth redirect
+    const returnTo = localStorage.getItem('returnTo') || '/';
+    
     // Redirect to backend OAuth2 endpoint
     const redirectUri = encodeURIComponent(`${window.location.origin}/oauth2/redirect`);
-    window.location.href = `${API_BASE_URL}/oauth2/authorize/google?redirect_uri=${redirectUri}`;
+    window.location.href = `${API_BASE_URL}/oauth2/authorize/google?redirect_uri=${redirectUri}&state=${encodeURIComponent(returnTo)}`;
   };
 
   const handleCreateAccount = () => {

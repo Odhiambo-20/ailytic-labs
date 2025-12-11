@@ -87,6 +87,7 @@ com/allyticlabs/backend/service/StripeService.class
 com/allyticlabs/backend/model/StripePayment.class
 com/allyticlabs/backend/controller/PaymentController.class
 com/allyticlabs/backend/repository/UserRepository.class
+com/allyticlabs/backend/security/JwtAuthenticationFilter.class
 com/allyticlabs/backend/config/SecurityConfig.class
 com/allyticlabs/backend/model/Payment$PaymentBuilder.class
 com/allyticlabs/backend/model/Newsletter.class

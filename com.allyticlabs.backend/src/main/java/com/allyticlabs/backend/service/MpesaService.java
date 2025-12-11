@@ -63,8 +63,9 @@ public class MpesaService {
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(stkRequest, headers);
 
+            // FIXED: Use getFullStkPushUrl() instead of getStkPushUrl()
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getStkPushUrl(),
+                    mpesaConfig.getFullStkPushUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -187,8 +188,9 @@ public class MpesaService {
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(queryRequest, headers);
 
+            // FIXED: Use getFullStkQueryUrl() instead of getStkPushQueryUrl()
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getStkPushQueryUrl(),
+                    mpesaConfig.getFullStkQueryUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -226,8 +228,9 @@ public class MpesaService {
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(registerRequest, headers);
 
+            // FIXED: Use getFullC2BRegisterUrl() instead of getC2bRegisterUrl()
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getC2bRegisterUrl(),
+                    mpesaConfig.getFullC2BRegisterUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -260,8 +263,9 @@ public class MpesaService {
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(simulateRequest, headers);
 
+            // FIXED: Use getFullC2BSimulateUrl() instead of getC2bSimulateUrl()
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getC2bSimulateUrl(),
+                    mpesaConfig.getFullC2BSimulateUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -297,8 +301,9 @@ public class MpesaService {
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(balanceRequest, headers);
 
+            // FIXED: Use getFullAccountBalanceUrl() instead of getAccountBalanceUrl()
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getAccountBalanceUrl(),
+                    mpesaConfig.getFullAccountBalanceUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -343,8 +348,9 @@ public class MpesaService {
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(reversalRequest, headers);
 
+            // FIXED: Use getFullReversalUrl() instead of getReversalUrl()
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getReversalUrl(),
+                    mpesaConfig.getFullReversalUrl(),
                     HttpMethod.POST,
                     entity,
                     String.class
@@ -373,8 +379,9 @@ public class MpesaService {
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
+            // FIXED: Use getFullOauthUrl() instead of getOauthUrl()
             ResponseEntity<String> response = restTemplate.exchange(
-                    mpesaConfig.getOauthUrl(),
+                    mpesaConfig.getFullOauthUrl(),
                     HttpMethod.GET,
                     entity,
                     String.class

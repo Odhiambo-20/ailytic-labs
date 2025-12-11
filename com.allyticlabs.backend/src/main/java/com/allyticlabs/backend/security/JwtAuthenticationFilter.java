@@ -21,6 +21,10 @@ import java.io.IOException;
 /**
  * JWT Authentication Filter
  * Intercepts requests to validate JWT tokens and set authentication in SecurityContext
+ *
+ * This filter processes JWT tokens when present and always continues the filter chain,
+ * allowing Spring Security's SecurityFilterChain to determine access control based on
+ * the authentication state and endpoint configuration.
  */
 @Component
 @RequiredArgsConstructor
@@ -37,71 +41,52 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Skip JWT validation for public endpoints
         String path = request.getRequestURI();
-        if (isPublicEndpoint(path)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         final String authHeader = request.getHeader("Authorization");
 
-        // Check if Authorization header exists and starts with Bearer
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            log.debug("No JWT token found in request to: {}", path);
-            filterChain.doFilter(request, response);
-            return;
-        }
+        log.debug("Processing request to: {} | Auth header present: {}",
+                 path, authHeader != null && authHeader.startsWith("Bearer "));
 
-        try {
-            // Extract JWT token
-            final String jwt = authHeader.substring(7);
-            final String userEmail = jwtUtil.extractUsername(jwt);
+        // Only process JWT if Authorization header is present
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            try {
+                // Extract JWT token
+                final String jwt = authHeader.substring(7);
+                final String userEmail = jwtUtil.extractUsername(jwt);
 
-            // Validate token and set authentication
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+                log.debug("JWT token found for user: {}", userEmail);
 
-                if (jwtUtil.validateToken(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
+                // Validate token and set authentication if not already set
+                if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    if (jwtUtil.validateToken(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
 
-                    log.debug("JWT token validated successfully for user: {}", userEmail);
-                } else {
-                    log.warn("Invalid JWT token for user: {}", userEmail);
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                        log.debug("JWT token validated successfully for user: {} on path: {}",
+                                 userEmail, path);
+                    } else {
+                        log.warn("Invalid JWT token for user: {} on path: {}", userEmail, path);
+                    }
                 }
+            } catch (Exception e) {
+                log.error("Error processing JWT token for path {}: {}", path, e.getMessage());
+                // Don't throw exception - let Spring Security handle unauthorized access
             }
-        } catch (Exception e) {
-            log.error("Error processing JWT token: {}", e.getMessage());
+        } else {
+            log.debug("No Bearer token in request to: {} - will be handled by SecurityFilterChain", path);
         }
 
+        // Always continue the filter chain
+        // Spring Security's SecurityFilterChain will determine if the request should be allowed
+        // based on the authentication state and endpoint configuration
         filterChain.doFilter(request, response);
-    }
-
-    /**
-     * Check if endpoint is public and doesn't require authentication
-     */
-    private boolean isPublicEndpoint(String path) {
-        return path.startsWith("/api/v1/auth/login") ||
-               path.startsWith("/api/v1/auth/register") ||
-               path.startsWith("/api/v1/auth/health") ||
-               path.startsWith("/api/webhooks/") ||
-               path.startsWith("/api/payments/callback/") ||
-               path.startsWith("/api/payments/mpesa/callback") ||
-               path.startsWith("/oauth2/") ||
-               path.startsWith("/login/oauth2/") ||
-               path.startsWith("/api/robots") ||
-               path.startsWith("/api/drones") ||
-               path.startsWith("/api/solar-panels") ||
-               path.startsWith("/api/contact") ||
-               path.startsWith("/api/newsletter") ||
-               path.startsWith("/api/health") ||
-               path.startsWith("/api/status");
     }
 }
