@@ -35,8 +35,12 @@ function Order() {
     overnight: 99.99
   };
 
-  // FIXED: Correct API Base URL without /v1
-  const API_BASE_URL = 'http://localhost:8080/api/v1';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 
+                       process.env.REACT_APP_API_URL || 
+                       'http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1';
+
+  console.log('Using API Base URL:', API_BASE_URL);
+
 
   useEffect(() => {
     const orderData = location.state?.robot;
