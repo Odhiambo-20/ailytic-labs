@@ -598,3 +598,645 @@ Copyright © 2025 Allytic Labs. All rights reserved.
 ---
 
 **🎉 Congratulations! Your Allytic Labs Backend is now ready for production!**
+
+
+
+
+
+
+
+# Allytic Labs Backend - AWS Elastic Beanstalk
+
+Spring Boot backend application deployed on AWS Elastic Beanstalk with DynamoDB, M-Pesa, Stripe, and Google OAuth integration.
+
+---
+
+## 🚀 Live Deployment
+
+**Backend URL**: `http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com`
+
+**Status**: Production Ready ✅  
+**Platform**: AWS Elastic Beanstalk (Java 17/Corretto)  
+**Region**: us-east-1 (N. Virginia)  
+**Database**: DynamoDB  
+**Instance**: t3.small  
+
+---
+
+## 📋 Prerequisites
+
+### Required Tools
+
+1. **Java 17** (OpenJDK)
+   ```bash
+   java -version
+   # Should show: openjdk version "17.x.x"
+   ```
+
+2. **Maven**
+   ```bash
+   mvn -version
+   ```
+
+3. **AWS CLI**
+   ```bash
+   aws --version
+   ```
+
+4. **Elastic Beanstalk CLI**
+   ```bash
+   eb --version
+   ```
+
+### AWS Credentials
+
+You need valid AWS access credentials with permissions for:
+- Elastic Beanstalk
+- DynamoDB
+- IAM
+- S3
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/Odhiambo-20/ailytic-labs.git
+cd ailytic-labs/com.allyticlabs.backend
+```
+
+### 2. Configure AWS Credentials
+
+```bash
+aws configure
+```
+
+Enter your credentials:
+```
+AWS Access Key ID: YOUR_ACCESS_KEY
+AWS Secret Access Key: YOUR_SECRET_KEY
+Default region name: us-east-1
+Default output format: json
+```
+
+### 3. Verify Configuration
+
+```bash
+# Test AWS connection
+aws sts get-caller-identity
+
+# Should display your account info
+```
+
+---
+
+## 🏃 Running the Backend
+
+### Option 1: Access Already Deployed Backend (Recommended)
+
+The backend is **already running** on AWS. Simply check its status:
+
+```bash
+# Navigate to project directory
+cd ~/Documents/Desktop/Allytic-Labs/com.allyticlabs.backend
+
+# Check environment status
+eb status
+```
+
+**Expected Output**:
+```
+Environment details for: allytic-labs-prod
+  Application name: allytic-labs-backend
+  Region: us-east-1
+  Deployed Version: app-XXXXXXXXX
+  Platform: Corretto 17 running on 64bit Amazon Linux 2023
+  Status: Ready
+  Health: Green
+  CNAME: allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com
+```
+
+✅ **If Status = Ready and Health = Green**: Backend is running!
+
+### Option 2: Run Locally (Development)
+
+```bash
+# Build the project
+mvn clean install
+
+# Run locally
+mvn spring-boot:run
+```
+
+Application will start on: `http://localhost:8080`
+
+---
+
+## 🔄 Managing the Deployed Backend
+
+### Check Status
+
+```bash
+eb status
+```
+
+### View Logs
+
+```bash
+# View recent logs
+eb logs
+
+# Stream logs in real-time
+eb logs --stream
+```
+
+### Restart Application
+
+```bash
+eb restart
+```
+
+Wait 2-3 minutes, then verify:
+```bash
+eb status
+```
+
+### SSH into Server
+
+```bash
+eb ssh
+```
+
+Inside the server:
+```bash
+# Check if Java is running
+sudo netstat -tlnp | grep java
+
+# View application logs
+sudo tail -f /var/log/web.stdout.log
+
+# Exit SSH
+exit
+```
+
+### Check Environment Variables
+
+```bash
+eb printenv
+```
+
+### Update Environment Variables
+
+```bash
+eb setenv KEY=value
+```
+
+Example:
+```bash
+eb setenv JWT_SECRET=new_secret_key
+```
+
+---
+
+## 🔧 Making Changes & Redeploying
+
+### 1. Make Your Code Changes
+
+Edit your Java files as needed.
+
+### 2. Build New JAR
+
+```bash
+# Clean and build
+mvn clean package -DskipTests
+```
+
+### 3. Deploy to AWS
+
+```bash
+# Deploy (takes 2-5 minutes)
+eb deploy
+
+# Monitor deployment
+eb status
+```
+
+### 4. Verify Deployment
+
+```bash
+# Check health
+eb health
+
+# Test API endpoint
+curl http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/auth/login
+```
+
+---
+
+## 📡 API Endpoints Testing
+
+### Base URL
+```
+http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1
+```
+
+### 1. Register a New User
+
+```bash
+curl -X POST http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "email": "test@test.com",
+    "password": "Test123!",
+    "confirmPassword": "Test123!",
+    "firstName": "Test",
+    "lastName": "User",
+    "name": "Test User"
+  }'
+```
+
+**Expected Response** (Success):
+```json
+{
+  "status": "success",
+  "message": "User registered successfully",
+  "data": {
+    "userId": "uuid-here",
+    "username": "testuser",
+    "email": "test@test.com"
+  }
+}
+```
+
+**Expected Response** (Validation Error):
+```json
+{
+  "errors": {
+    "lastName": "Last name is required",
+    "firstName": "First name is required"
+  },
+  "message": "Validation failed",
+  "status": "error"
+}
+```
+
+---
+
+### 2. Login
+
+```bash
+curl -X POST http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "test@test.com",
+    "password": "Test123!"
+  }'
+```
+
+**Expected Response** (Success):
+```json
+{
+  "status": "success",
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
+  "expiresIn": 86400000
+}
+```
+
+**Expected Response** (Invalid Credentials):
+```json
+{
+  "message": "Invalid email or password",
+  "status": "error"
+}
+```
+
+---
+
+### 3. Test Protected Endpoint (Drones)
+
+First, save the access token from login:
+```bash
+# Save token to variable
+TOKEN="your_access_token_here"
+
+# Access protected endpoint
+curl -X GET http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/drones \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+**Expected Response** (Success):
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Agricultural Drone",
+      "type": "Agriculture",
+      "price": "$2,499.99"
+    }
+  ]
+}
+```
+
+**Expected Response** (Unauthorized):
+```json
+{
+  "message": "Unauthorized",
+  "status": 401
+}
+```
+
+---
+
+### 4. M-Pesa Payment (STK Push)
+
+```bash
+curl -X POST http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/payments/mpesa/stkpush \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "userId": "user-uuid",
+    "amount": 100.00,
+    "currency": "KES",
+    "paymentMethod": "MPESA",
+    "phoneNumber": "254712345678",
+    "description": "Test payment",
+    "merchantId": "MERCHANT-001",
+    "merchantName": "Allytic Labs",
+    "orderId": "ORDER-123456",
+    "customerEmail": "test@test.com",
+    "customerPhone": "254712345678",
+    "idempotencyKey": "unique-key-123",
+    "timestamp": 1702450800000,
+    "metadata": {
+      "productName": "Test Product"
+    }
+  }'
+```
+
+**Expected Response**:
+```json
+{
+  "status": "success",
+  "message": "STK push initiated",
+  "paymentId": "payment-uuid",
+  "checkoutRequestId": "ws_CO_123456789"
+}
+```
+
+---
+
+### 5. Stripe Payment Intent
+
+```bash
+curl -X POST http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/payments/stripe/create-intent \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "userId": "user-uuid",
+    "amount": 50.00,
+    "currency": "USD",
+    "paymentMethod": "STRIPE",
+    "description": "Test payment",
+    "merchantId": "MERCHANT-001",
+    "merchantName": "Allytic Labs",
+    "orderId": "ORDER-123456",
+    "customerEmail": "test@test.com",
+    "customerPhone": "+1234567890",
+    "idempotencyKey": "unique-key-456",
+    "timestamp": 1702450800000,
+    "metadata": {
+      "productName": "Test Product"
+    }
+  }'
+```
+
+**Expected Response**:
+```json
+{
+  "status": "success",
+  "clientSecret": "pi_xxxxxxxxxxxxx_secret_xxxxxxxxxxxxx",
+  "paymentId": "payment-uuid"
+}
+```
+
+---
+
+### 6. Newsletter Subscription
+
+```bash
+curl -X POST http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/newsletter \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "subscriber@test.com"
+  }'
+```
+
+**Expected Response**:
+```json
+{
+  "status": "success",
+  "message": "Successfully subscribed to newsletter"
+}
+```
+
+---
+
+### 7. Contact Form
+
+```bash
+curl -X POST http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1/contact \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@test.com",
+    "message": "I need help with my order"
+  }'
+```
+
+**Expected Response**:
+```json
+{
+  "status": "success",
+  "message": "Contact form submitted successfully"
+}
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Backend Returns 502 Bad Gateway
+
+```bash
+# Check logs
+eb logs | grep -i error
+
+# Restart application
+eb restart
+```
+
+### Backend Returns 401 Unauthorized
+
+- Token expired or invalid
+- Login again to get new token
+- Check if JWT_SECRET environment variable is set
+
+### Environment Variables Not Working
+
+```bash
+# Check current variables
+eb printenv
+
+# Set missing variables
+eb setenv KEY=value
+
+# Restart to apply changes
+eb restart
+```
+
+### Health Status is Yellow/Red
+
+```bash
+# Check detailed health
+eb health
+
+# View logs for errors
+eb logs --all
+
+# Common fixes:
+# 1. Check environment variables are set
+# 2. Verify DynamoDB IAM permissions
+# 3. Check application logs for errors
+```
+
+### Can't Connect to DynamoDB
+
+1. Go to AWS Console → IAM → Roles
+2. Find: `aws-elasticbeanstalk-ec2-role`
+3. Attach policy: `AmazonDynamoDBFullAccess`
+4. Restart: `eb restart`
+
+---
+
+## 📊 Monitoring
+
+### View Application Logs
+
+```bash
+# Recent logs
+eb logs
+
+# Real-time logs
+eb logs --stream
+
+# All logs
+eb logs --all
+```
+
+### Check Health
+
+```bash
+# Health status
+eb health
+
+# Detailed status
+eb status
+
+# Open CloudWatch (in browser)
+# AWS Console → CloudWatch → Logs → /aws/elasticbeanstalk/allytic-labs-prod
+```
+
+---
+
+## 🔐 Security
+
+### Environment Variables (Already Configured)
+
+- `JWT_SECRET`: JWT signing key
+- `STRIPE_SECRET_KEY`: Stripe API key
+- `MPESA_CONSUMER_KEY`: M-Pesa API key
+- `MPESA_CONSUMER_SECRET`: M-Pesa secret
+- `GOOGLE_CLIENT_ID`: OAuth client ID
+- `GOOGLE_CLIENT_SECRET`: OAuth secret
+- `AWS_REGION`: us-east-1
+
+### CORS Configuration
+
+Backend allows requests from:
+- `https://allyticlabs-frontend.vercel.app`
+- `http://localhost:3000` (development)
+
+---
+
+## 💰 Cost Breakdown
+
+- **t3.small instance**: ~$15/month
+- **DynamoDB**: Pay-per-request (minimal for low traffic)
+- **Data transfer**: Included in free tier
+- **Total**: ~$15-20/month
+
+### Stop Environment to Save Costs
+
+```bash
+# Terminate environment (careful!)
+eb terminate allytic-labs-prod
+
+# Recreate when needed
+eb create allytic-labs-prod --single
+```
+
+---
+
+## 🚀 Useful Commands Reference
+
+```bash
+# Status & Health
+eb status                 # Check environment status
+eb health                 # Detailed health info
+eb open                   # Open app in browser
+
+# Logs & Debugging
+eb logs                   # View recent logs
+eb logs --stream          # Real-time logs
+eb ssh                    # SSH into instance
+
+# Deployment
+eb deploy                 # Deploy new version
+eb restart                # Restart application
+
+# Configuration
+eb printenv               # View environment variables
+eb setenv KEY=value       # Set environment variable
+eb config                 # Edit configuration
+
+# Information
+eb list                   # List all environments
+eb console                # Open EB console in browser
+```
+
+---
+
+## 📞 Support
+
+- **GitHub**: [https://github.com/Odhiambo-20/ailytic-labs](https://github.com/Odhiambo-20/ailytic-labs)
+- **AWS Documentation**: [https://docs.aws.amazon.com/elasticbeanstalk](https://docs.aws.amazon.com/elasticbeanstalk)
+- **Spring Boot Docs**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
+
+---
+
+## 📝 License
+
+This project is proprietary and confidential.
+
+---
+
+**Last Updated**: December 13, 2024  
+**Version**: 1.0.0  
+**Author**: Allytic Labs Team
