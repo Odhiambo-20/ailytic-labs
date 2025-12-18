@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+// UPDATED: API Configuration for AWS Backend
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+                     process.env.REACT_APP_API_URL || 
+                     'http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com';
+
+console.log('Login - Using API Base URL:', API_BASE_URL);
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -50,61 +55,100 @@ const Login = () => {
     setLoading(true);
 
     try {
+      console.log('Sending login request to:', `${API_BASE_URL}/api/v1/auth/login`);
+      console.log('Login payload:', { username: email, password: '***' });
+
       const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: email,
+          username: email, // Backend expects 'username' field
           password: password
         }),
         credentials: 'include'
       });
 
-      const data = await response.json();
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
-      if (response.ok) {
-        // FIXED: Store tokens and user data to match Order.jsx expectations
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
+      const contentType = response.headers.get('content-type');
+      
+      // Check if response is JSON
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Non-JSON response received:', text);
+        throw new Error('Server returned invalid response. Please try again.');
+      }
+
+      const data = await response.json();
+      console.log('Login response:', data);
+
+      if (response.ok && data.status === 'success') {
+        // UPDATED: Store all authentication data properly
+        if (data.accessToken) {
+          localStorage.setItem('accessToken', data.accessToken);
+          console.log('Access token stored');
+        }
+        if (data.refreshToken) {
+          localStorage.setItem('refreshToken', data.refreshToken);
+          console.log('Refresh token stored');
+        }
         
-        // Store individual fields that Order.jsx needs
-        localStorage.setItem('userId', data.userId);
-        localStorage.setItem('userEmail', data.email);
-        localStorage.setItem('username', data.username);
+        // Store user identification data
+        if (data.userId) {
+          localStorage.setItem('userId', data.userId);
+          console.log('User ID stored:', data.userId);
+        }
+        if (data.email || email) {
+          localStorage.setItem('userEmail', data.email || email);
+          console.log('User email stored');
+        }
+        if (data.username || email) {
+          localStorage.setItem('username', data.username || email);
+          console.log('Username stored');
+        }
         
-        // Also store complete user object for other components
+        // Store complete user object for other components
         localStorage.setItem('user', JSON.stringify({
           userId: data.userId,
-          email: data.email,
-          username: data.username,
-          roles: data.roles
+          email: data.email || email,
+          username: data.username || email,
+          roles: data.roles || []
         }));
 
-        // Log success
-        console.log('Login successful:', data.message);
-        console.log('Stored tokens:', {
-          accessToken: data.accessToken ? 'Yes' : 'No',
-          userId: data.userId,
-          email: data.email
+        console.log('Login successful. Stored data:', {
+          hasToken: !!data.accessToken,
+          hasUserId: !!data.userId,
+          email: data.email || email
         });
         
-        // Redirect to home page or return URL
+        // Redirect to return URL or home
         const returnTo = localStorage.getItem('returnTo') || '/';
-        localStorage.removeItem('returnTo'); // Clear return URL
+        localStorage.removeItem('returnTo');
+        
+        console.log('Redirecting to:', returnTo);
         window.location.href = returnTo;
       } else {
         // Handle error response
+        console.error('Login failed:', data);
         setErrors({ 
           password: data.message || data.error || 'Invalid email or password' 
         });
       }
     } catch (error) {
       console.error('Login error:', error);
-      setErrors({ 
-        password: 'Unable to connect to server. Please check your internet connection.' 
-      });
+      
+      if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
+        setErrors({ 
+          password: 'Unable to connect to server. Please check your internet connection.' 
+        });
+      } else {
+        setErrors({ 
+          password: error.message || 'Login failed. Please try again.' 
+        });
+      }
     } finally {
       setLoading(false);
     }

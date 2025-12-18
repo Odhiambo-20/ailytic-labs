@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 
-// API Configuration
-const API_BASE_URL = 'http://localhost:8080/api/v1/auth';
+// UPDATED: API Configuration for AWS Backend
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+                     process.env.REACT_APP_API_URL || 
+                     'http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1';
+                  
+
+console.log('SignUp - Using API Base URL:', API_BASE_URL);
 
 function SignUp() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
+    username: '', // Added username field
     password: '',
     confirmPassword: ''
   });
@@ -24,13 +30,21 @@ function SignUp() {
       ...prev,
       [name]: value
     }));
+    
+    // Auto-generate username from email if email changes
+    if (name === 'email' && value) {
+      setFormData(prev => ({
+        ...prev,
+        username: value
+      }));
+    }
+    
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
         [name]: ''
       }));
     }
-    // Clear API error when user starts typing
     if (apiError) {
       setApiError('');
     }
@@ -70,10 +84,8 @@ function SignUp() {
   };
 
   const handleSubmit = async () => {
-    // Clear previous API error
     setApiError('');
 
-    // Validate form
     if (!validateForm()) {
       return;
     }
@@ -81,64 +93,99 @@ function SignUp() {
     setIsLoading(true);
 
     try {
-      // Make API call to register endpoint
-      const response = await fetch(`${API_BASE_URL}/register`, {
+      // UPDATED: Create registration payload matching backend expectations
+      const registrationPayload = {
+        username: formData.username || formData.email, // Use email as username if not provided
+        email: formData.email,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        name: `${formData.firstName} ${formData.lastName}` // Combined name
+      };
+
+      console.log('Sending registration request to:', `${API_BASE_URL}/auth/register`);
+      console.log('Payload:', { ...registrationPayload, password: '***', confirmPassword: '***' });
+
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword
-        }),
+        body: JSON.stringify(registrationPayload),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+      const contentType = response.headers.get('content-type');
+      
+      // Check if response is JSON
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Non-JSON response received:', text);
+        throw new Error('Server returned invalid response. Please try again.');
+      }
+
       const data = await response.json();
+      console.log('Registration response:', data);
 
       if (response.ok) {
-        // Registration successful
         console.log('Registration successful:', data);
 
-        // Store tokens in localStorage
+        // UPDATED: Store authentication data if provided
         if (data.accessToken) {
           localStorage.setItem('accessToken', data.accessToken);
+          console.log('Access token stored');
         }
         if (data.refreshToken) {
           localStorage.setItem('refreshToken', data.refreshToken);
+          console.log('Refresh token stored');
         }
-
-        // Store user info
         if (data.userId) {
           localStorage.setItem('userId', data.userId);
+          console.log('User ID stored:', data.userId);
         }
         if (data.email) {
           localStorage.setItem('userEmail', data.email);
+          console.log('User email stored');
+        }
+        if (data.username) {
+          localStorage.setItem('username', data.username);
+          console.log('Username stored');
         }
 
+        // Show success message
+        alert('Account created successfully! Please login with your credentials.');
 
-        // Redirect to dashboard or home page
-        window.location.href = '/login'; // Change to your desired route
+        // Redirect to login page
+        window.location.href = '/login';
       } else {
         // Handle API errors
-        if (data.message) {
-          setApiError(data.message);
-        } else if (data.errors) {
-          // Handle validation errors from backend
+        console.error('Registration failed:', data);
+        
+        if (data.errors) {
+          // Backend validation errors
           const backendErrors = {};
           Object.keys(data.errors).forEach(key => {
             backendErrors[key] = data.errors[key];
           });
           setErrors(backendErrors);
+          setApiError('Please correct the errors below.');
+        } else if (data.message) {
+          setApiError(data.message);
         } else {
           setApiError('Registration failed. Please try again.');
         }
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setApiError('Network error. Please check your connection and try again.');
+      
+      if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
+        setApiError('Unable to connect to server. Please check your internet connection.');
+      } else {
+        setApiError(error.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -233,6 +280,7 @@ function SignUp() {
                   errors.email ? 'border-red-500' : 'border-gray-300'
                 } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
                 placeholder="Enter your email"
+                autoComplete="email"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -257,7 +305,8 @@ function SignUp() {
                   className={`w-full px-4 py-3 pr-12 rounded-md border ${
                     errors.password ? 'border-red-500' : 'border-gray-300'
                   } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
-                  placeholder="Create a password"
+                  placeholder="Create a password (min 8 characters)"
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"
@@ -296,6 +345,7 @@ function SignUp() {
                     errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                   } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed`}
                   placeholder="Confirm your password"
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"
@@ -338,7 +388,7 @@ function SignUp() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">Or</span>
+                <span className="px-4 bg-white text-gray-500">Already have an account?</span>
               </div>
             </div>
 
@@ -355,13 +405,11 @@ function SignUp() {
 
       <footer className="py-6 px-8 border-t border-gray-200">
         <div className="max-w-md mx-auto flex justify-center space-x-6 text-sm text-gray-600">
-          <button onClick={() => alert('Privacy page coming soon')} className="hover:text-gray-900 transition-colors">
-            Allytic Labs © 2025
-          </button>
-          <button onClick={() => alert('Privacy page coming soon')} className="hover:text-gray-900 transition-colors">
+          <span>Allytic Labs © 2025</span>
+          <button onClick={() => window.location.href = '/privacy'} className="hover:text-gray-900 transition-colors">
             Privacy & Legal
           </button>
-          <button onClick={() => alert('Contact page coming soon')} className="hover:text-gray-900 transition-colors">
+          <button onClick={() => window.location.href = '/contact'} className="hover:text-gray-900 transition-colors">
             Contact
           </button>
         </div>
