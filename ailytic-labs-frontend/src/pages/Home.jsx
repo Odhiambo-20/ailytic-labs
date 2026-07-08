@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Zap, ChevronLeft, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
+import { ChevronRight, Zap, ChevronLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import BrandLogo from '../components/BrandLogo';
 import robotVideo from '../assets/robot.mp4';
 import robot1Video from '../assets/robot1.mp4';
 import solarpanelsVideo from '../assets/solar panels.mp4';
@@ -126,9 +126,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white overflow-hidden">
-      {/* Use the Navbar component instead of inline navbar */}
-      <Navbar />
-
       <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden pt-16">
         <div className="absolute inset-0 w-full h-full">
           <video
@@ -406,16 +403,11 @@ const Home = () => {
         </div>
       </section>
 
-      <footer className="bg-gray-950 border-t border-gray-800 py-16">
+<footer className="bg-gray-950 border-t border-gray-800 py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-12">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-lg font-bold">Allytic Labs</span>
-              </div>
+              <BrandLogo className="mb-4" />
               <p className="text-gray-400">Pioneering the future of robotics, drones, and renewable energy.</p>
             </div>
             <div>
@@ -445,7 +437,7 @@ const Home = () => {
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Allytic Labs. All rights reserved.</p>
+            <p>&copy; 2025 Bella Technologies. All rights reserved.</p>
           </div>
         </div>
       </footer>

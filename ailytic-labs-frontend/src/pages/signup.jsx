@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { API_V1_BASE_URL } from '../config/api';
 
-// UPDATED: API Configuration for AWS Backend
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-                     process.env.REACT_APP_API_URL || 
-                     'http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1';
-                  
-
-console.log('SignUp - Using API Base URL:', API_BASE_URL);
+console.info('SignUp API base URL:', API_V1_BASE_URL);
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -104,10 +99,10 @@ function SignUp() {
         name: `${formData.firstName} ${formData.lastName}` // Combined name
       };
 
-      console.log('Sending registration request to:', `${API_BASE_URL}/auth/register`);
+      console.log('Sending registration request to:', `${API_V1_BASE_URL}/auth/register`);
       console.log('Payload:', { ...registrationPayload, password: '***', confirmPassword: '***' });
 
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${API_V1_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -195,7 +190,7 @@ function SignUp() {
     <div className="min-h-screen bg-white flex flex-col">
       <header className="py-6 px-8">
         <div className="max-w-md mx-auto">
-          <div className="text-2xl font-bold text-gray-900">Allytic Labs</div>
+          <div className="text-2xl font-bold text-gray-900">BELLA</div>
         </div>
       </header>
 
@@ -405,7 +400,7 @@ function SignUp() {
 
       <footer className="py-6 px-8 border-t border-gray-200">
         <div className="max-w-md mx-auto flex justify-center space-x-6 text-sm text-gray-600">
-          <span>Allytic Labs © 2025</span>
+          <span>Bella Technologies © 2025</span>
           <button onClick={() => window.location.href = '/privacy'} className="hover:text-gray-900 transition-colors">
             Privacy & Legal
           </button>

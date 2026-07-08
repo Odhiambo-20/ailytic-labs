@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Zap, TrendingUp, Shield, Leaf, ArrowRight, CheckCircle, Star, MapPin, Phone, Mail, Calendar, Award, BarChart3 } from 'lucide-react';
 import { solarPanelAPI } from '../services/api';
+import BrandLogo from '../components/BrandLogo';
 import solarVideo from '../assets/solar.mp4';
 import solar from '../assets/solar.webm';
 import solarFarmImage from '../assets/solar panels.jpg';
@@ -319,10 +320,7 @@ const SolarPanels = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center"><Sun className="w-5 h-5 text-white" /></div>
-                <span className="text-xl font-bold text-white">Allytic Labs</span>
-              </div>
+              <BrandLogo className="mb-4" />
               <p className="text-gray-400 mb-4">Leading provider of solar panel solutions across Africa and beyond.</p>
               <div className="flex items-center gap-2 text-gray-400"><MapPin className="w-4 h-4" /><span>Nairobi, Kenya</span></div>
             </div>
@@ -339,12 +337,12 @@ const SolarPanels = () => {
               <h3 className="text-white font-bold mb-4">Contact Info</h3>
               <div className="space-y-2 text-gray-400">
                 <div className="flex items-center gap-2"><Phone className="w-4 h-4" /><span>+254-700-000-000</span></div>
-                <div className="flex items-center gap-2"><Mail className="w-4 h-4" /><span>solar@allytic-labs.com</span></div>
+                <div className="flex items-center gap-2"><Mail className="w-4 h-4" /><span>solar@bella-tech.com</span></div>
               </div>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Allytic Labs. All rights reserved.</p>
+            <p>&copy; 2025 Bella Technologies. All rights reserved.</p>
           </div>
         </div>
       </div>

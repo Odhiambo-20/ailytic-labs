@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronRight, Zap, Cpu, Plane, Sun, Users, Target, Globe, ArrowRight, Menu, X, User } from 'lucide-react';
+import { ChevronRight, Menu, Search, UserCircle, X } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,65 +9,53 @@ function Navbar() {
   const isHomePage = location.pathname === '/';
 
   return (
-    <div>
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Allytic Labs
-              </span>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
-              <Link to="/robots" className="text-gray-300 hover:text-white transition-colors">Robots</Link>
-              <Link to="/drones" className="text-gray-300 hover:text-white transition-colors">Drones</Link>
-              <Link to="/solarpanels" className="text-gray-300 hover:text-white transition-colors">Solarpanels</Link>
-              <Link to="/contact" className="bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 rounded-lg hover:shadow-lg transition-all text-white">
-                Contact Us
-              </Link>
-              {/* Login Icon - Only on Home Page */}
-              {isHomePage && (
-                <Link to="/login" className="text-gray-300 hover:text-white transition-colors ml-4">
-                  <User className="w-6 h-6" />
-                </Link>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <button 
-              className="md:hidden text-white"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+    <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-gray-950/95 backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between gap-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <BrandLogo />
+            <ChevronRight className="hidden h-4 w-4 shrink-0 text-gray-400 sm:block" />
+            <button type="button" className="hidden truncate text-base text-gray-300 transition hover:text-white sm:block">
+              Main Menu
             </button>
           </div>
-        </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-gray-800 border-t border-gray-700">
-            <div className="px-4 py-2 space-y-2">
-              <Link to="/" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Home</Link>
-              <Link to="/robots" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Robots</Link>
-              <Link to="/drones" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Drones</Link>
-              <Link to="/solarpanels" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Solarpanels</Link>
-              <Link to="/contact" className="block py-2 text-blue-400 hover:text-blue-300" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
-              {isHomePage && (
-                <Link to="/login" className="block py-2 text-gray-300 hover:text-white" onClick={() => setIsMenuOpen(false)}>Login</Link>
-              )}
-            </div>
+          <div className="hidden items-center gap-5 text-sm text-gray-300 md:flex">
+            <Link to="/robots" className="transition hover:text-white">Shop</Link>
+            <Link to="/drones" className="transition hover:text-white">Drivers</Link>
+            <Link to="/support" className="transition hover:text-white">Support</Link>
+            <button type="button" className="inline-flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-white/10 hover:text-white" aria-label="Search">
+              <Search className="h-5 w-5" />
+            </button>
+            <Link to="/login" className="inline-flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-white/10 hover:text-white" aria-label="Sign up or log in">
+              <UserCircle className="h-6 w-6" />
+            </Link>
           </div>
-        )}
-      </nav>
-    </div>
+
+          {isHomePage && (
+            <button
+              className="rounded-lg p-2 text-white transition-colors hover:bg-white/10 md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {isHomePage && isMenuOpen && (
+        <div className="border-t border-gray-800 bg-gray-950 md:hidden">
+          <div className="mx-auto max-w-7xl space-y-1 px-4 py-3">
+            <Link to="/robots" className="block rounded-lg px-3 py-2 text-gray-300 hover:bg-white/10 hover:text-white" onClick={() => setIsMenuOpen(false)}>Shop</Link>
+            <Link to="/drones" className="block rounded-lg px-3 py-2 text-gray-300 hover:bg-white/10 hover:text-white" onClick={() => setIsMenuOpen(false)}>Drivers</Link>
+            <Link to="/support" className="block rounded-lg px-3 py-2 text-gray-300 hover:bg-white/10 hover:text-white" onClick={() => setIsMenuOpen(false)}>Support</Link>
+            <Link to="/login" className="block rounded-lg px-3 py-2 text-gray-300 hover:bg-white/10 hover:text-white" onClick={() => setIsMenuOpen(false)}>Login</Link>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CreditCard, Lock, ArrowLeft, Check, MapPin, Smartphone, AlertCircle, Loader } from 'lucide-react';
+import { API_V1_BASE_URL } from '../config/api';
 
 function Order() {
   const location = useLocation();
@@ -35,11 +36,7 @@ function Order() {
     overnight: 99.99
   };
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 
-                       process.env.REACT_APP_API_URL || 
-                       'http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com/api/v1';
-
-  console.log('Using API Base URL:', API_BASE_URL);
+  console.log('Using API Base URL:', API_V1_BASE_URL);
 
 
   useEffect(() => {
@@ -237,11 +234,11 @@ function Order() {
         }
       };
 
-      console.log('Sending Stripe payment request to:', `${API_BASE_URL}/payments/stripe/create-intent`);
+      console.log('Sending Stripe payment request to:', `${API_V1_BASE_URL}/payments/stripe/create-intent`);
       console.log('Request payload:', paymentRequest);
       console.log('Authorization header:', `Bearer ${token.substring(0, 20)}...`);
 
-      const response = await fetch(`${API_BASE_URL}/payments/stripe/create-intent`, {
+      const response = await fetch(`${API_V1_BASE_URL}/payments/stripe/create-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -324,11 +321,11 @@ function Order() {
         }
       };
 
-      console.log('Sending M-Pesa payment request to:', `${API_BASE_URL}/payments/mpesa/stkpush`);
+      console.log('Sending M-Pesa payment request to:', `${API_V1_BASE_URL}/payments/mpesa/stkpush`);
       console.log('Request payload:', paymentRequest);
       console.log('Authorization header:', `Bearer ${token.substring(0, 20)}...`);
 
-      const response = await fetch(`${API_BASE_URL}/payments/mpesa/stkpush`, {
+      const response = await fetch(`${API_V1_BASE_URL}/payments/mpesa/stkpush`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -395,9 +392,9 @@ function Order() {
         }
       };
 
-      console.log('Sending QR payment request to:', `${API_BASE_URL}/payments/qr/generate`);
+      console.log('Sending QR payment request to:', `${API_V1_BASE_URL}/payments/qr/generate`);
 
-      const response = await fetch(`${API_BASE_URL}/payments/qr/generate`, {
+      const response = await fetch(`${API_V1_BASE_URL}/payments/qr/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

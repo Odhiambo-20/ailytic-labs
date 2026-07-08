@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Instagram, Github, Youtube, Linkedin } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import BrandLogo from '../components/BrandLogo';
 import DeliveryDrone from '../assets/delivery drone.jpg';
 import DroneImage from '../assets/drone.jpg';
 import AgriculturalDrone from '../assets/agricultural drone.jpg';
@@ -152,31 +153,6 @@ const Drones = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white overflow-hidden">
-      <nav className="fixed top-0 w-full z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center font-bold">
-                A
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                Allytic Labs
-              </span>
-            </Link>
-
-            <div className="hidden md:flex items-center space-x-8">
-              <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
-              <Link to="/robots" className="text-gray-300 hover:text-white transition-colors">Robots</Link>
-              <Link to="/drones" className="text-blue-400 hover:text-blue-300 transition-colors">Drones</Link>
-              <Link to="/solarpanels" className="text-gray-300 hover:text-white transition-colors">Solar</Link>
-              <Link to="/contact" className="bg-gradient-to-r from-blue-500 to-cyan-600 px-4 py-2 rounded-lg hover:shadow-lg transition-all">
-                Contact Us
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <section className="relative h-screen pt-16 flex items-center justify-center overflow-hidden">
         <div className="relative w-full h-full">
           <img
@@ -437,12 +413,7 @@ const Drones = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center font-bold text-sm">
-                  A
-                </div>
-                <span className="text-lg font-bold text-white">Allytic Labs</span>
-              </div>
+              <BrandLogo className="mb-4" />
               <p className="text-gray-400 text-sm">Pioneering the future of robotics, drones, and renewable energy solutions.</p>
             </div>
 
@@ -477,7 +448,7 @@ const Drones = () => {
           <div className="border-t border-gray-800 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
               <div className="text-sm text-gray-400">
-                <p>&copy; 2025 Allytic Labs. All rights reserved.</p>
+                <p>&copy; 2025 Bella Technologies. All rights reserved.</p>
                 <div className="flex space-x-4 mt-4">
                   <Link to="#" className="hover:text-white transition-colors">Terms and Conditions</Link>
                   <span>|</span>
@@ -489,7 +460,7 @@ const Drones = () => {
                 <p className="text-sm text-gray-400 mb-4 text-center md:text-right">Follow us on social media</p>
                 <div className="flex gap-3">
                   <a
-                    href="https://www.instagram.com/ailyticslabs"
+                    href="https://www.instagram.com/bellatechnologies"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
@@ -498,7 +469,7 @@ const Drones = () => {
                     <Instagram className="h-5 w-5 text-white" />
                   </a>
                   <a
-                    href="https://github.com/ailyticslabs"
+                    href="https://github.com/bellatechnologies"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
@@ -507,7 +478,7 @@ const Drones = () => {
                     <Github className="h-5 w-5 text-white" />
                   </a>
                   <a
-                    href="https://www.youtube.com/@ailyticslabs"
+                    href="https://www.youtube.com/@bellatechnologies"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"
@@ -516,7 +487,7 @@ const Drones = () => {
                     <Youtube className="h-5 w-5 text-white" />
                   </a>
                   <a
-                    href="https://www.linkedin.com/company/ailyticslabs"
+                    href="https://www.linkedin.com/company/bellatechnologies"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-all"

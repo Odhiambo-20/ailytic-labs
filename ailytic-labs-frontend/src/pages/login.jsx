@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { API_V1_BASE_URL, buildOAuthAuthorizeUrl } from '../config/api';
+import BrandLogo from '../components/BrandLogo';
 
-// UPDATED: API Configuration for AWS Backend
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-                     process.env.REACT_APP_API_URL || 
-                     'http://allytic-labs-prod.eba-pukad2pd.us-east-1.elasticbeanstalk.com';
-
-console.log('Login - Using API Base URL:', API_BASE_URL);
+console.info('Login API base URL:', API_V1_BASE_URL);
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -55,10 +52,10 @@ const Login = () => {
     setLoading(true);
 
     try {
-      console.log('Sending login request to:', `${API_BASE_URL}/api/v1/auth/login`);
+      console.log('Sending login request to:', `${API_V1_BASE_URL}/auth/login`);
       console.log('Login payload:', { username: email, password: '***' });
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+      const response = await fetch(`${API_V1_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -155,12 +152,8 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    // Store return URL before OAuth redirect
     const returnTo = localStorage.getItem('returnTo') || '/';
-    
-    // Redirect to backend OAuth2 endpoint
-    const redirectUri = encodeURIComponent(`${window.location.origin}/oauth2/redirect`);
-    window.location.href = `${API_BASE_URL}/oauth2/authorize/google?redirect_uri=${redirectUri}&state=${encodeURIComponent(returnTo)}`;
+    window.location.assign(buildOAuthAuthorizeUrl(returnTo));
   };
 
   const handleCreateAccount = () => {
@@ -182,7 +175,7 @@ const Login = () => {
       {/* Header */}
       <header className="py-6 px-8">
         <div className="max-w-md mx-auto">
-          <div className="text-2xl font-bold text-gray-900">Allytic Labs</div>
+          <div className="text-2xl font-bold text-gray-900">BELLA</div>
         </div>
       </header>
 
@@ -386,21 +379,43 @@ const Login = () => {
       </main>
 
       {/* Footer */}
-      <footer className="py-6 px-8 border-t border-gray-200">
-        <div className="max-w-md mx-auto flex justify-center space-x-6 text-sm text-gray-600">
-          <span>Allytic Labs © 2025</span>
-          <button 
-            onClick={() => window.location.href = '/privacy'} 
-            className="hover:text-gray-900 transition-colors"
-          >
-            Privacy & Legal
-          </button>
-          <button 
-            onClick={() => window.location.href = '/contact'} 
-            className="hover:text-gray-900 transition-colors"
-          >
-            Contact
-          </button>
+      {/* Footer */}
+      <footer className="bg-gray-950 border-t border-gray-800 py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div>
+              <BrandLogo className="mb-4" />
+              <p className="text-gray-400">Pioneering the future of robotics, drones, and renewable energy.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Solutions</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><button onClick={() => navigate('/robots')} className="hover:text-white transition-colors">Robotics</button></li>
+                <li><button onClick={() => navigate('/drones')} className="hover:text-white transition-colors">Drones</button></li>
+                <li><button onClick={() => navigate('/solarpanels')} className="hover:text-white transition-colors">Solar</button></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><button onClick={() => navigate('/about')} className="hover:text-white transition-colors">About</button></li>
+                <li><button onClick={() => navigate('/careers')} className="hover:text-white transition-colors">Careers</button></li>
+                <li><button onClick={() => navigate('/news')} className="hover:text-white transition-colors">News</button></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Connect</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><button onClick={() => navigate('/contact')} className="hover:text-white transition-colors">Contact</button></li>
+                <li><button onClick={() => navigate('/support')} className="hover:text-white transition-colors">Support</button></li>
+                <li><button onClick={() => navigate('/partners')} className="hover:text-white transition-colors">Partners</button></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 Bella Technologies. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
