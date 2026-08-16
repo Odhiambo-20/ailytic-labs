@@ -1,16 +1,19 @@
 package com.bellatechnologies.backend.model;
 
+import jakarta.persistence.*;
+
 import lombok.Data;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Data
-@DynamoDbBean
+@Entity
+@Table(name = "contacts")
 public class Contact {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -22,7 +25,6 @@ public class Contact {
     private String message;
     private LocalDateTime createdAt;
 
-    @DynamoDbPartitionKey
     public String getId() {
         return id;
     }

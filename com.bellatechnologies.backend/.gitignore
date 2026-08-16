@@ -9,3 +9,11 @@ target/
 .env
 *.jar
 
+
+# Terraform local state and provider cache
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log

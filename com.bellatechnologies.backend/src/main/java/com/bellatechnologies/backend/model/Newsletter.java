@@ -1,20 +1,21 @@
 package com.bellatechnologies.backend.model;
 
+import jakarta.persistence.*;
+
 import lombok.Data;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Data
-@DynamoDbBean
+@Entity
+@Table(name = "newsletter_subscriptions")
 public class Newsletter {
+    @Id
     private String email;
     private LocalDateTime subscribedAt;
 
-    @DynamoDbPartitionKey
     public String getEmail() {
         return email;
     }

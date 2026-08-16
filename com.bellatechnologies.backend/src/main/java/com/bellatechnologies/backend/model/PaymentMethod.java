@@ -1,5 +1,7 @@
 package com.bellatechnologies.backend.model;
 
+import jakarta.persistence.*;
+
 /**
  * Enum representing different payment methods supported by the system
  */

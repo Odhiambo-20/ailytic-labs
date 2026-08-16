@@ -1,0 +1,5 @@
+name_prefix        = "bella"
+environment        = "prod"
+location           = "northeurope"
+database_sku       = "GP_Standard_D2s_v3"
+container_image_tag = "replace-with-git-sha"

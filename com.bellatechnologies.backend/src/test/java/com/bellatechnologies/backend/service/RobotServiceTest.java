@@ -44,7 +44,7 @@ public class RobotServiceTest {
 
     @Test
     public void testGetRobotById_NotFound() {
-        when(robotRepository.findById("1")).thenReturn(null);
+        when(robotRepository.findById("1")).thenReturn(java.util.Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> robotService.getRobotById("1"));
         verify(robotRepository, times(1)).findById("1");

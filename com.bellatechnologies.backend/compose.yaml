@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: bella_technologies
+      POSTGRES_USER: bella_app
+      POSTGRES_PASSWORD: local-only-change-me
+    ports:
+      - "5432:5432"
+    volumes:
+      - bella-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bella_app -d bella_technologies"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/bella_technologies
+      DATABASE_USERNAME: bella_app
+      DATABASE_PASSWORD: local-only-change-me
+      PAYMENT_ENCRYPTION_KEY: ${PAYMENT_ENCRYPTION_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      MPESA_CONSUMER_KEY: ${MPESA_CONSUMER_KEY}
+      MPESA_CONSUMER_SECRET: ${MPESA_CONSUMER_SECRET}
+      MPESA_PASSKEY: ${MPESA_PASSKEY}
+      MPESA_SHORT_CODE: ${MPESA_SHORT_CODE}
+      MPESA_INITIATOR_PASSWORD: ${MPESA_INITIATOR_PASSWORD}
+      MPESA_CALLBACK_URL: ${MPESA_CALLBACK_URL}
+      MPESA_TIMEOUT_URL: ${MPESA_TIMEOUT_URL}
+      MPESA_RESULT_URL: ${MPESA_RESULT_URL}
+      MPESA_VALIDATION_URL: ${MPESA_VALIDATION_URL}
+      MPESA_CONFIRMATION_URL: ${MPESA_CONFIRMATION_URL}
+    ports:
+      - "8080:8080"
+
+volumes:
+  bella-postgres:

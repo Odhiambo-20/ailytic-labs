@@ -24,7 +24,7 @@ public class RobotService {
     }
 
     public Robot getRobotById(String id) {
-        Robot robot = robotRepository.findById(id);
+        Robot robot = robotRepository.findById(id).orElse(null);
         if (robot == null) {
             throw new ResourceNotFoundException("Robot not found with id: " + id);
         }
@@ -36,17 +36,17 @@ public class RobotService {
     }
 
     public Robot updateRobot(String id, Robot robot) {
-        if (robotRepository.findById(id) == null) {
+        if (robotRepository.findById(id).orElse(null) == null) {
             throw new ResourceNotFoundException("Robot not found with id: " + id);
         }
         robot.setId(id);
-        return robotRepository.update(robot);
+        return robotRepository.save(robot);
     }
 
     public void deleteRobot(String id) {
-        if (robotRepository.findById(id) == null) {
+        if (robotRepository.findById(id).orElse(null) == null) {
             throw new ResourceNotFoundException("Robot not found with id: " + id);
         }
-        robotRepository.delete(id);
+        robotRepository.deleteById(id);
     }
 }

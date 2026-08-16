@@ -24,7 +24,7 @@ public class DroneService {
     }
 
     public Drone getDroneById(String id) {
-        Drone drone = droneRepository.findById(id);
+        Drone drone = droneRepository.findById(id).orElse(null);
         if (drone == null) {
             throw new ResourceNotFoundException("Drone not found with id: " + id);
         }
@@ -36,17 +36,17 @@ public class DroneService {
     }
 
     public Drone updateDrone(String id, Drone drone) {
-        if (droneRepository.findById(id) == null) {
+        if (droneRepository.findById(id).orElse(null) == null) {
             throw new ResourceNotFoundException("Drone not found with id: " + id);
         }
         drone.setId(id);
-        return droneRepository.update(drone);
+        return droneRepository.save(drone);
     }
 
     public void deleteDrone(String id) {
-        if (droneRepository.findById(id) == null) {
+        if (droneRepository.findById(id).orElse(null) == null) {
             throw new ResourceNotFoundException("Drone not found with id: " + id);
         }
-        droneRepository.delete(id);
+        droneRepository.deleteById(id);
     }
 }

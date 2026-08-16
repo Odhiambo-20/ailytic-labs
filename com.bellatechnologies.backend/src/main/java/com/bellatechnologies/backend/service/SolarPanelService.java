@@ -24,7 +24,7 @@ public class SolarPanelService {
     }
 
     public SolarPanel getSolarPanelById(String id) {
-        SolarPanel solarPanel = solarPanelRepository.findById(id);
+        SolarPanel solarPanel = solarPanelRepository.findById(id).orElse(null);
         if (solarPanel == null) {
             throw new ResourceNotFoundException("Solar Panel not found with id: " + id);
         }
@@ -36,17 +36,17 @@ public class SolarPanelService {
     }
 
     public SolarPanel updateSolarPanel(String id, SolarPanel solarPanel) {
-        if (solarPanelRepository.findById(id) == null) {
+        if (solarPanelRepository.findById(id).orElse(null) == null) {
             throw new ResourceNotFoundException("Solar Panel not found with id: " + id);
         }
         solarPanel.setId(id);
-        return solarPanelRepository.update(solarPanel);
+        return solarPanelRepository.save(solarPanel);
     }
 
     public void deleteSolarPanel(String id) {
-        if (solarPanelRepository.findById(id) == null) {
+        if (solarPanelRepository.findById(id).orElse(null) == null) {
             throw new ResourceNotFoundException("Solar Panel not found with id: " + id);
         }
-        solarPanelRepository.delete(id);
+        solarPanelRepository.deleteById(id);
     }
 }

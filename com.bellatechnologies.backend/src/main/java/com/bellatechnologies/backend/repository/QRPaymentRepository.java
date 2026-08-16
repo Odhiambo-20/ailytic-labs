@@ -1,403 +1,109 @@
 package com.bellatechnologies.backend.repository;
 
-import com.bellatechnologies.backend.model.QRPayment;
 import com.bellatechnologies.backend.model.PaymentStatus;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
-
+import com.bellatechnologies.backend.model.QRPayment;
 import java.time.Instant;
-import java.util.HashMap;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@RequiredArgsConstructor
-@Slf4j
-public class QRPaymentRepository {
+public interface QRPaymentRepository extends JpaRepository<QRPayment, String> {
+    Optional<QRPayment> findByQrCode(String qrCode);
+    Optional<QRPayment> findByQrCodeToken(String qrCodeToken);
+    List<QRPayment> findByMerchantId(String merchantId);
+    List<QRPayment> findByStatus(PaymentStatus status);
+    Optional<QRPayment> findByPaymentId(String paymentId);
+    boolean existsByQrCode(String qrCode);
 
-    private final DynamoDBMapper dynamoDBMapper;
-    private static final int DEFAULT_QR_EXPIRY_MINUTES = 15;
-
-    /**
-     * Save QR payment to DynamoDB
-     */
-    public QRPayment save(QRPayment qrPayment) {
-        try {
-            if (qrPayment.getCreatedAtInstant() == null) {
-                qrPayment.setCreatedAt(Instant.now());
-            }
-            if (qrPayment.getExpiresAtInstant() == null) {
-                qrPayment.setExpiresAt(Instant.now().plusSeconds(DEFAULT_QR_EXPIRY_MINUTES * 60));
-            }
-            qrPayment.setUpdatedAt(Instant.now());
-
-            dynamoDBMapper.save(qrPayment);
-            log.debug("Saved QR payment: {}", qrPayment.getId());
-            return qrPayment;
-        } catch (Exception e) {
-            log.error("Error saving QR payment", e);
-            throw new RuntimeException("Failed to save QR payment: " + e.getMessage(), e);
-        }
+    default Optional<QRPayment> findByQRCode(String value) {
+        return findByQrCodeToken(value).or(() -> findByQrCode(value));
     }
 
-    /**
-     * Find QR payment by ID
-     */
-    public Optional<QRPayment> findById(String id) {
-        try {
-            QRPayment qrPayment = dynamoDBMapper.load(QRPayment.class, id);
-            return Optional.ofNullable(qrPayment);
-        } catch (Exception e) {
-            log.error("Error finding QR payment by ID: {}", id, e);
-            return Optional.empty();
-        }
+    default Optional<QRPayment> findValidQRCode(String value) {
+        return findByQRCode(value).filter(code -> !code.isExpired() && !code.isUsed());
     }
 
-    /**
-     * Find QR payment by QR code
-     */
-    public Optional<QRPayment> findByQRCode(String qrCode) {
-        try {
-            Map<String, AttributeValue> eav = new HashMap<>();
-            eav.put(":qrCode", new AttributeValue().withS(qrCode));
-
-            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                    .withFilterExpression("qrCode = :qrCode")
-                    .withExpressionAttributeValues(eav)
-                    .withLimit(1);
-
-            List<QRPayment> results = dynamoDBMapper.scan(QRPayment.class, scanExpression);
-            return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
-        } catch (Exception e) {
-            log.error("Error finding QR payment by qrCode: {}", qrCode, e);
-            return Optional.empty();
-        }
+    default List<QRPayment> findByCustomerId(String customerId) {
+        return List.of();
     }
 
-    /**
-     * Find valid (not expired and not used) QR code
-     */
-    public Optional<QRPayment> findValidQRCode(String qrCode) {
-        Optional<QRPayment> qrPaymentOpt = findByQRCode(qrCode);
-
-        if (qrPaymentOpt.isPresent()) {
-            QRPayment qrPayment = qrPaymentOpt.get();
-
-            Instant expiresAt = qrPayment.getExpiresAtInstant();
-            if (expiresAt != null && Instant.now().isAfter(expiresAt)) {
-                return Optional.empty();
-            }
-
-            if (qrPayment.isUsed()) {
-                return Optional.empty();
-            }
-
-            return qrPaymentOpt;
-        }
-
-        return Optional.empty();
+    default List<QRPayment> findExpiredQRCodes() {
+        return findAll().stream().filter(QRPayment::isExpired).toList();
     }
 
-    /**
-     * Find QR payments by merchant ID
-     */
-    public List<QRPayment> findByMerchantId(String merchantId) {
-        try {
-            Map<String, AttributeValue> eav = new HashMap<>();
-            eav.put(":merchantId", new AttributeValue().withS(merchantId));
-
-            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                    .withFilterExpression("merchantId = :merchantId")
-                    .withExpressionAttributeValues(eav);
-
-            return dynamoDBMapper.scan(QRPayment.class, scanExpression);
-        } catch (Exception e) {
-            log.error("Error finding QR payments by merchantId: {}", merchantId, e);
-            return List.of();
-        }
+    default List<QRPayment> findUnusedByMerchantId(String merchantId) {
+        return findByMerchantId(merchantId).stream().filter(code -> !code.isUsed()).toList();
     }
 
-    /**
-     * Find QR payments by customer ID
-     */
-    public List<QRPayment> findByCustomerId(String customerId) {
-        try {
-            Map<String, AttributeValue> eav = new HashMap<>();
-            eav.put(":customerId", new AttributeValue().withS(customerId));
-
-            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                    .withFilterExpression("customerId = :customerId")
-                    .withExpressionAttributeValues(eav);
-
-            return dynamoDBMapper.scan(QRPayment.class, scanExpression);
-        } catch (Exception e) {
-            log.error("Error finding QR payments by customerId: {}", customerId, e);
-            return List.of();
-        }
+    @Transactional
+    default Optional<QRPayment> markAsUsed(String qrCode, String paymentId) {
+        return findByQRCode(qrCode).map(code -> {
+            code.setUsed(true);
+            code.setPaymentId(paymentId);
+            code.setUsedAt(Instant.now());
+            return save(code);
+        });
     }
 
-    /**
-     * Find QR payments by status
-     */
-    public List<QRPayment> findByStatus(PaymentStatus status) {
-        try {
-            Map<String, AttributeValue> eav = new HashMap<>();
-            eav.put(":status", new AttributeValue().withS(status.name()));
-
-            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                    .withFilterExpression("#status = :status")
-                    .withExpressionAttributeNames(Map.of("#status", "status"))
-                    .withExpressionAttributeValues(eav);
-
-            return dynamoDBMapper.scan(QRPayment.class, scanExpression);
-        } catch (Exception e) {
-            log.error("Error finding QR payments by status: {}", status, e);
-            return List.of();
-        }
+    @Transactional
+    default Optional<QRPayment> updateStatus(String id, PaymentStatus status) {
+        return findById(id).map(code -> {
+            code.setStatus(status);
+            code.setUpdatedAt(Instant.now());
+            return save(code);
+        });
     }
 
-    /**
-     * Find QR payment by payment ID
-     */
-    public Optional<QRPayment> findByPaymentId(String paymentId) {
-        try {
-            Map<String, AttributeValue> eav = new HashMap<>();
-            eav.put(":paymentId", new AttributeValue().withS(paymentId));
-
-            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                    .withFilterExpression("paymentId = :paymentId")
-                    .withExpressionAttributeValues(eav)
-                    .withLimit(1);
-
-            List<QRPayment> results = dynamoDBMapper.scan(QRPayment.class, scanExpression);
-            return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
-        } catch (Exception e) {
-            log.error("Error finding QR payment by paymentId: {}", paymentId, e);
-            return Optional.empty();
-        }
+    default List<QRPayment> findByMerchantIdAndDateRange(String merchantId, String startDate, String endDate) {
+        Instant start = Instant.parse(startDate);
+        Instant end = Instant.parse(endDate);
+        return findByMerchantId(merchantId).stream().filter(code -> {
+            Instant created = code.getCreatedAtInstant();
+            return created != null && !created.isBefore(start) && !created.isAfter(end);
+        }).toList();
     }
 
-    /**
-     * Find expired QR codes
-     */
-    public List<QRPayment> findExpiredQRCodes() {
-        Instant now = Instant.now();
-        return findAll().stream()
-                .filter(qr -> {
-                    Instant expiresAt = qr.getExpiresAtInstant();
-                    return expiresAt != null && now.isAfter(expiresAt);
-                })
-                .filter(qr -> !qr.isUsed())
-                .collect(Collectors.toList());
+    default double calculateTotalAmountByMerchantAndDateRange(String merchantId, String start, String end) {
+        return findByMerchantIdAndDateRange(merchantId, start, end).stream()
+                .mapToDouble(code -> code.getAmount() == null ? 0.0 : code.getAmount()).sum();
     }
 
-    /**
-     * Find unused QR codes by merchant ID
-     */
-    public List<QRPayment> findUnusedByMerchantId(String merchantId) {
+    default long countByMerchantIdAndStatus(String merchantId, PaymentStatus status) {
+        return findByMerchantId(merchantId).stream().filter(code -> code.getStatus() == status).count();
+    }
+
+    default List<QRPayment> findRecentByMerchantId(String merchantId, int limit) {
         return findByMerchantId(merchantId).stream()
-                .filter(qr -> !qr.isUsed())
-                .filter(qr -> {
-                    Instant expiresAt = qr.getExpiresAtInstant();
-                    return expiresAt == null || Instant.now().isBefore(expiresAt);
-                })
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(QRPayment::getCreatedAtInstant, Comparator.nullsLast(Comparator.reverseOrder())))
+                .limit(limit).toList();
     }
 
-    /**
-     * Mark QR code as used
-     */
-    public Optional<QRPayment> markAsUsed(String qrCode, String paymentId) {
-        Optional<QRPayment> qrPaymentOpt = findByQRCode(qrCode);
-
-        if (qrPaymentOpt.isPresent()) {
-            QRPayment qrPayment = qrPaymentOpt.get();
-
-            if (qrPayment.isUsed()) {
-                return Optional.empty();
-            }
-
-            qrPayment.setUsed(true);
-            qrPayment.setPaymentId(paymentId);
-            qrPayment.setUsedAt(Instant.now());
-            qrPayment.setUpdatedAt(Instant.now());
-
-            return Optional.of(save(qrPayment));
-        }
-
-        return Optional.empty();
+    @Transactional
+    default int deleteExpiredQRCodes() {
+        List<QRPayment> expired = findExpiredQRCodes();
+        deleteAll(expired);
+        return expired.size();
     }
 
-    /**
-     * Update QR payment status
-     */
-    public Optional<QRPayment> updateStatus(String qrPaymentId, PaymentStatus status) {
-        Optional<QRPayment> qrPaymentOpt = findById(qrPaymentId);
-
-        if (qrPaymentOpt.isPresent()) {
-            QRPayment qrPayment = qrPaymentOpt.get();
-            qrPayment.setStatus(status);
-            qrPayment.setUpdatedAt(Instant.now());
-            return Optional.of(save(qrPayment));
-        }
-
-        return Optional.empty();
+    default boolean existsByQRCode(String value) {
+        return findByQRCode(value).isPresent();
     }
 
-    /**
-     * Find QR payments by merchant ID and date range
-     */
-    public List<QRPayment> findByMerchantIdAndDateRange(
-            String merchantId,
-            Instant startDate,
-            Instant endDate) {
-
-        return findByMerchantId(merchantId).stream()
-                .filter(qr -> {
-                    Instant createdAt = qr.getCreatedAtInstant();
-                    return createdAt != null &&
-                           !createdAt.isBefore(startDate) &&
-                           !createdAt.isAfter(endDate);
-                })
-                .collect(Collectors.toList());
+    default boolean isQRCodeValid(String value) {
+        return findValidQRCode(value).isPresent();
     }
 
-    /**
-     * Calculate total amount by merchant and date range
-     */
-    public double calculateTotalAmountByMerchantAndDateRange(
-            String merchantId,
-            Instant startDate,
-            Instant endDate) {
-
-        return findByMerchantIdAndDateRange(merchantId, startDate, endDate).stream()
-                .filter(qr -> qr.getStatus() == PaymentStatus.SUCCESS)
-                .mapToDouble(QRPayment::getAmount)
-                .sum();
-    }
-
-    /**
-     * Count QR payments by merchant ID and status
-     */
-    public long countByMerchantIdAndStatus(String merchantId, PaymentStatus status) {
-        return findByMerchantId(merchantId).stream()
-                .filter(qr -> qr.getStatus() == status)
-                .count();
-    }
-
-    /**
-     * Find recent QR payments by merchant ID
-     */
-    public List<QRPayment> findRecentByMerchantId(String merchantId, int limit) {
-        List<QRPayment> qrPayments = findByMerchantId(merchantId);
-        return qrPayments.stream()
-                .sorted((qr1, qr2) -> {
-                    Instant c1 = qr1.getCreatedAtInstant();
-                    Instant c2 = qr2.getCreatedAtInstant();
-                    if (c1 == null && c2 == null) return 0;
-                    if (c1 == null) return 1;
-                    if (c2 == null) return -1;
-                    return c2.compareTo(c1);
-                })
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Delete QR payment by ID
-     */
-    public boolean deleteById(String id) {
-        try {
-            QRPayment qrPayment = dynamoDBMapper.load(QRPayment.class, id);
-            if (qrPayment != null) {
-                dynamoDBMapper.delete(qrPayment);
-                log.debug("Deleted QR payment: {}", id);
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            log.error("Error deleting QR payment: {}", id, e);
-            return false;
-        }
-    }
-
-    /**
-     * Delete expired QR codes
-     */
-    public int deleteExpiredQRCodes() {
-        List<QRPayment> expiredQRCodes = findExpiredQRCodes();
-        int count = 0;
-
-        for (QRPayment qrPayment : expiredQRCodes) {
-            if (deleteById(qrPayment.getId())) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
-    /**
-     * Check if QR code exists
-     */
-    public boolean existsByQRCode(String qrCode) {
-        return findByQRCode(qrCode).isPresent();
-    }
-
-    /**
-     * Check if QR code is valid
-     */
-    public boolean isQRCodeValid(String qrCode) {
-        return findValidQRCode(qrCode).isPresent();
-    }
-
-    /**
-     * Find all QR payments
-     */
-    public List<QRPayment> findAll() {
-        try {
-            DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-            return dynamoDBMapper.scan(QRPayment.class, scanExpression);
-        } catch (Exception e) {
-            log.error("Error finding all QR payments", e);
-            return List.of();
-        }
-    }
-
-    /**
-     * Batch save QR payments
-     */
-    public List<QRPayment> saveAll(List<QRPayment> qrPayments) {
-        qrPayments.forEach(this::save);
-        return qrPayments;
-    }
-
-    /**
-     * Extend QR code expiration
-     */
-    public Optional<QRPayment> extendExpiration(String qrPaymentId, int additionalMinutes) {
-        Optional<QRPayment> qrPaymentOpt = findById(qrPaymentId);
-
-        if (qrPaymentOpt.isPresent()) {
-            QRPayment qrPayment = qrPaymentOpt.get();
-            Instant currentExpiry = qrPayment.getExpiresAtInstant();
-
-            if (currentExpiry != null) {
-                qrPayment.setExpiresAt(currentExpiry.plusSeconds(additionalMinutes * 60));
-            } else {
-                qrPayment.setExpiresAt(Instant.now().plusSeconds(additionalMinutes * 60));
-            }
-
-            qrPayment.setUpdatedAt(Instant.now());
-            return Optional.of(save(qrPayment));
-        }
-
-        return Optional.empty();
+    @Transactional
+    default Optional<QRPayment> extendExpiration(String id, int minutes) {
+        return findById(id).map(code -> {
+            Instant base = code.getExpiresAtInstant() == null ? Instant.now() : code.getExpiresAtInstant();
+            code.setExpiresAt(base.plus(minutes, ChronoUnit.MINUTES));
+            return save(code);
+        });
     }
 }

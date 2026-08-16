@@ -1,0 +1,54 @@
+name: Infrastructure plan and apply
+
+on:
+  pull_request:
+    paths:
+      - "com.bellatechnologies.backend/infra/**"
+      - ".github/workflows/infrastructure.yml"
+  workflow_dispatch:
+    inputs:
+      target:
+        type: choice
+        options: [azure, azure-dr, aws-dr]
+        required: true
+      apply:
+        type: boolean
+        default: false
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.apply && production-infrastructure || infrastructure-plan }}
+    defaults:
+      run:
+        working-directory: com.bellatechnologies.backend/infra/${{ inputs.target || azure }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - uses: azure/login@v2
+        if: ${{ (inputs.target || azure) == azure }}
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        if: ${{ inputs.target == aws-dr }}
+        with:
+          role-to-assume: ${{ secrets.AWS_DR_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_DR_REGION }}
+      - run: terraform fmt -check -recursive
+      - run: terraform init
+      - run: terraform validate
+      - run: terraform plan -out=tfplan
+        env:
+          TF_VAR_container_image_tag: ${{ github.sha }}
+          TF_VAR_application_secret_arn: ${{ secrets.AWS_DR_APPLICATION_SECRET_ARN }}
+          TF_VAR_acm_certificate_arn: ${{ secrets.AWS_DR_CERTIFICATE_ARN }}
+          TF_VAR_backup_bucket_name: ${{ vars.AWS_DR_BACKUP_BUCKET }}
+      - run: terraform apply -auto-approve tfplan
+        if: ${{ inputs.apply }}
