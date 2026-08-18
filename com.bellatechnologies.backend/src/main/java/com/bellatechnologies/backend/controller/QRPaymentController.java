@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-@CrossOrigin(origins = "${app.cors.allowed.origins:https://bellatechnologies-frontend.vercel.app,https://bella-technologies-frontend-git-main-victor-odhiambos-projects.vercel.app,https://bella-technologies-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000")
+@CrossOrigin(origins = "${app.cors.allowed.origins:https://bellatechnologies-frontend.vercel.app,https://bella-technologies-frontend-git-main-victor-odhiambos-projects.vercel.app,https://bella-technologies-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000,http://localhost:5173}")
 public class QRPaymentController {
 
     private final QRCodeService qrCodeService;

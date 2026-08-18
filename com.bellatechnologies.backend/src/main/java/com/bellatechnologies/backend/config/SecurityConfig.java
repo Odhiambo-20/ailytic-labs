@@ -43,7 +43,7 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Value("${app.cors.allowed.origins:https://bellatechnologies-frontend.vercel.app,https://bella-technologies-frontend-git-main-victor-odhiambos-projects.vercel.app,https://bella-technologies-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000")
+    @Value("${app.cors.allowed.origins:https://bellatechnologies-frontend.vercel.app,https://bella-technologies-frontend-git-main-victor-odhiambos-projects.vercel.app,https://bella-technologies-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000,http://localhost:5173}")
     private String allowedOrigins;
 
     // Payment/Webhook endpoints (Order 1 - highest priority)
