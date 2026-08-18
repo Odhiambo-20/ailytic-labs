@@ -21,7 +21,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "${app.cors.allowed.origins=https://bellatechnologies-frontend.vercel.app,https://bella-technologies-frontend-git-main-victor-odhiambos-projects.vercel.app,https://bella-technologies-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000")
+@CrossOrigin(origins = "${app.cors.allowed.origins:https://bellatechnologies-frontend.vercel.app,https://bella-technologies-frontend-git-main-victor-odhiambos-projects.vercel.app,https://bella-technologies-frontend-7l3o6f9fn-victor-odhiambos-projects.vercel.app,http://localhost:3000")
 public class AuthController {
 
     private final AuthService authService;
